@@ -1,0 +1,13 @@
+__pycache__/*
+videoAnalytics/__pycache__/*
+*.pyc
+.pylintrc
+imgs/*
+!imgs/.gitkeep
+out/*
+!out/.gitkeep
+.env
+config_info
+node_modules/
+.vscode/
+venv/
