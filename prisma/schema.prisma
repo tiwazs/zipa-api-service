@@ -120,9 +120,29 @@ model Item {
 }
 
 model Effect {
-    id     String        @id @default(cuid())
-    skills SkillEffect[]
-    traits TraitEffect[]
+    id                  String        @id @default(cuid())
+    name                String
+    description         String
+    magic_effectiveness Float
+    physical_damage     Float
+    magical_damage      Float
+    healing             Float
+    essence_recovery    Float
+    vitality            Float
+    range               Float
+    damage              Float
+    armor               Float
+    magic_armor         Float
+    essence             Float
+    agility             Float
+    hit_chance          Float
+    evasion             Float
+    hit_rate            Float
+    movement            Float
+    barrier             Float
+    max_stack           Int
+    skills              SkillEffect[]
+    traits              TraitEffect[]
 }
 
 model AssignedSkillType {
