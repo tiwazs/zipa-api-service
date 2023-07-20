@@ -142,19 +142,22 @@ model UnitSkill {
 }
 
 model UnitItem {
-    id      String @id @default(cuid())
-    unit    Unit   @relation(fields: [unit_id], references: [id])
-    unit_id String
-    item    Item   @relation(fields: [item_id], references: [id])
-    item_id String
+    id       String @id @default(cuid())
+    unit     Unit   @relation(fields: [unit_id], references: [id])
+    unit_id  String
+    item     Item   @relation(fields: [item_id], references: [id])
+    item_id  String
+    quantity Float
 }
 
 model ItemSkill {
-    id       String @id @default(cuid())
-    item     Item   @relation(fields: [item_id], references: [id])
-    item_id  String
-    skill    Skill  @relation(fields: [skill_id], references: [id])
-    skill_id String
+    id           String @id @default(cuid())
+    item         Item   @relation(fields: [item_id], references: [id])
+    item_id      String
+    skill        Skill  @relation(fields: [skill_id], references: [id])
+    skill_id     String
+    essence_cost Float
+    cooldown     Float
 }
 
 model UnitTrait {
@@ -171,6 +174,7 @@ model SkillEffect {
     skill_id  String
     effect    Effect @relation(fields: [effect_id], references: [id])
     effect_id String
+    duration  Float
 }
 
 model TraitEffect {
