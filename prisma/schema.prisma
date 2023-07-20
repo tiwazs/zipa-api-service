@@ -9,3 +9,171 @@ datasource db {
     provider = "mysql"
     url      = env("DATABASE_URL")
 }
+
+model Faction {
+    id          String @id @default(cuid())
+    name        String
+    description String
+    identity    String
+    aspects     String
+    units       Unit[]
+}
+
+model Unit {
+    id          String      @id @default(cuid())
+    name        String
+    description String
+    vitality    Float
+    range       Float
+    damage      Float
+    armor       Float
+    magic_armor Float
+    essence     Float
+    agility     Float
+    hit_chance  Float
+    evasion     Float
+    hit_rate    Float
+    movement    Float
+    ammo        Float
+    faction     Faction     @relation(fields: [faction_id], references: [id])
+    faction_id  String
+    skills      UnitSkill[]
+    items       UnitItem[]
+    traits      UnitTrait[]
+}
+
+model SkillType {
+    id          String  @id @default(cuid())
+    name        String
+    description String
+    skills      Skill[]
+}
+
+model Skill {
+    id               String        @id @default(cuid())
+    name             String
+    description      String
+    physical_damage  Float
+    magical_damage   Float
+    healing          Float
+    essence_recovery Float
+    range            Float
+    area_of_effect   Float
+    essence_cost     Float
+    cooldown         Float
+    channeled        Boolean
+    target           Target        @default(ENEMY)
+    skill_on         SkillOn       @default(INSTANT)
+    skill_type       SkillType     @relation(fields: [skill_type_id], references: [id])
+    skill_type_id    String
+    effects          SkillEffect[]
+    items            ItemSkill[]
+    units            UnitSkill[]
+}
+
+enum SkillOn {
+    INSTANT
+    OVER_TIME
+    DURING_CHANNEL
+    AFTER_CHANNEL
+    DELAYED
+}
+
+enum Target {
+    SELF
+    ALLY
+    ENEMY
+    ALL
+}
+
+model Trait {
+    id          String        @id @default(cuid())
+    name        String
+    description String
+    cooldown    Float
+    effects     TraitEffect[]
+    units       UnitTrait[]
+}
+
+model Item {
+    id                  String      @id @default(cuid())
+    name                String
+    description         String
+    rarity              Float
+    magic_effectiveness Float
+    physical_damage     Float
+    magical_damage      Float
+    healing             Float
+    essence_recovery    Float
+    vitality            Float
+    range               Float
+    damage              Float
+    armor               Float
+    magic_armor         Float
+    essence             Float
+    agility             Float
+    hit_chance          Float
+    evasion             Float
+    hit_rate            Float
+    movement            Float
+    skills              ItemSkill[]
+    units               UnitItem[]
+}
+
+model Effect {
+    id     String        @id @default(cuid())
+    skills SkillEffect[]
+    traits TraitEffect[]
+}
+
+model AssignedSkillType {
+    id String @id @default(cuid())
+}
+
+model UnitSkill {
+    id        String @id @default(cuid())
+    units     Unit   @relation(fields: [units_id], references: [id])
+    units_id  String
+    skills    Skill  @relation(fields: [skills_id], references: [id])
+    skills_id String
+}
+
+model UnitItem {
+    id       String @id @default(cuid())
+    units    Unit   @relation(fields: [units_id], references: [id])
+    units_id String
+    items    Item   @relation(fields: [items_id], references: [id])
+    items_id String
+}
+
+model ItemSkill {
+    id        String @id @default(cuid())
+    item      Item   @relation(fields: [items_id], references: [id])
+    items_id  String
+    skills    Skill  @relation(fields: [skills_id], references: [id])
+    skills_id String
+}
+
+model UnitTrait {
+    id        String @id @default(cuid())
+    units     Unit   @relation(fields: [units_id], references: [id])
+    units_id  String
+    traits    Trait  @relation(fields: [traits_id], references: [id])
+    traits_id String
+}
+
+model SkillEffect {
+    id        String @id @default(cuid())
+    skill     Skill  @relation(fields: [skills_id], references: [id])
+    skills_id String
+    effect    Effect @relation(fields: [effect_id], references: [id])
+    effect_id String
+}
+
+model TraitEffect {
+    id        String @id @default(cuid())
+    trait     Trait  @relation(fields: [trait_id], references: [id])
+    trait_id  String
+    effect    Effect @relation(fields: [effect_id], references: [id])
+    effect_id String
+}
