@@ -43,14 +43,14 @@ model Unit {
 }
 
 model SkillType {
-    id          String  @id @default(cuid())
+    id          String              @id @default(cuid())
     name        String
     description String
-    skills      Skill[]
+    skills      AssignedSkillType[]
 }
 
 model Skill {
-    id               String        @id @default(cuid())
+    id               String              @id @default(cuid())
     name             String
     description      String
     physical_damage  Float
@@ -62,10 +62,9 @@ model Skill {
     essence_cost     Float
     cooldown         Float
     channeled        Boolean
-    target           Target        @default(ENEMY)
-    skill_on         SkillOn       @default(INSTANT)
-    skill_type       SkillType     @relation(fields: [skill_type_id], references: [id])
-    skill_type_id    String
+    target           Target              @default(ENEMY)
+    skill_on         SkillOn             @default(INSTANT)
+    skill_types      AssignedSkillType[]
     effects          SkillEffect[]
     items            ItemSkill[]
     units            UnitSkill[]
@@ -127,45 +126,49 @@ model Effect {
 }
 
 model AssignedSkillType {
-    id String @id @default(cuid())
+    id            String    @id @default(cuid())
+    skill_type    SkillType @relation(fields: [skill_type_id], references: [id])
+    skill_type_id String
+    skill         Skill     @relation(fields: [skill_id], references: [id])
+    skill_id      String
 }
 
 model UnitSkill {
-    id        String @id @default(cuid())
-    units     Unit   @relation(fields: [units_id], references: [id])
-    units_id  String
-    skills    Skill  @relation(fields: [skills_id], references: [id])
-    skills_id String
+    id       String @id @default(cuid())
+    unit     Unit   @relation(fields: [unit_id], references: [id])
+    unit_id  String
+    skill    Skill  @relation(fields: [skill_id], references: [id])
+    skill_id String
 }
 
 model UnitItem {
-    id       String @id @default(cuid())
-    units    Unit   @relation(fields: [units_id], references: [id])
-    units_id String
-    items    Item   @relation(fields: [items_id], references: [id])
-    items_id String
+    id      String @id @default(cuid())
+    unit    Unit   @relation(fields: [unit_id], references: [id])
+    unit_id String
+    item    Item   @relation(fields: [item_id], references: [id])
+    item_id String
 }
 
 model ItemSkill {
-    id        String @id @default(cuid())
-    item      Item   @relation(fields: [items_id], references: [id])
-    items_id  String
-    skills    Skill  @relation(fields: [skills_id], references: [id])
-    skills_id String
+    id       String @id @default(cuid())
+    item     Item   @relation(fields: [item_id], references: [id])
+    item_id  String
+    skill    Skill  @relation(fields: [skill_id], references: [id])
+    skill_id String
 }
 
 model UnitTrait {
-    id        String @id @default(cuid())
-    units     Unit   @relation(fields: [units_id], references: [id])
-    units_id  String
-    traits    Trait  @relation(fields: [traits_id], references: [id])
-    traits_id String
+    id       String @id @default(cuid())
+    unit     Unit   @relation(fields: [unit_id], references: [id])
+    unit_id  String
+    trait    Trait  @relation(fields: [trait_id], references: [id])
+    trait_id String
 }
 
 model SkillEffect {
     id        String @id @default(cuid())
-    skill     Skill  @relation(fields: [skills_id], references: [id])
-    skills_id String
+    skill     Skill  @relation(fields: [skill_id], references: [id])
+    skill_id  String
     effect    Effect @relation(fields: [effect_id], references: [id])
     effect_id String
 }
