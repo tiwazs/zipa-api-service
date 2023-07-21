@@ -5,6 +5,8 @@ from ..services.unitService import UnitService
 
 router = APIRouter(prefix="/units", tags=["Units"])
 
+msg_not_found = 'Unit not found'
+
 @router.get("/")
 async def get_units(request: Request, response: Response):
     return await UnitService(request.app.state.db).get_all()
@@ -15,7 +17,7 @@ async def get_units_by_faction_id(id: str, request: Request, response: Response)
         units = await UnitService(request.app.state.db).get_by_faction_id(id)
         if units is None:
             response.status_code = status.HTTP_204_NO_CONTENT
-            return {"error": "Units not found"}
+            return { "error" : msg_not_found }
         
         return units
     except Exception as e:
@@ -28,7 +30,7 @@ async def get_unit_by_id(id: str, request: Request, response: Response):
         unit = await UnitService(request.app.state.db).get_by_id(id)
         if unit is None:
             response.status_code = status.HTTP_204_NO_CONTENT
-            return {"error": "Unit not found"}
+            return { "error" : msg_not_found }
         
         return unit
     except Exception as e:
@@ -49,7 +51,7 @@ async def update_unit(id: str, unit: UnitUpdateDTO, request: Request, response: 
         unit = await UnitService(request.app.state.db).update(id, unit)
         if unit is None:
             response.status_code = status.HTTP_204_NO_CONTENT
-            return {"error": "Unit not found"}
+            return { "error" : msg_not_found }
         
         return unit
     except Exception as e:
@@ -62,7 +64,7 @@ async def delete_unit(id: str, request: Request, response: Response):
         unit = await UnitService(request.app.state.db).delete(id)
         if unit is None:
             response.status_code = status.HTTP_204_NO_CONTENT
-            return {"error": "Unit not found"}
+            return { "error" : msg_not_found }
         
         return unit
     except Exception as e:

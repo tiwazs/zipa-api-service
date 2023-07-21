@@ -5,6 +5,8 @@ from ..services.factionService import FactionService
 
 router = APIRouter(prefix="/factions", tags=["Factions"])
 
+msg_not_found = 'Faction not found'
+
 @router.get("/")
 async def get_factions(request: Request, response: Response):
     return await FactionService(request.app.state.db).get_all()
@@ -15,7 +17,7 @@ async def get_faction_by_id(id: str, request: Request, response: Response):
         faction = await FactionService(request.app.state.db).get_by_id(id)
         if faction is None:
             response.status_code = status.HTTP_204_NO_CONTENT
-            return {"error": "Faction not found"}
+            return { "error" : msg_not_found }
         
         return faction
     except Exception as e:
@@ -36,7 +38,7 @@ async def update_faction(id: str, faction: FactionUpdateDTO, request: Request, r
         faction = await FactionService(request.app.state.db).update(id, faction)
         if faction is None:
             response.status_code = status.HTTP_204_NO_CONTENT
-            return {"error": "Faction not found"}
+            return { "error" : msg_not_found }
         
         return faction
     except Exception as e:
@@ -49,7 +51,7 @@ async def delete_faction(id: str, request: Request, response: Response):
         faction = await FactionService(request.app.state.db).delete(id)
         if faction is None:
             response.status_code = status.HTTP_204_NO_CONTENT
-            return {"error": "Faction not found"}
+            return { "error" : msg_not_found }
         
         return faction
     except Exception as e:
