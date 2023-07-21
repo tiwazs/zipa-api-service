@@ -11,12 +11,14 @@ datasource db {
 }
 
 model Faction {
-    id          String  @id @default(cuid())
+    id          String   @id @default(cuid())
     name        String
     description String
     identity    String?
     aspects     String?
     units       Unit[]
+    created_at  DateTime @default(now())
+    updated_at  DateTime @updatedAt
 }
 
 model Unit {
@@ -42,6 +44,8 @@ model Unit {
     skills      UnitSkill[]
     items       UnitItem[]
     traits      UnitTrait[]
+    created_at  DateTime    @default(now())
+    updated_at  DateTime    @updatedAt
 }
 
 model SkillType {
@@ -49,6 +53,8 @@ model SkillType {
     name        String
     description String
     skills      AssignedSkillType[]
+    created_at  DateTime            @default(now())
+    updated_at  DateTime            @updatedAt
 }
 
 model Skill {
@@ -71,6 +77,8 @@ model Skill {
     effects          SkillEffect[]
     items            ItemSkill[]
     units            UnitSkill[]
+    created_at       DateTime            @default(now())
+    updated_at       DateTime            @updatedAt
 }
 
 enum SkillOn {
@@ -99,6 +107,8 @@ model Trait {
     cooldown    Float
     effects     TraitEffect[]
     units       UnitTrait[]
+    created_at  DateTime      @default(now())
+    updated_at  DateTime      @updatedAt
 }
 
 model Item {
@@ -126,6 +136,8 @@ model Item {
     shield              String?
     skills              ItemSkill[]
     units               UnitItem[]
+    created_at          DateTime    @default(now())
+    updated_at          DateTime    @updatedAt
 }
 
 enum ItemRarity {
@@ -162,6 +174,8 @@ model Effect {
     max_stack           Int
     skills              SkillEffect[]
     traits              TraitEffect[]
+    created_at          DateTime      @default(now())
+    updated_at          DateTime      @updatedAt
 }
 
 model AssignedSkillType {
@@ -170,56 +184,70 @@ model AssignedSkillType {
     skill_id      String
     skill_type    SkillType @relation(fields: [skill_type_id], references: [id])
     skill_type_id String
+    created_at    DateTime  @default(now())
+    updated_at    DateTime  @updatedAt
 }
 
 model UnitSkill {
-    id       String @id @default(cuid())
-    unit     Unit   @relation(fields: [unit_id], references: [id])
-    unit_id  String
-    skill    Skill  @relation(fields: [skill_id], references: [id])
-    skill_id String
+    id         String   @id @default(cuid())
+    unit       Unit     @relation(fields: [unit_id], references: [id])
+    unit_id    String
+    skill      Skill    @relation(fields: [skill_id], references: [id])
+    skill_id   String
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
 }
 
 model UnitItem {
-    id       String @id @default(cuid())
-    unit     Unit   @relation(fields: [unit_id], references: [id])
-    unit_id  String
-    item     Item   @relation(fields: [item_id], references: [id])
-    item_id  String
-    quantity Float
+    id         String   @id @default(cuid())
+    unit       Unit     @relation(fields: [unit_id], references: [id])
+    unit_id    String
+    item       Item     @relation(fields: [item_id], references: [id])
+    item_id    String
+    quantity   Float
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
 }
 
 model ItemSkill {
-    id           String @id @default(cuid())
-    item         Item   @relation(fields: [item_id], references: [id])
+    id           String   @id @default(cuid())
+    item         Item     @relation(fields: [item_id], references: [id])
     item_id      String
-    skill        Skill  @relation(fields: [skill_id], references: [id])
+    skill        Skill    @relation(fields: [skill_id], references: [id])
     skill_id     String
     essence_cost Float
     cooldown     Float
+    created_at   DateTime @default(now())
+    updated_at   DateTime @updatedAt
 }
 
 model UnitTrait {
-    id       String @id @default(cuid())
-    unit     Unit   @relation(fields: [unit_id], references: [id])
-    unit_id  String
-    trait    Trait  @relation(fields: [trait_id], references: [id])
-    trait_id String
+    id         String   @id @default(cuid())
+    unit       Unit     @relation(fields: [unit_id], references: [id])
+    unit_id    String
+    trait      Trait    @relation(fields: [trait_id], references: [id])
+    trait_id   String
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
 }
 
 model SkillEffect {
-    id        String @id @default(cuid())
-    skill     Skill  @relation(fields: [skill_id], references: [id])
-    skill_id  String
-    effect    Effect @relation(fields: [effect_id], references: [id])
-    effect_id String
-    duration  Float
+    id         String   @id @default(cuid())
+    skill      Skill    @relation(fields: [skill_id], references: [id])
+    skill_id   String
+    effect     Effect   @relation(fields: [effect_id], references: [id])
+    effect_id  String
+    duration   Float
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
 }
 
 model TraitEffect {
-    id        String @id @default(cuid())
-    trait     Trait  @relation(fields: [trait_id], references: [id])
-    trait_id  String
-    effect    Effect @relation(fields: [effect_id], references: [id])
-    effect_id String
+    id         String   @id @default(cuid())
+    trait      Trait    @relation(fields: [trait_id], references: [id])
+    trait_id   String
+    effect     Effect   @relation(fields: [effect_id], references: [id])
+    effect_id  String
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
 }
