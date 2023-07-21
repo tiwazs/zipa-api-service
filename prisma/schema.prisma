@@ -79,9 +79,13 @@ enum SkillOn {
 }
 
 enum Target {
+    NONE
     SELF
     ALLY
     ENEMY
+    AROUND
+    POINT
+    AREA
     ALL
 }
 
