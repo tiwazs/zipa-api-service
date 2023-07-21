@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from .configurations.dbinit import database
 from .configurations.information import *
 
-from .controllers import factionsController
+from .controllers import factionController
 
 def create_server():
     # Create the FastAPI app. Setting server information
@@ -16,7 +16,7 @@ def create_server():
     )
 
     # Import Controllers/Routers
-    app.include_router(factionsController.router)
+    app.include_router(factionController.router)
     
 
     # Startup and Shutdown Events

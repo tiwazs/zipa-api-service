@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Response, status
 
 from ..models.factionDTO import FactionCreateDTO, FactionUpdateDTO
-from ..services.factionsService import FactionService
+from ..services.factionService import FactionService
 
 router = APIRouter(prefix="/factions", tags=["Factions"])
 
