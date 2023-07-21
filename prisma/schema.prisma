@@ -35,6 +35,8 @@ model Unit {
     hit_rate    Float
     movement    Float
     ammo        Float
+    shield      Float
+    tier        Int
     faction     Faction     @relation(fields: [faction_id], references: [id])
     faction_id  String
     skills      UnitSkill[]
@@ -60,6 +62,7 @@ model Skill {
     range            Float
     area_of_effect   Float
     essence_cost     Float
+    vitality_cost    Float
     cooldown         Float
     channeled        Boolean
     target           Target              @default(ENEMY)
@@ -102,47 +105,59 @@ model Item {
     id                  String      @id @default(cuid())
     name                String
     description         String
-    rarity              Float
-    magic_effectiveness Float
-    physical_damage     Float
-    magical_damage      Float
-    healing             Float
-    essence_recovery    Float
-    vitality            Float
-    range               Float
-    damage              Float
-    armor               Float
-    magic_armor         Float
-    essence             Float
-    agility             Float
-    hit_chance          Float
-    evasion             Float
-    hit_rate            Float
-    movement            Float
+    rarity              ItemRarity  @default(COMMON)
+    magic_effectiveness String
+    physical_damage     String
+    magical_damage      String
+    healing             String
+    essence_recovery    String
+    vitality            String
+    range               String
+    damage              String
+    armor               String
+    magic_armor         String
+    essence             String
+    agility             String
+    hit_chance          String
+    evasion             String
+    hit_rate            String
+    movement            String
+    ammo                String
+    shield              String
     skills              ItemSkill[]
     units               UnitItem[]
+}
+
+enum ItemRarity {
+    COMMON
+    UNCOMMON
+    RARE
+    EPIC
+    LEGENDARY
 }
 
 model Effect {
     id                  String        @id @default(cuid())
     name                String
     description         String
-    magic_effectiveness Float
-    physical_damage     Float
-    magical_damage      Float
-    healing             Float
-    essence_recovery    Float
-    vitality            Float
-    range               Float
-    damage              Float
-    armor               Float
-    magic_armor         Float
-    essence             Float
-    agility             Float
-    hit_chance          Float
-    evasion             Float
-    hit_rate            Float
-    movement            Float
+    magic_effectiveness String
+    physical_damage     String
+    magical_damage      String
+    healing             String
+    essence_recovery    String
+    vitality            String
+    range               String
+    damage              String
+    armor               String
+    magic_armor         String
+    essence             String
+    agility             String
+    hit_chance          String
+    evasion             String
+    hit_rate            String
+    movement            String
+    ammo                String
+    shield              String
     barrier             Float
     max_stack           Int
     skills              SkillEffect[]
