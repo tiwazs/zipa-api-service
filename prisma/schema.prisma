@@ -11,11 +11,11 @@ datasource db {
 }
 
 model Faction {
-    id          String @id @default(cuid())
+    id          String  @id @default(cuid())
     name        String
     description String
-    identity    String
-    aspects     String
+    identity    String?
+    aspects     String?
     units       Unit[]
 }
 
@@ -55,14 +55,14 @@ model Skill {
     id               String              @id @default(cuid())
     name             String
     description      String
-    physical_damage  Float
-    magical_damage   Float
-    healing          Float
-    essence_recovery Float
-    range            Float
-    area_of_effect   Float
-    essence_cost     Float
-    vitality_cost    Float
+    physical_damage  String?
+    magical_damage   String?
+    healing          String?
+    essence_recovery String?
+    range            String?
+    area_of_effect   String?
+    essence_cost     String?
+    vitality_cost    String?
     cooldown         Float
     channeled        Boolean
     target           Target              @default(ENEMY)
@@ -106,24 +106,24 @@ model Item {
     name                String
     description         String
     rarity              ItemRarity  @default(COMMON)
-    magic_effectiveness String
-    physical_damage     String
-    magical_damage      String
-    healing             String
-    essence_recovery    String
-    vitality            String
-    range               String
-    damage              String
-    armor               String
-    magic_armor         String
-    essence             String
-    agility             String
-    hit_chance          String
-    evasion             String
-    hit_rate            String
-    movement            String
-    ammo                String
-    shield              String
+    magic_effectiveness String?
+    physical_damage     String?
+    magical_damage      String?
+    healing             String?
+    essence_recovery    String?
+    vitality            String?
+    range               String?
+    damage              String?
+    armor               String?
+    magic_armor         String?
+    essence             String?
+    agility             String?
+    hit_chance          String?
+    evasion             String?
+    hit_rate            String?
+    movement            String?
+    ammo                String?
+    shield              String?
     skills              ItemSkill[]
     units               UnitItem[]
 }
@@ -140,25 +140,25 @@ model Effect {
     id                  String        @id @default(cuid())
     name                String
     description         String
-    magic_effectiveness String
-    physical_damage     String
-    magical_damage      String
-    healing             String
-    essence_recovery    String
-    vitality            String
-    range               String
-    damage              String
-    armor               String
-    magic_armor         String
-    essence             String
-    agility             String
-    hit_chance          String
-    evasion             String
-    hit_rate            String
-    movement            String
-    ammo                String
-    shield              String
-    barrier             Float
+    magic_effectiveness String?
+    physical_damage     String?
+    magical_damage      String?
+    healing             String?
+    essence_recovery    String?
+    vitality            String?
+    range               String?
+    damage              String?
+    armor               String?
+    magic_armor         String?
+    essence             String?
+    agility             String?
+    hit_chance          String?
+    evasion             String?
+    hit_rate            String?
+    movement            String?
+    ammo                String?
+    shield              String?
+    barrier             Float?
     max_stack           Int
     skills              SkillEffect[]
     traits              TraitEffect[]
@@ -166,10 +166,10 @@ model Effect {
 
 model AssignedSkillType {
     id            String    @id @default(cuid())
-    skill_type    SkillType @relation(fields: [skill_type_id], references: [id])
-    skill_type_id String
     skill         Skill     @relation(fields: [skill_id], references: [id])
     skill_id      String
+    skill_type    SkillType @relation(fields: [skill_type_id], references: [id])
+    skill_type_id String
 }
 
 model UnitSkill {
