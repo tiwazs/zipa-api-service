@@ -1,7 +1,10 @@
-from app.configurations.information import *
-
 from dotenv import find_dotenv, load_dotenv
 from fastapi import FastAPI
+
+from .configurations.dbinit import database
+from .configurations.information import *
+
+from .controllers import factionsController
 
 def create_server():
     # Create the FastAPI app. Setting server information
@@ -13,15 +16,19 @@ def create_server():
     )
 
     # Import Controllers/Routers
+    app.include_router(factionsController.router)
+    
 
     # Startup and Shutdown Events
     @app.on_event("startup")
     async def startup():
+        app.state.db = database
+        await app.state.db.connect()
         load_dotenv(find_dotenv())
 
     @app.on_event("shutdown")
     async def shutdown():
-        pass
+        await app.state.db.disconnect()
     
     return app
 
