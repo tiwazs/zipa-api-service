@@ -14,5 +14,7 @@ class SkillTypeUpdateDTO(SkillTypeBaseDTO):
 
 class SkillTypeDTO(SkillTypeBaseDTO):
     id: str
+    created_at: str
+    updated_at: str
     class Config:
         orm_mode = True
