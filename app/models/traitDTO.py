@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
 class TraitBaseDTO(BaseModel):
     name: str
@@ -7,12 +7,13 @@ class TraitBaseDTO(BaseModel):
     cooldown: float
 
 class TraitCreateDTO(TraitBaseDTO):
-    pass
+    effect_ids: Optional[List[str]] = None
 
 class TraitUpdateDTO(TraitBaseDTO):
     name: Optional[str]
     description: Optional[str]
     cooldown: Optional[float]
+
 
 class TraitDTO(TraitBaseDTO):
     id: str

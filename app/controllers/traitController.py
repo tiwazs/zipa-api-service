@@ -8,13 +8,19 @@ router = APIRouter(prefix="/traits", tags=["Traits"])
 msg_not_found = 'Trait not found'
 
 @router.get("/")
-async def get_traits(request: Request, response: Response):
-    return await TraitService(request.app.state.db).get_all()
+async def get_traits(request: Request, response: Response, include_effects: bool = True):
+    if include_effects:
+        return await TraitService(request.app.state.db).get_all_ext()
+    else:
+        return await TraitService(request.app.state.db).get_all()
 
 @router.get("/{id}")
-async def get_trait_by_id(id: str, request: Request, response: Response):
+async def get_trait_by_id(id: str, request: Request, response: Response, include_effects: bool = True):
     try:
-        trait = await TraitService(request.app.state.db).get_by_id(id)
+        if include_effects:
+            trait = await TraitService(request.app.state.db).get_by_id_ext(id)
+        else:
+            trait = await TraitService(request.app.state.db).get_by_id(id)
         if trait is None:
             response.status_code = status.HTTP_204_NO_CONTENT
             return { "error" : msg_not_found }

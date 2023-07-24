@@ -14,8 +14,11 @@ class TraitEffectService:
         )
 
     async def create(self, trait_effect: TraitEffectCreateDTO) -> TraitEffectDTO:
+        # Convert DTO to dict if needed
+        data = trait_effect.dict() if isinstance(trait_effect, TraitEffectCreateDTO) else trait_effect
+
         return await self.database.traiteffect.create( 
-            data=trait_effect.dict() 
+            data=data
         )
 
     async def delete(self, id: str) -> TraitEffectDTO:
