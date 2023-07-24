@@ -50,6 +50,29 @@ async def update_trait(id: str, trait: TraitUpdateDTO, request: Request, respons
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"error": str(e)}
+
+@router.put("/add_effect/{id}")
+async def add_effect_to_trait(id: str, effect_id: str, request: Request, response: Response):
+    try:
+        trait = await TraitService(request.app.state.db).add_effect(id, effect_id)
+        if trait is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return trait
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
+@router.put("/remove_effect/{id}")
+async def remove_effect_from_trait(id: str, effect_id: str, request: Request, response: Response):
+        trait = await TraitService(request.app.state.db).remove_effect(id, effect_id)
+        if trait is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return trait
+
     
 @router.delete("/{id}")
 async def delete_trait(id: str, request: Request, response: Response):

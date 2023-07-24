@@ -78,6 +78,25 @@ class TraitService:
             where={"id": id}, 
             data=trait_dict 
         )
+    
+    async def add_effect(self, id: str, effect_id: str) -> TraitDTO:
+        await self.trait_effect_service.create({"trait_id":id, "effect_id":effect_id})
+
+        return await self.database.trait.find_unique( 
+            where={"id": id}, 
+            include={ 
+                "effects": {
+                    "include": {
+                        "effect": True
+                    }
+                }
+            }
+        )
+    
+    async def remove_effect(self, id: str, effect_id: str) -> TraitDTO:
+        await self.trait_effect_service.delete_by_ids(id, effect_id)
+
+        return await self.database.trait.find_unique( where={"id": id} )
 
     async def delete(self, id: str) -> TraitDTO:
         return await self.database.trait.delete(

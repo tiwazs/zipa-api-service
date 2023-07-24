@@ -25,3 +25,13 @@ class TraitEffectService:
         return await self.database.traiteffect.delete(
             where={"id": id}
         )
+    
+    async def delete_by_ids(self, trait_id: str, effect_id: str) -> TraitEffectDTO:
+        tait_effect = await self.database.traiteffect.find_first(
+            where={"trait_id": trait_id, "effect_id": effect_id}
+        )
+
+        if tait_effect:
+            return await self.database.traiteffect.delete(
+                where={"id": tait_effect.id}
+            )
