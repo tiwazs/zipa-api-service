@@ -9,7 +9,9 @@ class SkillEffectBaseDTO(BaseModel):
 class SkillEffectCreateDTO(SkillEffectBaseDTO):
     pass
 
-class SkillEffectUpdateDTO():
+class SkillEffectUpdateDTO(SkillEffectBaseDTO):
+    skill_id: Optional[str]
+    effect_id: Optional[str]
     duration: Optional[float] = None
 
 class SkillEffectDTO(SkillEffectBaseDTO):
