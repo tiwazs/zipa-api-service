@@ -8,13 +8,19 @@ router = APIRouter(prefix="/skills", tags=["Skills"])
 msg_not_found = 'Skill not found'
 
 @router.get("/")
-async def get_skills(request: Request, response: Response):
-    return await SkillService(request.app.state.db).get_all()
+async def get_skills(request: Request, response: Response, include_type: bool = True):
+    if include_type:
+        return await SkillService(request.app.state.db).get_all_ext()
+    else:
+        return await SkillService(request.app.state.db).get_all()
 
 @router.get("/{id}")
-async def get_skill_by_id(id: str, request: Request, response: Response):
+async def get_skill_by_id(id: str, request: Request, response: Response, include_type: bool = True):
     try:
-        skill = await SkillService(request.app.state.db).get_by_id(id)
+        if include_type:
+            skill = await SkillService(request.app.state.db).get_by_id_ext(id)
+        else:
+            skill = await SkillService(request.app.state.db).get_by_id(id)
         if skill is None:
             response.status_code = status.HTTP_204_NO_CONTENT
             return { "error" : msg_not_found }
@@ -44,7 +50,33 @@ async def update_skill(id: str, skill: SkillUpdateDTO, request: Request, respons
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"error": str(e)}
-    
+
+@router.put("/add_type/{id}")
+async def add_type_to_skill(id: str, skill_type_id: str, request: Request, response: Response):
+    try:
+        skill = await SkillService(request.app.state.db).add_type(id, skill_type_id)
+        if skill is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return skill
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
+@router.put("/remove_type/{id}")
+async def remove_type_from_skill(id: str, skill_type_id: str, request: Request, response: Response):
+    try:
+        skill = await SkillService(request.app.state.db).remove_type(id, skill_type_id)
+        if skill is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return skill
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
 @router.delete("/{id}")
 async def delete_skill(id: str, request: Request, response: Response):
     try:

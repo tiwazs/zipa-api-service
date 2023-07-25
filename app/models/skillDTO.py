@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import List, Optional
 
 class SkillBaseDTO(BaseModel):
     name: str
@@ -18,7 +18,7 @@ class SkillBaseDTO(BaseModel):
     skill_on: Optional[str]
 
 class SkillCreateDTO(SkillBaseDTO):
-    pass
+    skill_type_ids: Optional[List[str]] = None
 
 class SkillUpdateDTO(SkillBaseDTO):
     name: Optional[str]
