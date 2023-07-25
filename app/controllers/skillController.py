@@ -67,6 +67,45 @@ async def remove_type_from_skill(id: str, skill_type_id: str, request: Request, 
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"error": str(e)}
+    
+@router.put("/add_effect/{id}")
+async def add_effect_to_skill(id: str, effect_id: str, duration: int, request: Request, response: Response):
+    try:
+        skill = await SkillService(request.app.state.db).add_effect(id, effect_id, duration)
+        if skill is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return skill
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
+@router.put("/remove_effect/{id}")
+async def remove_effect_from_skill(id: str, effect_id: str, request: Request, response: Response):
+    try:
+        skill = await SkillService(request.app.state.db).remove_effect(id, effect_id)
+        if skill is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return skill
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
+@router.put("/update_effect/{id}")
+async def update_effect_from_skill(id: str, effect_id: str, duration: int, request: Request, response: Response):
+    try:
+        skill = await SkillService(request.app.state.db).update_effect(id, effect_id, duration)
+        if skill is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return skill
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
 
 @router.delete("/{id}")
 async def delete_skill(id: str, request: Request, response: Response):

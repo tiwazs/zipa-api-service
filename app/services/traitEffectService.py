@@ -35,3 +35,5 @@ class TraitEffectService:
             return await self.database.traiteffect.delete(
                 where={"id": tait_effect.id}
             )
+        else:
+            return None

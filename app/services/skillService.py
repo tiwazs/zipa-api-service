@@ -132,7 +132,52 @@ class SkillService:
             }
         )
         return skill
+    
+    async def add_effect(self, id: str, skill_effect_id: str, duration: float) -> SkillDTO:
+        await self.skill_effect_service.create({"skill_id":id, "effect_id":skill_effect_id, "duration":duration})
 
+        skill = await self.database.skill.find_unique( 
+            where={"id": id},
+            include={
+                "effects": {
+                    "include": {
+                        "effect": True
+                    }
+                }
+            }
+        )
+        return skill
+    
+    async def remove_effect(self, id: str, skill_effect_id: str) -> SkillDTO:
+        await self.skill_effect_service.delete_by_ids(id, skill_effect_id)
+
+        skill = await self.database.skill.find_unique( 
+            where={"id": id},
+            include={
+                "effects": {
+                    "include": {
+                        "effect": True
+                    }
+                }
+            }
+        )
+        return skill
+    
+    async def update_effect(self, id: str, effect_id: str, duration: float) -> SkillDTO:
+        await self.skill_effect_service.update_skill_effect({"skill_id":id, "effect_id":effect_id, "duration":duration})
+
+        skill = await self.database.skill.find_unique( 
+            where={"id": id},
+            include={
+                "effects": {
+                    "include": {
+                        "effect": True
+                    }
+                }
+            }
+        )
+        return skill
+        
     async def delete(self, id: str) -> SkillDTO:
         return await self.database.skill.delete(
             where={"id": id}
