@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import List, Optional
 
 class ItemBaseDTO(BaseModel):
     name: str
@@ -24,8 +24,12 @@ class ItemBaseDTO(BaseModel):
     ammo: Optional[str]
     shield: Optional[str]
 
+class ItemSkillToCreate(BaseModel):
+    skill_id: str
+    essence_cost: float
+    cooldown: float
 class ItemCreateDTO(ItemBaseDTO):
-    pass
+    skills: Optional[List[ItemSkillToCreate]] = None
 
 class ItemUpdateDTO(ItemBaseDTO):
     name: Optional[str]

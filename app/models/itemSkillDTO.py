@@ -1,22 +1,20 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class ItemBaseDTO(BaseModel):
+class ItemSkillBaseDTO(BaseModel):
     item_id: str
     skill_id: str
     essence_cost: float
     cooldown: float
 
-class ItemCreateDTO(ItemBaseDTO):
+class ItemSkillCreateDTO(ItemSkillBaseDTO):
     pass
 
-class ItemUpdateDTO(ItemBaseDTO):
-    item_id: Optional[str]
-    skill_id: Optional[str]
+class ItemSkillUpdateDTO(ItemSkillBaseDTO):
     essence_cost: Optional[float]
     cooldown: Optional[float]
 
-class ItemDTO(ItemBaseDTO):
+class ItemSkillDTO(ItemSkillBaseDTO):
     id: str
     created_at: str
     updated_at: str
