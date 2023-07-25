@@ -17,7 +17,7 @@ class ItemSkillService:
         item_skill_dict = item_skill.dict() if isinstance(item_skill, ItemSkillUpdateDTO) else item_skill
 
         # Get item_skill Data
-        item_skill_current = await self.database.itemskill.find_unique( 
+        item_skill_current = await self.database.itemskill.find_first( 
             where={"item_id": item_skill_dict['item_id'], "skill_id": item_skill_dict['skill_id']}
         )
         if(not item_skill_current): return None
@@ -29,7 +29,7 @@ class ItemSkillService:
                 item_skill_dict[key] = item_skill_current_dict[key]
         
         return await self.database.itemskill.update( 
-            where={"id": id}, 
+            where={"id": item_skill_current_dict["id"]}, 
             data=item_skill_dict 
         )
     

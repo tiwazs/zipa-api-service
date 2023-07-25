@@ -34,7 +34,7 @@ async def create_item(item: ItemCreateDTO, request: Request, response: Response)
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"error": str(e)}
     
-@router.put("/{id}")
+@router.put("/update/{id}")
 async def update_item(id: str, item: ItemUpdateDTO, request: Request, response: Response):
     try:
         item = await ItemService(request.app.state.db).update(id, item)
@@ -48,7 +48,7 @@ async def update_item(id: str, item: ItemUpdateDTO, request: Request, response: 
         return {"error": str(e)}
 
 @router.put("/add_skill")
-async def add_skill_to_item(item_skill: ItemSkillCreateDTO, request: Request, response: Response):
+async def add_skill_to_item(id: str, item_skill: ItemSkillCreateDTO, request: Request, response: Response):
     try:
         item = await ItemService(request.app.state.db).add_skill(item_skill)
         if item is None:

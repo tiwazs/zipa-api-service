@@ -116,7 +116,7 @@ class ItemService:
         return item
 
     async def update_skill(self, item_skill: ItemSkillCreateDTO) -> ItemDTO:
-        await self.item_skill_service.update_item_skill(item_skill.id, item_skill)
+        await self.item_skill_service.update_item_skill(item_skill)
 
         item = await self.database.item.find_unique( 
             where={"id": item_skill.item_id},
