@@ -1,12 +1,14 @@
 from prisma import Prisma
 from ..models.skillDTO import SkillDTO, SkillUpdateDTO, SkillCreateDTO
 from .assignedSkillTypeService import AssignedSkillTypeService
+from .skillEffectService import SkillEffectService
 from typing import List
 
 class SkillService:
     def __init__(self, database):
         self.database = database
         self.assigned_skill_type_service = AssignedSkillTypeService(database)
+        self.skill_effect_service = SkillEffectService(database)
 
     async def get_all(self, include_type, include_effects) -> List[SkillDTO]:
         return await self.database.skill.find_many(
@@ -42,8 +44,13 @@ class SkillService:
         )
 
     async def create(self, skill: SkillCreateDTO) -> SkillDTO:
+        # Get skill type ids
         skill_type_ids = skill.skill_type_ids.copy() if skill.skill_type_ids else None
         del skill.skill_type_ids
+
+        # Get skill effect ids
+        skill_effects = skill.skill_effect_ids.copy() if skill.skill_effect_ids else None
+        del skill.skill_effect_ids
 
         # Create skill
         skill = await self.database.skill.create( 
@@ -54,13 +61,35 @@ class SkillService:
         try:
             if skill_type_ids:
                 for skill_type_id in skill_type_ids:
-                    print(f'creating skill type {skill_type_id}')
                     await self.assigned_skill_type_service.create({"skill_id":skill.id, "skill_type_id":skill_type_id})
         except Exception as e:
             await self.database.skill.delete(where={"id": skill.id})
             raise e
         
-        return skill
+        # Assign skill effects
+        try:
+            if skill_effects:
+                for skill_effect in skill_effects:
+                    await self.skill_effect_service.create({"skill_id":skill.id, "effect_id":skill_effect.effect_id, "duration":skill_effect.duration })
+        except Exception as e:
+            await self.database.skill.delete(where={"id": skill.id})
+            raise e
+        
+        return await self.database.skill.find_unique( 
+            where={"id": skill.id},
+            include={ 
+                "skill_types": {
+                    "include": {
+                        "skill_type": True
+                    }
+                },
+                "effects": {
+                    "include": {
+                        "effect": True
+                    }
+                }
+            }
+        )
     
     async def update(self, id: str, skill: SkillDTO) -> SkillDTO:
         skill_dict = skill.dict()

@@ -192,9 +192,9 @@ model Effect {
 
 model AssignedSkillType {
     id            String    @id @default(cuid())
-    skill         Skill     @relation(fields: [skill_id], references: [id])
+    skill         Skill     @relation(fields: [skill_id], references: [id], onDelete: Cascade)
     skill_id      String
-    skill_type    SkillType @relation(fields: [skill_type_id], references: [id])
+    skill_type    SkillType @relation(fields: [skill_type_id], references: [id], onDelete: Cascade)
     skill_type_id String
     created_at    DateTime  @default(now())
     updated_at    DateTime  @updatedAt
@@ -245,9 +245,9 @@ model UnitTrait {
 
 model SkillEffect {
     id         String   @id @default(cuid())
-    skill      Skill    @relation(fields: [skill_id], references: [id])
+    skill      Skill    @relation(fields: [skill_id], references: [id], onDelete: Cascade)
     skill_id   String
-    effect     Effect   @relation(fields: [effect_id], references: [id])
+    effect     Effect   @relation(fields: [effect_id], references: [id], onDelete: Cascade)
     effect_id  String
     duration   Float
     created_at DateTime @default(now())

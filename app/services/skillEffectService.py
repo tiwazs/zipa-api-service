@@ -35,8 +35,10 @@ class SkillEffectService:
     
 
     async def create(self, skill_effect: SkillEffectCreateDTO) -> SkillEffectDTO:
+        data = skill_effect.dict() if isinstance(skill_effect, SkillEffectCreateDTO) else skill_effect
+
         return await self.database.skilleffect.create( 
-            data=skill_effect.dict() 
+            data=data
         )
 
     async def delete(self, id: str) -> SkillEffectDTO:

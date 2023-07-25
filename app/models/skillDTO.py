@@ -17,8 +17,14 @@ class SkillBaseDTO(BaseModel):
     target: Optional[str]
     skill_on: Optional[str]
 
+class SkillEffectToCreate(BaseModel):
+    effect_id: str
+    duration: float
+
 class SkillCreateDTO(SkillBaseDTO):
     skill_type_ids: Optional[List[str]] = None
+    skill_effect_ids: Optional[List[SkillEffectToCreate]] = None
+
 
 class SkillUpdateDTO(SkillBaseDTO):
     name: Optional[str]
