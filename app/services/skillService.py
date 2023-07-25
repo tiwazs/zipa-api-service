@@ -8,30 +8,36 @@ class SkillService:
         self.database = database
         self.assigned_skill_type_service = AssignedSkillTypeService(database)
 
-    async def get_all(self) -> List[SkillDTO]:
-        return await self.database.skill.find_many()
-    
-    async def get_all_ext(self) -> List[SkillDTO]:
+    async def get_all(self, include_type, include_effects) -> List[SkillDTO]:
         return await self.database.skill.find_many(
             include={ 
-                "skill_types": {
+                "skill_types": False if not include_type else {
                     "include": {
-                        "skill_type": True
+                        "skill_type": include_type
+                    }
+                },
+                "effects": False if not include_effects else {
+                    "include": {
+                        "effect": include_effects
                     }
                 }
             }
         )
 
-    async def get_by_id(self, id: str) -> SkillDTO:
-        return await self.database.skill.find_unique( 
-            where={"id": id} 
-        )
-    
-    async def get_by_id_ext(self, id: str) -> SkillDTO:
+    async def get_by_id(self, id: str, include_type: bool, include_effects: bool) -> SkillDTO:
         return await self.database.skill.find_unique( 
             where={"id": id},
             include={ 
-                "skill_types": True
+                "skill_types": False if not include_type else {
+                    "include": {
+                        "skill_type": include_type
+                    }
+                },
+                "effects": False if not include_effects else {
+                    "include": {
+                        "effect": include_effects
+                    }
+                }
             }
         )
 

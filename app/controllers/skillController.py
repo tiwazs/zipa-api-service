@@ -8,19 +8,13 @@ router = APIRouter(prefix="/skills", tags=["Skills"])
 msg_not_found = 'Skill not found'
 
 @router.get("/")
-async def get_skills(request: Request, response: Response, include_type: bool = True):
-    if include_type:
-        return await SkillService(request.app.state.db).get_all_ext()
-    else:
-        return await SkillService(request.app.state.db).get_all()
+async def get_skills(request: Request, response: Response, include_type: bool = True, include_effects: bool = True):
+    return await SkillService(request.app.state.db).get_all(include_type, include_effects)
 
 @router.get("/{id}")
-async def get_skill_by_id(id: str, request: Request, response: Response, include_type: bool = True):
+async def get_skill_by_id(id: str, request: Request, response: Response, include_type: bool = True, include_effects: bool = True):
     try:
-        if include_type:
-            skill = await SkillService(request.app.state.db).get_by_id_ext(id)
-        else:
-            skill = await SkillService(request.app.state.db).get_by_id(id)
+        skill = await SkillService(request.app.state.db).get_by_id(id, include_type, include_effects)
         if skill is None:
             response.status_code = status.HTTP_204_NO_CONTENT
             return { "error" : msg_not_found }
