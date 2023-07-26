@@ -71,6 +71,24 @@ class FactionService:
             where={"id": id}, 
             data=faction_dict 
         )
+    
+    async def add_unit(self, id: str, unit_id: str) -> FactionDTO:
+        faction = await self.get_by_id(id, True)
+        if(not faction): return None
+
+        # Assign unit
+        await self.faction_unit_service.create({"faction_id":faction.id, "unit_id":unit_id})
+
+        return await self.get_by_id(faction.id, True)
+    
+    async def remove_unit(self, id: str, unit_id: str) -> FactionDTO:
+        faction = await self.get_by_id(id, True)
+        if(not faction): return None
+
+        # Remove unit
+        await self.faction_unit_service.delete_by_ids(faction.id, unit_id)
+
+        return await self.get_by_id(faction.id, True)
 
     async def delete(self, id: str) -> FactionDTO:
         return await self.database.faction.delete(
