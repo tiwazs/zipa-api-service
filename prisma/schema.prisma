@@ -12,18 +12,18 @@ datasource db {
 }
 
 model Faction {
-    id          String   @id @default(cuid())
+    id          String        @id @default(cuid())
     name        String
     description String
     identity    String?
     aspects     String?
-    units       Unit[]
-    created_at  DateTime @default(now())
-    updated_at  DateTime @updatedAt
+    created_at  DateTime      @default(now())
+    updated_at  DateTime      @updatedAt
+    units       FactionUnit[]
 }
 
 model Unit {
-    id          String      @id @default(cuid())
+    id          String        @id @default(cuid())
     name        String
     description String
     vitality    Float
@@ -40,13 +40,22 @@ model Unit {
     ammo        Float
     shield      Float
     tier        Int
-    faction     Faction     @relation(fields: [faction_id], references: [id])
-    faction_id  String
     skills      UnitSkill[]
     items       UnitItem[]
     traits      UnitTrait[]
-    created_at  DateTime    @default(now())
-    updated_at  DateTime    @updatedAt
+    created_at  DateTime      @default(now())
+    updated_at  DateTime      @updatedAt
+    factions    FactionUnit[]
+}
+
+model FactionUnit {
+    id         String   @id @default(cuid())
+    faction    Faction  @relation(fields: [faction_id], references: [id], onDelete: Cascade)
+    faction_id String
+    unit       Unit     @relation(fields: [unit_id], references: [id], onDelete: Cascade)
+    unit_id    String
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
 }
 
 model SkillType {

@@ -18,7 +18,6 @@ class UnitBaseDTO(BaseModel):
     ammo: float
     shield: float
     tier: int
-    faction_id: str
 
 class UnitItemCreateDTO(BaseModel):
     item_id: str
