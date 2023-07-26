@@ -202,9 +202,9 @@ model AssignedSkillType {
 
 model UnitSkill {
     id         String   @id @default(cuid())
-    unit       Unit     @relation(fields: [unit_id], references: [id])
+    unit       Unit     @relation(fields: [unit_id], references: [id], onDelete: Cascade)
     unit_id    String
-    skill      Skill    @relation(fields: [skill_id], references: [id])
+    skill      Skill    @relation(fields: [skill_id], references: [id], onDelete: Cascade)
     skill_id   String
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
@@ -212,9 +212,9 @@ model UnitSkill {
 
 model UnitItem {
     id         String   @id @default(cuid())
-    unit       Unit     @relation(fields: [unit_id], references: [id])
+    unit       Unit     @relation(fields: [unit_id], references: [id], onDelete: Cascade)
     unit_id    String
-    item       Item     @relation(fields: [item_id], references: [id])
+    item       Item     @relation(fields: [item_id], references: [id], onDelete: Cascade)
     item_id    String
     quantity   Float
     created_at DateTime @default(now())
@@ -223,9 +223,9 @@ model UnitItem {
 
 model ItemSkill {
     id           String   @id @default(cuid())
-    item         Item     @relation(fields: [item_id], references: [id])
+    item         Item     @relation(fields: [item_id], references: [id], onDelete: Cascade)
     item_id      String
-    skill        Skill    @relation(fields: [skill_id], references: [id])
+    skill        Skill    @relation(fields: [skill_id], references: [id], onDelete: Cascade)
     skill_id     String
     essence_cost Float
     cooldown     Float
@@ -235,9 +235,9 @@ model ItemSkill {
 
 model UnitTrait {
     id         String   @id @default(cuid())
-    unit       Unit     @relation(fields: [unit_id], references: [id])
+    unit       Unit     @relation(fields: [unit_id], references: [id], onDelete: Cascade)
     unit_id    String
-    trait      Trait    @relation(fields: [trait_id], references: [id])
+    trait      Trait    @relation(fields: [trait_id], references: [id], onDelete: Cascade)
     trait_id   String
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
@@ -256,9 +256,9 @@ model SkillEffect {
 
 model TraitEffect {
     id         String   @id @default(cuid())
-    trait      Trait    @relation(fields: [trait_id], references: [id])
+    trait      Trait    @relation(fields: [trait_id], references: [id], onDelete: Cascade)
     trait_id   String
-    effect     Effect   @relation(fields: [effect_id], references: [id])
+    effect     Effect   @relation(fields: [effect_id], references: [id], onDelete: Cascade)
     effect_id  String
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt

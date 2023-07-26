@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import List, Optional
 
 class UnitBaseDTO(BaseModel):
     name: str
@@ -20,8 +20,14 @@ class UnitBaseDTO(BaseModel):
     tier: int
     faction_id: str
 
+class UnitItemCreateDTO(BaseModel):
+    item_id: str
+    quantity: int
+
 class UnitCreateDTO(UnitBaseDTO):
-    pass
+    trait_ids: Optional[List[str]] = None
+    skill_ids: Optional[List[str]] = None
+    items: Optional[List[UnitItemCreateDTO]] = None
 
 class UnitUpdateDTO(UnitBaseDTO):
     name: Optional[str] = None

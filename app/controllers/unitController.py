@@ -8,13 +8,13 @@ router = APIRouter(prefix="/units", tags=["Units"])
 msg_not_found = 'Unit not found'
 
 @router.get("/")
-async def get_units(request: Request, response: Response):
-    return await UnitService(request.app.state.db).get_all()
+async def get_units(request: Request, response: Response, include_traits: bool = True, include_skills: bool = True, include_items: bool = True):
+    return await UnitService(request.app.state.db).get_all(include_items, include_skills, include_traits)
 
 @router.get("/faction/{id}")
-async def get_units_by_faction_id(id: str, request: Request, response: Response):
+async def get_units_by_faction_id(id: str, request: Request, response: Response, include_traits: bool = True, include_skills: bool = True, include_items: bool = True):
     try:
-        units = await UnitService(request.app.state.db).get_by_faction_id(id)
+        units = await UnitService(request.app.state.db).get_by_faction_id(id, include_items, include_skills, include_traits)
         if units is None:
             response.status_code = status.HTTP_204_NO_CONTENT
             return { "error" : msg_not_found }
@@ -25,9 +25,9 @@ async def get_units_by_faction_id(id: str, request: Request, response: Response)
         return {"error": str(e)}
 
 @router.get("/{id}")
-async def get_unit_by_id(id: str, request: Request, response: Response):
+async def get_unit_by_id(id: str, request: Request, response: Response, include_traits: bool = True, include_skills: bool = True, include_items: bool = True):
     try:
-        unit = await UnitService(request.app.state.db).get_by_id(id)
+        unit = await UnitService(request.app.state.db).get_by_id(id, include_items, include_skills, include_traits)
         if unit is None:
             response.status_code = status.HTTP_204_NO_CONTENT
             return { "error" : msg_not_found }

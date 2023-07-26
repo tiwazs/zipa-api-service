@@ -35,8 +35,10 @@ class UnitTraitService:
     
 
     async def create(self, unit_trait: UnitTraitCreateDTO) -> UnitTraitDTO:
+        data = unit_trait.dict() if isinstance(unit_trait, UnitTraitCreateDTO) else unit_trait
+
         return await self.database.unittrait.create( 
-            data=unit_trait.dict() 
+            data=data
         )
 
     async def delete(self, id: str) -> UnitTraitDTO:

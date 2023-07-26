@@ -35,8 +35,10 @@ class UnitSkillService:
     
 
     async def create(self, unit_skill: UnitSkillCreateDTO) -> UnitSkillDTO:
+        data = unit_skill.dict() if isinstance(unit_skill, UnitSkillCreateDTO) else unit_skill
+
         return await self.database.unitskill.create( 
-            data=unit_skill.dict() 
+            data=data
         )
 
     async def delete(self, id: str) -> UnitSkillDTO:

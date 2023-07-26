@@ -35,8 +35,10 @@ class UnitItemService:
     
 
     async def create(self, unit_item: UnitItemCreateDTO) -> UnitItemDTO:
+        data = unit_item.dict() if isinstance(unit_item, UnitItemCreateDTO) else unit_item
+
         return await self.database.unititem.create( 
-            data=unit_item.dict() 
+            data=data
         )
 
     async def delete(self, id: str) -> UnitItemDTO:
