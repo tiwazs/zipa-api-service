@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request, Response, status
 
-from ..models.unitDTO import UnitDTO,UnitCreateDTO, UnitUpdateDTO
+from ..models.unitDTO import UnitDTO,UnitCreateDTO, UnitItemCreateDTO, UnitUpdateDTO
 from ..services.unitService import UnitService
 
 router = APIRouter(prefix="/units", tags=["Units"])
@@ -45,10 +45,101 @@ async def create_unit(unit: UnitCreateDTO, request: Request, response: Response)
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"error": str(e)}
     
-@router.put("/{id}")
+@router.put("/update/{id}")
 async def update_unit(id: str, unit: UnitUpdateDTO, request: Request, response: Response):
     try:
         unit = await UnitService(request.app.state.db).update(id, unit)
+        if unit is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return unit
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
+@router.put("/add_trait/{id}")
+async def add_trait_to_unit(id: str, trait_id: str, request: Request, response: Response):
+    try:
+        unit = await UnitService(request.app.state.db).add_trait(id, trait_id)
+        if unit is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return unit
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
+@router.put("/remove_trait/{id}")
+async def remove_trait_from_unit(id: str, trait_id: str, request: Request, response: Response):
+    try:
+        unit = await UnitService(request.app.state.db).remove_trait(id, trait_id)
+        if unit is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return unit
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
+@router.put("/add_skill/{id}")
+async def add_skill_to_unit(id: str, skill_id: str, request: Request, response: Response):
+    try:
+        unit = await UnitService(request.app.state.db).add_skill(id, skill_id)
+        if unit is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return unit
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
+@router.put("/remove_skill/{id}")
+async def remove_skill_from_unit(id: str, skill_id: str, request: Request, response: Response):
+    try:
+        unit = await UnitService(request.app.state.db).remove_skill(id, skill_id)
+        if unit is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return unit
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
+@router.put("/add_item/{id}")
+async def add_item_to_unit(id: str, unit_item: UnitItemCreateDTO, request: Request, response: Response):
+    try:
+        unit = await UnitService(request.app.state.db).add_item(id, unit_item.item_id, unit_item.quantity)
+        if unit is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return unit
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
+@router.put("/remove_item/{id}")
+async def remove_item_from_unit(id: str, item_id: str, request: Request, response: Response):
+    try:
+        unit = await UnitService(request.app.state.db).remove_item(id, item_id)
+        if unit is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return unit
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
+@router.put("/update_item/{id}")
+async def update_item_from_unit(id: str, unit_item: UnitItemCreateDTO, request: Request, response: Response):
+    try:
+        unit = await UnitService(request.app.state.db).update_item(id, unit_item)
         if unit is None:
             response.status_code = status.HTTP_204_NO_CONTENT
             return { "error" : msg_not_found }

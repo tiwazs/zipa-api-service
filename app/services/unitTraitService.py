@@ -45,3 +45,13 @@ class UnitTraitService:
         return await self.database.unittrait.delete(
             where={"id": id}
         )
+    
+    async def delete_by_ids(self, unit_id: str, trait_id: str) -> UnitTraitDTO:
+        unit_trait = await self.database.unittrait.find_first(
+            where={"unit_id": unit_id, "trait_id": trait_id}
+        )
+
+        if unit_trait:
+            return await self.database.unittrait.delete(
+                where={"id": unit_trait.id}
+            )

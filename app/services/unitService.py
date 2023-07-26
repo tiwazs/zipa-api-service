@@ -2,7 +2,7 @@ from prisma import Prisma
 from ..services.unitItemService import UnitItemService
 from ..services.unitSkillService import UnitSkillService
 from ..services.unitTraitService import UnitTraitService
-from ..models.unitDTO import UnitDTO, UnitUpdateDTO, UnitCreateDTO
+from ..models.unitDTO import UnitDTO, UnitItemCreateDTO, UnitUpdateDTO, UnitCreateDTO
 from typing import List
 
 class UnitService:
@@ -160,6 +160,174 @@ class UnitService:
         return await self.database.unit.update( 
             where={"id": id}, 
             data=unit_dict 
+        )
+    
+    async def add_trait(self, id: str, trait_id: str) -> UnitDTO:
+        await self.unit_trait_service.create({"unit_id":id, "trait_id":trait_id})
+
+        return await self.database.unit.find_unique(
+            where={"id": id},
+            include={
+                "traits": {
+                    "include": {
+                        "trait": True
+                    }
+                },
+                "skills": {
+                    "include": {
+                        "skill": True
+                    }
+                },
+                "items": {
+                    "include": {
+                        "item": True
+                    }
+                }
+            }
+        )
+
+    async def remove_trait(self, id: str, trait_id: str) -> UnitDTO:
+        await self.unit_trait_service.delete_by_ids(id, trait_id)
+
+        return await self.database.unit.find_unique(
+            where={"id": id},
+            include={
+                "traits": {
+                    "include": {
+                        "trait": True
+                    }
+                },
+                "skills": {
+                    "include": {
+                        "skill": True
+                    }
+                },
+                "items": {
+                    "include": {
+                        "item": True
+                    }
+                }
+            }
+        )
+    
+    async def add_skill(self, id: str, skill_id: str) -> UnitDTO:
+        await self.unit_skill_service.create({"unit_id":id, "skill_id":skill_id})
+
+        return await self.database.unit.find_unique(
+            where={"id": id},
+            include={
+                "traits": {
+                    "include": {
+                        "trait": True
+                    }
+                },
+                "skills": {
+                    "include": {
+                        "skill": True
+                    }
+                },
+                "items": {
+                    "include": {
+                        "item": True
+                    }
+                }
+            }
+        )
+    
+    async def remove_skill(self, id: str, skill_id: str) -> UnitDTO:
+        await self.unit_skill_service.delete_by_ids(id, skill_id)
+
+        return await self.database.unit.find_unique(
+            where={"id": id},
+            include={
+                "traits": {
+                    "include": {
+                        "trait": True
+                    }
+                },
+                "skills": {
+                    "include": {
+                        "skill": True
+                    }
+                },
+                "items": {
+                    "include": {
+                        "item": True
+                    }
+                }
+            }
+        )
+    
+    async def add_item(self, id: str, item_id: str, quantity: int) -> UnitDTO:
+        await self.unit_item_service.create({"unit_id":id, "item_id":item_id, "quantity":quantity})
+
+        return await self.database.unit.find_unique(
+            where={"id": id},
+            include={
+                "traits": {
+                    "include": {
+                        "trait": True
+                    }
+                },
+                "skills": {
+                    "include": {
+                        "skill": True
+                    }
+                },
+                "items": {
+                    "include": {
+                        "item": True
+                    }
+                }
+            }
+        )
+    
+    async def remove_item(self, id: str, item_id: str) -> UnitDTO:
+        await self.unit_item_service.delete_by_ids(id, item_id)
+
+        return await self.database.unit.find_unique(
+            where={"id": id},
+            include={
+                "traits": {
+                    "include": {
+                        "trait": True
+                    }
+                },
+                "skills": {
+                    "include": {
+                        "skill": True
+                    }
+                },
+                "items": {
+                    "include": {
+                        "item": True
+                    }
+                }
+            }
+        )
+    
+    async def update_item(self, id: str, unit_item: UnitItemCreateDTO) -> UnitDTO:
+        await self.unit_item_service.update({"unit_id": id, "item_id": unit_item.item_id, "quantity": unit_item.quantity})
+
+        return await self.database.unit.find_unique(
+            where={"id": id},
+            include={
+                "traits": {
+                    "include": {
+                        "trait": True
+                    }
+                },
+                "skills": {
+                    "include": {
+                        "skill": True
+                    }
+                },
+                "items": {
+                    "include": {
+                        "item": True
+                    }
+                }
+            }
         )
     
     async def delete(self, id: str) -> UnitDTO:

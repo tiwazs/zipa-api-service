@@ -45,3 +45,13 @@ class UnitSkillService:
         return await self.database.unitskill.delete(
             where={"id": id}
         )
+    
+    async def delete_by_ids(self, unit_id: str, skill_id: str) -> UnitSkillDTO:
+        unit_skill = await self.database.unitskill.find_first(
+            where={"unit_id": unit_id, "skill_id": skill_id}
+        )
+
+        if unit_skill:
+            return await self.database.unitskill.delete(
+                where={"id": unit_skill.id}
+            )
