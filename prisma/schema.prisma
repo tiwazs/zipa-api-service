@@ -68,27 +68,28 @@ model SkillType {
 }
 
 model Skill {
-    id               String              @id @default(cuid())
-    name             String
-    description      String
-    physical_damage  String?
-    magical_damage   String?
-    healing          String?
-    essence_recovery String?
-    range            String?
-    area_of_effect   String?
-    essence_cost     String?
-    vitality_cost    String?
-    cooldown         Float
-    channeled        Boolean
-    target           Target              @default(ENEMY)
-    skill_on         SkillOn             @default(INSTANT)
-    skill_types      AssignedSkillType[]
-    effects          SkillEffect[]
-    items            ItemSkill[]
-    units            UnitSkill[]
-    created_at       DateTime            @default(now())
-    updated_at       DateTime            @updatedAt
+    id                String              @id @default(cuid())
+    name              String
+    description       String
+    physical_damage   String?
+    magical_damage    String?
+    healing           String?
+    vitality_recovery String?
+    essence_recovery  String?
+    range             String?
+    area_of_effect    String?
+    essence_cost      String?
+    vitality_cost     String?
+    cooldown          Float               @default(0)
+    channeled         Boolean             @default(false)
+    target            Target              @default(ENEMY)
+    skill_on          SkillOn             @default(INSTANT)
+    skill_types       AssignedSkillType[]
+    effects           SkillEffect[]
+    items             ItemSkill[]
+    units             UnitSkill[]
+    created_at        DateTime            @default(now())
+    updated_at        DateTime            @updatedAt
 }
 
 enum SkillOn {
@@ -141,6 +142,7 @@ model Item {
     physical_damage     String?
     magical_damage      String?
     healing             String?
+    vitality_recovery   String?
     essence_recovery    String?
     vitality            String?
     range               String?
@@ -177,6 +179,7 @@ model Effect {
     physical_damage     String?
     magical_damage      String?
     healing             String?
+    vitality_recovery   String?
     essence_recovery    String?
     vitality            String?
     range               String?
@@ -192,7 +195,7 @@ model Effect {
     ammo                String?
     shield              String?
     barrier             Float?
-    max_stack           Int
+    max_stack           Int?          @default(1)
     skills              SkillEffect[]
     traits              TraitEffect[]
     created_at          DateTime      @default(now())

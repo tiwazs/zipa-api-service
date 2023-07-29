@@ -7,13 +7,14 @@ class SkillBaseDTO(BaseModel):
     physical_damage: Optional[str]
     magical_damage: Optional[str]
     healing: Optional[str]
+    vitality_recovery: Optional[str]
     essence_recovery: Optional[str]
     range: Optional[str]
     area_of_effect: Optional[str]
     essence_cost: Optional[str]
     vitality_cost: Optional[str]
-    cooldown: float
-    channeled: bool
+    cooldown: Optional[float]
+    channeled: Optional[bool]
     target: Optional[str]
     skill_on: Optional[str]
 

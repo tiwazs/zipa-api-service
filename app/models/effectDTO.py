@@ -8,6 +8,7 @@ class EffectBaseDTO(BaseModel):
     physical_damage: Optional[str]
     magical_damage: Optional[str]
     healing: Optional[str]
+    vitality_recovery: Optional[str]
     essence_recovery: Optional[str]
     vitality: Optional[str]
     range: Optional[str]
@@ -22,8 +23,8 @@ class EffectBaseDTO(BaseModel):
     movement: Optional[str]
     ammo: Optional[str]
     shield: Optional[str]
-    barrier: float
-    max_stack: int
+    barrier: Optional[float]
+    max_stack: Optional[int]
 
 class EffectCreateDTO(EffectBaseDTO):
     pass

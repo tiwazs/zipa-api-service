@@ -9,6 +9,7 @@ class ItemBaseDTO(BaseModel):
     physical_damage: Optional[str]
     magical_damage: Optional[str]
     healing: Optional[str]
+    vitality_recovery: Optional[str]
     essence_recovery: Optional[str]
     vitality: Optional[str]
     range: Optional[str]
