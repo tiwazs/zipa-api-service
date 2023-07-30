@@ -1,5 +1,6 @@
 from dotenv import find_dotenv, load_dotenv
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from .configurations.dbinit import database
 from .configurations.information import *
@@ -23,6 +24,20 @@ def create_server():
     app.include_router(traitController.router)
     app.include_router(itemController.router)
     app.include_router(effectController.router)
+
+    # Origins
+    origins = [
+        "*",
+    ]
+
+    # Cors
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
     # Startup and Shutdown Events
     @app.on_event("startup")
