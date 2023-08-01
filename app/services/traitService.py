@@ -71,7 +71,7 @@ class TraitService:
 
         # If incomming data is empty, use current data
         for key in trait_dict:
-            if trait_dict[key] is None:
+            if trait_dict[key] is None or trait_dict[key] == "":
                 trait_dict[key] = trait_current_dict[key]
         
         return await self.database.trait.update( 

@@ -103,7 +103,7 @@ class SkillService:
 
         # If incomming data is empty, use current data
         for key in skill_dict:
-            if skill_dict[key] is None:
+            if skill_dict[key] is None or skill_dict[key] == "":
                 skill_dict[key] = skill_current_dict[key]
         
         return await self.database.skill.update( 

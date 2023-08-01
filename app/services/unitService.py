@@ -154,7 +154,7 @@ class UnitService:
 
         # If incomming data is empty, use current data
         for key in unit_dict:
-            if unit_dict[key] is None:
+            if unit_dict[key] is None or unit_dict[key] == "":
                 unit_dict[key] = unit_current_dict[key]
         
         return await self.database.unit.update( 

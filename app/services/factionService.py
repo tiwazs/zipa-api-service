@@ -64,7 +64,7 @@ class FactionService:
 
         # If incomming data is empty, use current data
         for key in faction_dict:
-            if faction_dict[key] is None:
+            if faction_dict[key] is None or faction_dict[key] == "":
                 faction_dict[key] = faction_current_dict[key]
         
         return await self.database.faction.update( 

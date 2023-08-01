@@ -31,7 +31,7 @@ class EffectService:
 
         # If incomming data is empty, use current data
         for key in effect_dict:
-            if effect_dict[key] is None:
+            if effect_dict[key] is None or effect_dict[key] == "":
                 effect_dict[key] = effect_current_dict[key]
         
         return await self.database.effect.update( 
