@@ -2,6 +2,7 @@ from prisma import Prisma
 from ..models.skillDTO import SkillDTO, SkillUpdateDTO, SkillCreateDTO
 from .assignedSkillTypeService import AssignedSkillTypeService
 from .skillEffectService import SkillEffectService
+from .skillSummonService import SkillSummonService
 from typing import List
 
 class SkillService:
@@ -9,8 +10,9 @@ class SkillService:
         self.database = database
         self.assigned_skill_type_service = AssignedSkillTypeService(database)
         self.skill_effect_service = SkillEffectService(database)
+        self.skill_summon_service = SkillSummonService(database)
 
-    async def get_all(self, include_type, include_effects) -> List[SkillDTO]:
+    async def get_all(self, include_type, include_effects, include_summons) -> List[SkillDTO]:
         return await self.database.skill.find_many(
             include={ 
                 "skill_types": False if not include_type else {
@@ -22,11 +24,16 @@ class SkillService:
                     "include": {
                         "effect": include_effects
                     }
+                },
+                "summons": False if not include_summons else {
+                    "include": {
+                        "unit": include_summons
+                    }
                 }
             }
         )
 
-    async def get_by_id(self, id: str, include_type: bool, include_effects: bool) -> SkillDTO:
+    async def get_by_id(self, id: str, include_type: bool, include_effects: bool, include_summons: bool) -> SkillDTO:
         return await self.database.skill.find_unique( 
             where={"id": id},
             include={ 
@@ -38,6 +45,11 @@ class SkillService:
                 "effects": False if not include_effects else {
                     "include": {
                         "effect": include_effects
+                    }
+                },
+                "summons": False if not include_summons else {
+                    "include": {
+                        "unit": include_summons
                     }
                 }
             }
@@ -86,6 +98,11 @@ class SkillService:
                 "effects": {
                     "include": {
                         "effect": True
+                    }
+                },
+                "summons": {
+                    "include": {
+                        "unit": True
                     }
                 }
             }
@@ -172,6 +189,51 @@ class SkillService:
                 "effects": {
                     "include": {
                         "effect": True
+                    }
+                }
+            }
+        )
+        return skill
+
+    async def add_summon(self, id: str, skill_summon_id: str, duration: float) -> SkillDTO:
+        await self.skill_summon_service.create({"skill_id":id, "unit_id":skill_summon_id, "duration":duration})
+
+        skill = await self.database.skill.find_unique( 
+            where={"id": id},
+            include={
+                "summons": {
+                    "include": {
+                        "unit": True
+                    }
+                }
+            }
+        )
+        return skill
+    
+    async def remove_summon(self, id: str, skill_summon_id: str) -> SkillDTO:
+        await self.skill_summon_service.delete_by_ids(id, skill_summon_id)
+
+        skill = await self.database.skill.find_unique( 
+            where={"id": id},
+            include={
+                "summons": {
+                    "include": {
+                        "unit": True
+                    }
+                }
+            }
+        )
+        return skill
+    
+    async def update_summon(self, id: str, summon_id: str, duration: float) -> SkillDTO:
+        await self.skill_summon_service.update_skill_summon({"skill_id":id, "unit_id":summon_id, "duration":duration})
+
+        skill = await self.database.skill.find_unique( 
+            where={"id": id},
+            include={
+                "summons": {
+                    "include": {
+                        "unit": True
                     }
                 }
             }
