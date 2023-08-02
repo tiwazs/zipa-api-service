@@ -4,6 +4,7 @@ from typing import List, Optional
 class SkillBaseDTO(BaseModel):
     name: str
     description: str
+    conditions: Optional[str]
     physical_damage: Optional[str]
     magical_damage: Optional[str]
     healing: Optional[str]
@@ -30,6 +31,7 @@ class SkillCreateDTO(SkillBaseDTO):
 class SkillUpdateDTO(SkillBaseDTO):
     name: Optional[str]
     description: Optional[str]
+    conditions: Optional[str]
     physical_damage: Optional[str]
     magical_damage: Optional[str]
     healing: Optional[str]

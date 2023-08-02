@@ -71,6 +71,7 @@ model Skill {
     id                String              @id @default(cuid())
     name              String
     description       String
+    conditions        String?
     physical_damage   String?
     magical_damage    String?
     healing           String?
@@ -126,7 +127,8 @@ model Trait {
     id          String        @id @default(cuid())
     name        String
     description String
-    cooldown    Float
+    conditions  String?
+    cooldown    Float         @default(0)
     effects     TraitEffect[]
     units       UnitTrait[]
     created_at  DateTime      @default(now())
@@ -137,6 +139,7 @@ model Item {
     id                  String      @id @default(cuid())
     name                String
     description         String
+    conditions          String?
     rarity              ItemRarity  @default(COMMON)
     magic_effectiveness String?
     physical_damage     String?
@@ -175,6 +178,7 @@ model Effect {
     id                  String        @id @default(cuid())
     name                String
     description         String
+    conditions          String?
     magic_effectiveness String?
     physical_damage     String?
     magical_damage      String?
@@ -240,7 +244,7 @@ model ItemSkill {
     skill        Skill    @relation(fields: [skill_id], references: [id], onDelete: Cascade)
     skill_id     String
     essence_cost Float
-    cooldown     Float
+    cooldown     Float    @default(0)
     created_at   DateTime @default(now())
     updated_at   DateTime @updatedAt
 }

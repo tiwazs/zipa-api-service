@@ -4,6 +4,7 @@ from typing import List, Optional
 class ItemBaseDTO(BaseModel):
     name: str
     description: str
+    conditions: Optional[str]
     rarity: Optional[str]
     magic_effectiveness: Optional[str]
     physical_damage: Optional[str]
@@ -35,6 +36,7 @@ class ItemCreateDTO(ItemBaseDTO):
 class ItemUpdateDTO(ItemBaseDTO):
     name: Optional[str]
     description: Optional[str]
+    conditions: Optional[str]
     rarity: Optional[str]
     magic_effectiveness: Optional[str]
     physical_damage: Optional[str]

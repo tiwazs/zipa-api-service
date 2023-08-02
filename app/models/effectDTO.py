@@ -4,6 +4,7 @@ from typing import Optional
 class EffectBaseDTO(BaseModel):
     name: str
     description: str
+    conditions: Optional[str]
     magic_effectiveness: Optional[str]
     physical_damage: Optional[str]
     magical_damage: Optional[str]
@@ -32,6 +33,7 @@ class EffectCreateDTO(EffectBaseDTO):
 class EffectUpdateDTO(EffectBaseDTO):
     name: Optional[str]
     description: Optional[str]
+    conditions: Optional[str]
     magic_effectiveness: Optional[str]
     physical_damage: Optional[str]
     magical_damage: Optional[str]
