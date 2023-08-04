@@ -77,7 +77,7 @@ class ItemService:
 
         # If incomming data is empty, use current data
         for key in item_dict:
-            if item_dict[key] is None :
+            if item_dict[key] is None or item_dict[key] == "":
                 item_dict[key] = item_current_dict[key]
         
         return await self.database.item.update( 
