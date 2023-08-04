@@ -14,7 +14,7 @@ datasource db {
 model Faction {
     id          String        @id @default(cuid())
     name        String
-    description String
+    description String        @db.Text
     identity    String?
     aspects     String?
     created_at  DateTime      @default(now())
@@ -25,7 +25,7 @@ model Faction {
 model Unit {
     id            String        @id @default(cuid())
     name          String
-    description   String
+    description   String        @db.Text
     vitality      Float
     range         Float
     damage        Float
@@ -62,7 +62,7 @@ model FactionUnit {
 model SkillType {
     id          String              @id @default(cuid())
     name        String
-    description String
+    description String              @db.Text
     skills      AssignedSkillType[]
     created_at  DateTime            @default(now())
     updated_at  DateTime            @updatedAt
@@ -71,7 +71,7 @@ model SkillType {
 model Skill {
     id                String              @id @default(cuid())
     name              String
-    description       String
+    description       String              @db.Text
     conditions        String?
     physical_damage   String?
     magical_damage    String?
@@ -128,7 +128,7 @@ enum Target {
 model Trait {
     id          String        @id @default(cuid())
     name        String
-    description String
+    description String        @db.Text
     conditions  String?
     cooldown    Float         @default(0)
     effects     TraitEffect[]
@@ -140,7 +140,7 @@ model Trait {
 model Item {
     id                  String      @id @default(cuid())
     name                String
-    description         String
+    description         String      @db.Text
     conditions          String?
     rarity              ItemRarity  @default(COMMON)
     magic_effectiveness String?
@@ -179,7 +179,7 @@ enum ItemRarity {
 model Effect {
     id                  String        @id @default(cuid())
     name                String
-    description         String
+    description         String        @db.Text
     conditions          String?
     magic_effectiveness String?
     physical_damage     String?
