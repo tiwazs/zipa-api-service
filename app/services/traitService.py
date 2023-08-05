@@ -1,6 +1,7 @@
 from prisma import Prisma
 from .traitEffectService import TraitEffectService
 from ..models.traitDTO import TraitDTO, TraitUpdateDTO, TraitCreateDTO
+from ..models.traitEffectDTO import TraitEffectCreateDTO
 from typing import List
 
 class TraitService:
@@ -79,11 +80,11 @@ class TraitService:
             data=trait_dict 
         )
     
-    async def add_effect(self, id: str, effect_id: str) -> TraitDTO:
-        await self.trait_effect_service.create({"trait_id":id, "effect_id":effect_id})
+    async def add_effect(self, trait_effect: TraitEffectCreateDTO) -> TraitDTO:
+        await self.trait_effect_service.create(trait_effect)
 
         return await self.database.trait.find_unique( 
-            where={"id": id}, 
+            where={"id": trait_effect.trait_id}, 
             include={ 
                 "effects": {
                     "include": {

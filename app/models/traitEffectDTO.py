@@ -4,6 +4,9 @@ from typing import Optional
 class TraitEffectBaseDTO(BaseModel):
     trait_id: str
     effect_id: str
+    conditions: Optional[str]
+    duration: Optional[float]
+    cooldown: Optional[float]
 
 class TraitEffectCreateDTO(TraitEffectBaseDTO):
     pass

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Request, Response, status
 
 from ..models.traitDTO import TraitDTO, TraitUpdateDTO, TraitCreateDTO
+from ..models.traitEffectDTO import TraitEffectCreateDTO
 from ..services.traitService import TraitService
 
 router = APIRouter(prefix="/traits", tags=["Traits"])
@@ -38,7 +39,7 @@ async def create_trait(trait: TraitCreateDTO, request: Request, response: Respon
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"error": str(e)}
     
-@router.put("/{id}")
+@router.put("/update/{id}")
 async def update_trait(id: str, trait: TraitUpdateDTO, request: Request, response: Response):
     try:
         trait = await TraitService(request.app.state.db).update(id, trait)
@@ -51,10 +52,10 @@ async def update_trait(id: str, trait: TraitUpdateDTO, request: Request, respons
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"error": str(e)}
 
-@router.put("/add_effect/{id}")
-async def add_effect_to_trait(id: str, effect_id: str, request: Request, response: Response):
+@router.put("/add_effect")
+async def add_effect_to_trait(trait_effect: TraitEffectCreateDTO, request: Request, response: Response):
     try:
-        trait = await TraitService(request.app.state.db).add_effect(id, effect_id)
+        trait = await TraitService(request.app.state.db).add_effect(trait_effect)
         if trait is None:
             response.status_code = status.HTTP_204_NO_CONTENT
             return { "error" : msg_not_found }

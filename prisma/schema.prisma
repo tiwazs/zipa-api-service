@@ -129,8 +129,6 @@ model Trait {
     id          String        @id @default(cuid())
     name        String
     description String        @db.Text
-    conditions  String?
-    cooldown    Float         @default(0)
     effects     TraitEffect[]
     units       UnitTrait[]
     created_at  DateTime      @default(now())
@@ -267,7 +265,7 @@ model SkillEffect {
     skill_id   String
     effect     Effect   @relation(fields: [effect_id], references: [id], onDelete: Cascade)
     effect_id  String
-    duration   Float
+    duration   Float    @default(1)
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 }
@@ -278,6 +276,9 @@ model TraitEffect {
     trait_id   String
     effect     Effect   @relation(fields: [effect_id], references: [id], onDelete: Cascade)
     effect_id  String
+    conditions String?
+    duration   Float    @default(1)
+    cooldown   Float    @default(0)
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 }
@@ -288,7 +289,7 @@ model SkillSummon {
     skill_id   String
     unit       Unit     @relation(fields: [unit_id], references: [id], onDelete: Cascade)
     unit_id    String
-    duration   Float
+    duration   Float    @default(1)
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 }
