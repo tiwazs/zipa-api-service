@@ -18,7 +18,7 @@ class SkillSummonService:
 
         # Get skill_summon Data
         skill_summon_current = await self.database.skillsummon.find_first( 
-            where={"skill_id": skill_summon_dict['skill_id'], "unit_id": skill_summon_dict['unit_id']} 
+            where={"skill_id": skill_summon_dict['skill_id'], "unit_specialization_id": skill_summon_dict['unit_specialization_id']} 
         )
         if(not skill_summon_current): return None
         skill_summon_current_dict = skill_summon_current.dict()
@@ -48,7 +48,7 @@ class SkillSummonService:
     
     async def delete_by_ids(self, skill_id: str, summon_id: str) -> SkillSummonDTO:
         skill_summon = await self.database.skillsummon.find_first(
-            where={"skill_id": skill_id, "unit_id": summon_id}
+            where={"skill_id": skill_id, "unit_specialization_id": summon_id}
         )
 
         if skill_summon:

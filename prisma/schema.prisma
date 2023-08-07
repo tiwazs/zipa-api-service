@@ -12,23 +12,26 @@ datasource db {
 }
 
 model Faction {
-    id          String        @id @default(cuid())
-    name        String
-    description String        @db.Text
-    identity    String?
-    aspects     String?
-    created_at  DateTime      @default(now())
-    updated_at  DateTime      @updatedAt
-    units       FactionUnit[]
+    id                   String                      @id @default(cuid())
+    name                 String
+    description          String                      @db.Text
+    identity             String?
+    aspects              String?
+    created_at           DateTime                    @default(now())
+    updated_at           DateTime                    @updatedAt
+    unit_specializations FactionUnitSpecialization[]
 }
 
-model Unit {
-    id            String        @id @default(cuid())
+model UnitSpecialization {
+    id            String                      @id @default(cuid())
     name          String
-    description   String        @db.Text
+    description   String                      @db.Text
     vitality      Float
     range         Float
-    damage        Float
+    strength      Float
+    dexterity     Float
+    mind          Float
+    faith         Float
     armor         Float
     magic_armor   Float
     essence       Float
@@ -40,23 +43,23 @@ model Unit {
     ammo          Float
     shield        Float
     tier          Int
-    skills        UnitSkill[]
-    items         UnitItem[]
-    traits        UnitTrait[]
-    created_at    DateTime      @default(now())
-    updated_at    DateTime      @updatedAt
-    factions      FactionUnit[]
+    skills        UnitSpecializationSkill[]
+    items         UnitSpecializationItem[]
+    traits        UnitSpecializationTrait[]
+    created_at    DateTime                    @default(now())
+    updated_at    DateTime                    @updatedAt
+    factions      FactionUnitSpecialization[]
     skills_summon SkillSummon[]
 }
 
-model FactionUnit {
-    id         String   @id @default(cuid())
-    faction    Faction  @relation(fields: [faction_id], references: [id], onDelete: Cascade)
-    faction_id String
-    unit       Unit     @relation(fields: [unit_id], references: [id], onDelete: Cascade)
-    unit_id    String
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt
+model FactionUnitSpecialization {
+    id                     String             @id @default(cuid())
+    faction                Faction            @relation(fields: [faction_id], references: [id], onDelete: Cascade)
+    faction_id             String
+    unit_specialization    UnitSpecialization @relation(fields: [unit_specialization_id], references: [id], onDelete: Cascade)
+    unit_specialization_id String
+    created_at             DateTime           @default(now())
+    updated_at             DateTime           @updatedAt
 }
 
 model SkillType {
@@ -69,30 +72,30 @@ model SkillType {
 }
 
 model Skill {
-    id                String              @id @default(cuid())
-    name              String
-    description       String              @db.Text
-    conditions        String?
-    physical_damage   String?
-    magical_damage    String?
-    healing           String?
-    vitality_recovery String?
-    essence_recovery  String?
-    range             String?
-    area_of_effect    String?
-    essence_cost      String?
-    vitality_cost     String?
-    cooldown          Float               @default(0)
-    channeled         Boolean             @default(false)
-    target            Target              @default(ENEMY)
-    skill_on          SkillOn             @default(INSTANT)
-    skill_types       AssignedSkillType[]
-    effects           SkillEffect[]
-    items             ItemSkill[]
-    units             UnitSkill[]
-    summons           SkillSummon[]
-    created_at        DateTime            @default(now())
-    updated_at        DateTime            @updatedAt
+    id                   String                    @id @default(cuid())
+    name                 String
+    description          String                    @db.Text
+    conditions           String?
+    physical_damage      String?
+    magical_damage       String?
+    healing              String?
+    vitality_recovery    String?
+    essence_recovery     String?
+    range                String?
+    area_of_effect       String?
+    essence_cost         String?
+    vitality_cost        String?
+    cooldown             Float                     @default(0)
+    channeled            Boolean                   @default(false)
+    target               Target                    @default(ENEMY)
+    skill_on             SkillOn                   @default(INSTANT)
+    skill_types          AssignedSkillType[]
+    effects              SkillEffect[]
+    items                ItemSkill[]
+    unit_specializations UnitSpecializationSkill[]
+    summons              SkillSummon[]
+    created_at           DateTime                  @default(now())
+    updated_at           DateTime                  @updatedAt
 }
 
 enum SkillOn {
@@ -126,44 +129,49 @@ enum Target {
 }
 
 model Trait {
-    id          String        @id @default(cuid())
-    name        String
-    description String        @db.Text
-    effects     TraitEffect[]
-    units       UnitTrait[]
-    created_at  DateTime      @default(now())
-    updated_at  DateTime      @updatedAt
+    id                   String                    @id @default(cuid())
+    name                 String
+    description          String                    @db.Text
+    effects              TraitEffect[]
+    unit_specializations UnitSpecializationTrait[]
+    created_at           DateTime                  @default(now())
+    updated_at           DateTime                  @updatedAt
 }
 
 model Item {
-    id                  String      @id @default(cuid())
-    name                String
-    description         String      @db.Text
-    conditions          String?
-    rarity              ItemRarity  @default(COMMON)
-    magic_effectiveness String?
-    physical_damage     String?
-    magical_damage      String?
-    healing             String?
-    vitality_recovery   String?
-    essence_recovery    String?
-    vitality            String?
-    range               String?
-    damage              String?
-    armor               String?
-    magic_armor         String?
-    essence             String?
-    agility             String?
-    hit_chance          String?
-    evasion             String?
-    hit_rate            String?
-    movement            String?
-    ammo                String?
-    shield              String?
-    skills              ItemSkill[]
-    units               UnitItem[]
-    created_at          DateTime    @default(now())
-    updated_at          DateTime    @updatedAt
+    id                    String                   @id @default(cuid())
+    name                  String
+    description           String                   @db.Text
+    conditions            String?
+    rarity                ItemRarity               @default(COMMON)
+    magic_effectiveness   String?
+    physical_damage       String?
+    magical_damage        String?
+    healing               String?
+    vitality_recovery     String?
+    essence_recovery      String?
+    vitality              String?
+    range                 String?
+    damage                String?
+    armor                 String?
+    magic_armor           String?
+    essence               String?
+    agility               String?
+    hit_chance            String?
+    evasion               String?
+    hit_rate              String?
+    movement              String?
+    ammo                  String?
+    shield                String?
+    dexterity_requirement Float                    @default(0)
+    strength_requirement  Float                    @default(0)
+    mind_requirement      Float                    @default(0)
+    faith_requirement     Float                    @default(0)
+    weight                Float                    @default(0)
+    skills                ItemSkill[]
+    unit_specializations  UnitSpecializationItem[]
+    created_at            DateTime                 @default(now())
+    updated_at            DateTime                 @updatedAt
 }
 
 enum ItemRarity {
@@ -216,25 +224,25 @@ model AssignedSkillType {
     updated_at    DateTime  @updatedAt
 }
 
-model UnitSkill {
-    id         String   @id @default(cuid())
-    unit       Unit     @relation(fields: [unit_id], references: [id], onDelete: Cascade)
-    unit_id    String
-    skill      Skill    @relation(fields: [skill_id], references: [id], onDelete: Cascade)
-    skill_id   String
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt
+model UnitSpecializationSkill {
+    id                     String             @id @default(cuid())
+    unit_specialization    UnitSpecialization @relation(fields: [unit_specialization_id], references: [id], onDelete: Cascade)
+    unit_specialization_id String
+    skill                  Skill              @relation(fields: [skill_id], references: [id], onDelete: Cascade)
+    skill_id               String
+    created_at             DateTime           @default(now())
+    updated_at             DateTime           @updatedAt
 }
 
-model UnitItem {
-    id         String   @id @default(cuid())
-    unit       Unit     @relation(fields: [unit_id], references: [id], onDelete: Cascade)
-    unit_id    String
-    item       Item     @relation(fields: [item_id], references: [id], onDelete: Cascade)
-    item_id    String
-    quantity   Float
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt
+model UnitSpecializationItem {
+    id                     String             @id @default(cuid())
+    unit_specialization    UnitSpecialization @relation(fields: [unit_specialization_id], references: [id], onDelete: Cascade)
+    unit_specialization_id String
+    item                   Item               @relation(fields: [item_id], references: [id], onDelete: Cascade)
+    item_id                String
+    quantity               Float
+    created_at             DateTime           @default(now())
+    updated_at             DateTime           @updatedAt
 }
 
 model ItemSkill {
@@ -249,14 +257,14 @@ model ItemSkill {
     updated_at   DateTime @updatedAt
 }
 
-model UnitTrait {
-    id         String   @id @default(cuid())
-    unit       Unit     @relation(fields: [unit_id], references: [id], onDelete: Cascade)
-    unit_id    String
-    trait      Trait    @relation(fields: [trait_id], references: [id], onDelete: Cascade)
-    trait_id   String
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt
+model UnitSpecializationTrait {
+    id                     String             @id @default(cuid())
+    unit_specialization    UnitSpecialization @relation(fields: [unit_specialization_id], references: [id], onDelete: Cascade)
+    unit_specialization_id String
+    trait                  Trait              @relation(fields: [trait_id], references: [id], onDelete: Cascade)
+    trait_id               String
+    created_at             DateTime           @default(now())
+    updated_at             DateTime           @updatedAt
 }
 
 model SkillEffect {
@@ -265,6 +273,7 @@ model SkillEffect {
     skill_id   String
     effect     Effect   @relation(fields: [effect_id], references: [id], onDelete: Cascade)
     effect_id  String
+    conditions String?
     duration   Float    @default(1)
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
@@ -284,12 +293,13 @@ model TraitEffect {
 }
 
 model SkillSummon {
-    id         String   @id @default(cuid())
-    skill      Skill    @relation(fields: [skill_id], references: [id], onDelete: Cascade)
-    skill_id   String
-    unit       Unit     @relation(fields: [unit_id], references: [id], onDelete: Cascade)
-    unit_id    String
-    duration   Float    @default(1)
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt
+    id                     String             @id @default(cuid())
+    skill                  Skill              @relation(fields: [skill_id], references: [id], onDelete: Cascade)
+    skill_id               String
+    unit_specialization    UnitSpecialization @relation(fields: [unit_specialization_id], references: [id], onDelete: Cascade)
+    unit_specialization_id String
+    conditions             String?
+    duration               Float              @default(1)
+    created_at             DateTime           @default(now())
+    updated_at             DateTime           @updatedAt
 }

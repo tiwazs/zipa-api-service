@@ -10,7 +10,7 @@ class FactionBaseDTO(BaseModel):
 
 
 class FactionCreateDTO(FactionBaseDTO):
-    unit_ids: Optional[List[str]] = None
+    unit_specialization_ids: Optional[List[str]] = None
 
 class FactionUpdateDTO(FactionBaseDTO):
     name: Optional[str] = None

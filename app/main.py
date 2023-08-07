@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .configurations.dbinit import database
 from .configurations.information import *
 
-from .controllers import factionController, unitController, skillTypeController, skillController, traitController, itemController, effectController
+from .controllers import factionController, skillTypeController, skillController, traitController, itemController, effectController, unitSpecializationController
 
 def create_server():
     # Create the FastAPI app. Setting server information
@@ -18,7 +18,7 @@ def create_server():
 
     # Import Controllers/Routers
     app.include_router(factionController.router)
-    app.include_router(unitController.router)
+    app.include_router(unitSpecializationController.router)
     app.include_router(skillTypeController.router)
     app.include_router(skillController.router)
     app.include_router(traitController.router)

@@ -1,19 +1,19 @@
 from prisma import Prisma
-from ..services.unitItemService import UnitItemService
-from ..services.unitSkillService import UnitSkillService
-from ..services.unitTraitService import UnitTraitService
-from ..models.unitDTO import UnitDTO, UnitItemCreateDTO, UnitUpdateDTO, UnitCreateDTO
+from .unitSpecializationItemService import UnitSpecializationItemService
+from .unitSpecializationSkillService import UnitSpecializationSkillService
+from .unitSpecializationTraitService import UnitSpecializationTraitService
+from ..models.unitSpecializationDTO import UnitSpecializationDTO, UnitSpecializationItemCreateDTO, UnitSpecializationUpdateDTO, UnitSpecializationCreateDTO
 from typing import List
 
-class UnitService:
+class UnitSpecializationService:
     def __init__(self, database):
         self.database = database
-        self.unit_trait_service = UnitTraitService(database)
-        self.unit_skill_service = UnitSkillService(database)
-        self.unit_item_service = UnitItemService(database)
+        self.unit_trait_service = UnitSpecializationTraitService(database)
+        self.unit_skill_service = UnitSpecializationSkillService(database)
+        self.unit_item_service = UnitSpecializationItemService(database)
     
-    async def get_all(self, include_traits, include_skills, include_items) -> List[UnitDTO]:
-        return await self.database.unit.find_many(
+    async def get_all(self, include_traits, include_skills, include_items) -> List[UnitSpecializationDTO]:
+        return await self.database.unitspecialization.find_many(
             include={
                 "traits": False if not include_traits else {
                     "include": {
@@ -33,8 +33,8 @@ class UnitService:
             }
         )
     
-    async def get_by_id(self, id: str, include_traits, include_skills, include_items) -> UnitDTO:
-        return await self.database.unit.find_unique( 
+    async def get_by_id(self, id: str, include_traits, include_skills, include_items) -> UnitSpecializationDTO:
+        return await self.database.unitspecialization.find_unique( 
             where={"id": id},
                         include={
                 "traits": False if not include_traits else {
@@ -55,8 +55,8 @@ class UnitService:
             }
         )
 
-    async def get_by_faction_id(self, id: str, include_traits, include_skills, include_items) -> List[UnitDTO]:
-        return await self.database.unit.find_many( 
+    async def get_by_faction_id(self, id: str, include_traits, include_skills, include_items) -> List[UnitSpecializationDTO]:
+        return await self.database.unitspecialization.find_many( 
             where={"faction_id": id},
                         include={
                 "traits": False if not include_traits else {
@@ -77,52 +77,52 @@ class UnitService:
             }
         )
     
-    async def create(self, unit: UnitCreateDTO) -> UnitDTO:
-        # Get Unit Trait ids
-        unit_trait_ids = unit.trait_ids.copy() if unit.trait_ids else None
-        del unit.trait_ids
+    async def create(self, unitspecialization: UnitSpecializationCreateDTO) -> UnitSpecializationDTO:
+        # Get UnitSpecialization Trait ids
+        unit_trait_ids = unitspecialization.trait_ids.copy() if unitspecialization.trait_ids else None
+        del unitspecialization.trait_ids
 
-        # Get Unit Skill ids
-        unit_skill_ids = unit.skill_ids.copy() if unit.skill_ids else None
-        del unit.skill_ids
+        # Get UnitSpecialization Skill ids
+        unit_skill_ids = unitspecialization.skill_ids.copy() if unitspecialization.skill_ids else None
+        del unitspecialization.skill_ids
 
-        # Get Unit Items
-        unit_items = unit.items.copy() if unit.items else None
-        del unit.items
+        # Get UnitSpecialization Items
+        unit_items = unitspecialization.items.copy() if unitspecialization.items else None
+        del unitspecialization.items
 
-        unit = await self.database.unit.create( 
-            data=unit.dict() 
+        unitspecialization = await self.database.unitspecialization.create( 
+            data=unitspecialization.dict() 
         )
 
-        # Assign Unit Traits
+        # Assign UnitSpecialization Traits
         try:
             if unit_trait_ids:
                 for unit_trait_id in unit_trait_ids:
-                    await self.unit_trait_service.create({"unit_id":unit.id, "trait_id":unit_trait_id})
+                    await self.unit_trait_service.create({"unit_specialization_id":unitspecialization.id, "trait_id":unit_trait_id})
         except Exception as e:
-            await self.database.unit.delete(where={"id": unit.id})
+            await self.database.unitspecialization.delete(where={"id": unitspecialization.id})
             raise e
         
-        # Assign Unit Skills
+        # Assign UnitSpecialization Skills
         try:
             if unit_skill_ids:
                 for unit_skill_id in unit_skill_ids:
-                    await self.unit_skill_service.create({"unit_id":unit.id, "skill_id":unit_skill_id})
+                    await self.unit_skill_service.create({"unit_specialization_id":unitspecialization.id, "skill_id":unit_skill_id})
         except Exception as e:
-            await self.database.unit.delete(where={"id": unit.id})
+            await self.database.unitspecialization.delete(where={"id": unitspecialization.id})
             raise e
         
-        # Assign Unit Items
+        # Assign UnitSpecialization Items
         try:
             if unit_items:
                 for unit_item in unit_items:
-                    await self.unit_item_service.create({"unit_id":unit.id, "item_id":unit_item.item_id, "quantity":unit_item.quantity})
+                    await self.unit_item_service.create({"unit_specialization_id":unitspecialization.id, "item_id":unit_item.item_id, "quantity":unit_item.quantity})
         except Exception as e:
-            await self.database.unit.delete(where={"id": unit.id})
+            await self.database.unitspecialization.delete(where={"id": unitspecialization.id})
             raise e
         
-        return await self.database.unit.find_unique(
-            where={"id": unit.id},
+        return await self.database.unitspecialization.find_unique(
+            where={"id": unitspecialization.id},
             include={
                 "traits": {
                     "include": {
@@ -142,11 +142,11 @@ class UnitService:
             }
         )
     
-    async def update(self, id: str, unit: UnitUpdateDTO) -> UnitDTO:
-        unit_dict = unit.dict()
+    async def update(self, id: str, unitspecialization: UnitSpecializationUpdateDTO) -> UnitSpecializationDTO:
+        unit_dict = unitspecialization.dict()
 
-        # Get unit Data
-        unit_current = await self.database.unit.find_unique( 
+        # Get unitspecialization Data
+        unit_current = await self.database.unitspecialization.find_unique( 
             where={"id": id} 
         )
         if(not unit_current): return None
@@ -157,15 +157,15 @@ class UnitService:
             if unit_dict[key] is None or unit_dict[key] == "":
                 unit_dict[key] = unit_current_dict[key]
         
-        return await self.database.unit.update( 
+        return await self.database.unitspecialization.update( 
             where={"id": id}, 
             data=unit_dict 
         )
     
-    async def add_trait(self, id: str, trait_id: str) -> UnitDTO:
-        await self.unit_trait_service.create({"unit_id":id, "trait_id":trait_id})
+    async def add_trait(self, id: str, trait_id: str) -> UnitSpecializationDTO:
+        await self.unit_trait_service.create({"unit_specialization_id":id, "trait_id":trait_id})
 
-        return await self.database.unit.find_unique(
+        return await self.database.unitspecialization.find_unique(
             where={"id": id},
             include={
                 "traits": {
@@ -186,10 +186,10 @@ class UnitService:
             }
         )
 
-    async def remove_trait(self, id: str, trait_id: str) -> UnitDTO:
+    async def remove_trait(self, id: str, trait_id: str) -> UnitSpecializationDTO:
         await self.unit_trait_service.delete_by_ids(id, trait_id)
 
-        return await self.database.unit.find_unique(
+        return await self.database.unitspecialization.find_unique(
             where={"id": id},
             include={
                 "traits": {
@@ -210,10 +210,10 @@ class UnitService:
             }
         )
     
-    async def add_skill(self, id: str, skill_id: str) -> UnitDTO:
-        await self.unit_skill_service.create({"unit_id":id, "skill_id":skill_id})
+    async def add_skill(self, id: str, skill_id: str) -> UnitSpecializationDTO:
+        await self.unit_skill_service.create({"unit_specialization_id":id, "skill_id":skill_id})
 
-        return await self.database.unit.find_unique(
+        return await self.database.unitspecialization.find_unique(
             where={"id": id},
             include={
                 "traits": {
@@ -234,10 +234,10 @@ class UnitService:
             }
         )
     
-    async def remove_skill(self, id: str, skill_id: str) -> UnitDTO:
+    async def remove_skill(self, id: str, skill_id: str) -> UnitSpecializationDTO:
         await self.unit_skill_service.delete_by_ids(id, skill_id)
 
-        return await self.database.unit.find_unique(
+        return await self.database.unitspecialization.find_unique(
             where={"id": id},
             include={
                 "traits": {
@@ -258,10 +258,10 @@ class UnitService:
             }
         )
     
-    async def add_item(self, id: str, item_id: str, quantity: int) -> UnitDTO:
-        await self.unit_item_service.create({"unit_id":id, "item_id":item_id, "quantity":quantity})
+    async def add_item(self, id: str, item_id: str, quantity: int) -> UnitSpecializationDTO:
+        await self.unit_item_service.create({"unit_specialization_id":id, "item_id":item_id, "quantity":quantity})
 
-        return await self.database.unit.find_unique(
+        return await self.database.unitspecialization.find_unique(
             where={"id": id},
             include={
                 "traits": {
@@ -282,10 +282,10 @@ class UnitService:
             }
         )
     
-    async def remove_item(self, id: str, item_id: str) -> UnitDTO:
+    async def remove_item(self, id: str, item_id: str) -> UnitSpecializationDTO:
         await self.unit_item_service.delete_by_ids(id, item_id)
 
-        return await self.database.unit.find_unique(
+        return await self.database.unitspecialization.find_unique(
             where={"id": id},
             include={
                 "traits": {
@@ -306,10 +306,10 @@ class UnitService:
             }
         )
     
-    async def update_item(self, id: str, unit_item: UnitItemCreateDTO) -> UnitDTO:
-        await self.unit_item_service.update({"unit_id": id, "item_id": unit_item.item_id, "quantity": unit_item.quantity})
+    async def update_item(self, id: str, unit_item: UnitSpecializationItemCreateDTO) -> UnitSpecializationDTO:
+        await self.unit_item_service.update({"unit_specialization_id": id, "item_id": unit_item.item_id, "quantity": unit_item.quantity})
 
-        return await self.database.unit.find_unique(
+        return await self.database.unitspecialization.find_unique(
             where={"id": id},
             include={
                 "traits": {
@@ -330,7 +330,7 @@ class UnitService:
             }
         )
     
-    async def delete(self, id: str) -> UnitDTO:
-        return await self.database.unit.delete(
+    async def delete(self, id: str) -> UnitSpecializationDTO:
+        return await self.database.unitspecialization.delete(
             where={"id": id}
         )

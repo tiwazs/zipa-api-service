@@ -1,20 +1,20 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class UnitItemBaseDTO(BaseModel):
+class UnitSpecializationItemBaseDTO(BaseModel):
     unit_id: str
     item_id: str
     quantity: float
 
-class UnitItemCreateDTO(UnitItemBaseDTO):
+class UnitSpecializationItemCreateDTO(UnitSpecializationItemBaseDTO):
     pass
 
-class UnitItemUpdateDTO(UnitItemBaseDTO):
+class UnitSpecializationItemUpdateDTO(UnitSpecializationItemBaseDTO):
     unit_id: Optional[str]
     item_id: Optional[str]
     quantity: Optional[float]
 
-class UnitItemDTO(UnitItemBaseDTO):
+class UnitSpecializationItemDTO(UnitSpecializationItemBaseDTO):
     id: str
     created_at: str
     updated_at: str

@@ -26,9 +26,9 @@ class FactionUnitService:
             where={"id": id}
         )
     
-    async def delete_by_ids(self, faction_id: str, unit_id: str) -> FactionUnitDTO:
+    async def delete_by_ids(self, faction_id: str, unit_specialization_id: str) -> FactionUnitDTO:
         faction_unit = await self.database.factionunit.find_first(
-            where={"faction_id": faction_id, "unit_id": unit_id}
+            where={"faction_id": faction_id, "unit_specialization_id": unit_specialization_id}
         )
 
         if(faction_unit):

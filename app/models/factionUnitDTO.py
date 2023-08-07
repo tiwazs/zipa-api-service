@@ -3,7 +3,7 @@ from typing import List, Optional
 
 class FactionUnitDTO(BaseModel):
     faction_id: str
-    unit_id: str
+    unit_specialization_id: str
 
 class FactionUnitCreateDTO(FactionUnitDTO):
     pass

@@ -25,6 +25,11 @@ class ItemBaseDTO(BaseModel):
     movement: Optional[str]
     ammo: Optional[str]
     shield: Optional[str]
+    dexterity_requirement: Optional[float]
+    strength_requirement: Optional[float]
+    mind_requirement: Optional[float]
+    faith_requirement: Optional[float]
+    weight: Optional[float]
 
 class ItemSkillToCreate(BaseModel):
     skill_id: str
@@ -56,6 +61,11 @@ class ItemUpdateDTO(ItemBaseDTO):
     movement: Optional[str]
     ammo: Optional[str]
     shield: Optional[str]
+    dexterity_requirement: Optional[float]
+    strength_requirement: Optional[float]
+    mind_requirement: Optional[float]
+    faith_requirement: Optional[float]
+    weight: Optional[float]
 
 class ItemDTO(ItemBaseDTO):
     id: str

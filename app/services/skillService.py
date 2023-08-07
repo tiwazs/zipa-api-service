@@ -27,7 +27,7 @@ class SkillService:
                 },
                 "summons": False if not include_summons else {
                     "include": {
-                        "unit": include_summons
+                        "unit_specialization": include_summons
                     }
                 }
             }
@@ -49,7 +49,7 @@ class SkillService:
                 },
                 "summons": False if not include_summons else {
                     "include": {
-                        "unit": include_summons
+                        "unit_specialization": include_summons
                     }
                 }
             }
@@ -102,7 +102,7 @@ class SkillService:
                 },
                 "summons": {
                     "include": {
-                        "unit": True
+                        "unit_specialization": True
                     }
                 }
             }
@@ -196,14 +196,14 @@ class SkillService:
         return skill
 
     async def add_summon(self, id: str, skill_summon_id: str, duration: float) -> SkillDTO:
-        await self.skill_summon_service.create({"skill_id":id, "unit_id":skill_summon_id, "duration":duration})
+        await self.skill_summon_service.create({"skill_id":id, "unit_specialization_id":skill_summon_id, "duration":duration})
 
         skill = await self.database.skill.find_unique( 
             where={"id": id},
             include={
                 "summons": {
                     "include": {
-                        "unit": True
+                        "unit_specialization": True
                     }
                 }
             }
@@ -218,7 +218,7 @@ class SkillService:
             include={
                 "summons": {
                     "include": {
-                        "unit": True
+                        "unit_specialization": True
                     }
                 }
             }
@@ -226,14 +226,14 @@ class SkillService:
         return skill
     
     async def update_summon(self, id: str, summon_id: str, duration: float) -> SkillDTO:
-        await self.skill_summon_service.update_skill_summon({"skill_id":id, "unit_id":summon_id, "duration":duration})
+        await self.skill_summon_service.update_skill_summon({"skill_id":id, "unit_specialization_id":summon_id, "duration":duration})
 
         skill = await self.database.skill.find_unique( 
             where={"id": id},
             include={
                 "summons": {
                     "include": {
-                        "unit": True
+                        "unit_specialization": True
                     }
                 }
             }

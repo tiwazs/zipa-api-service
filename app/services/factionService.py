@@ -12,9 +12,9 @@ class FactionService:
     async def get_all(self, include_units: bool) -> List[FactionDTO]:
         return await self.database.faction.find_many(
             include={
-                "units": False if not include_units else {
+                "unit_specializations": False if not include_units else {
                     "include": {
-                        "unit": include_units
+                        "unit_specialization": include_units
                     }
                 }
             }
@@ -24,9 +24,9 @@ class FactionService:
         return await self.database.faction.find_unique( 
             where={"id": id},
             include={
-                "units": False if not include_units else {
+                "unit_specializations": False if not include_units else {
                     "include": {
-                        "unit": include_units
+                        "unit_specialization": include_units
                     }
                 }
             }
@@ -44,8 +44,8 @@ class FactionService:
         # Assign units
         try:
             if units_ids:
-                for unit_id in units_ids:
-                    await self.faction_unit_service.create({"faction_id":faction.id, "unit_id":unit_id})
+                for unit_specialization_id in units_ids:
+                    await self.faction_unit_service.create({"faction_id":faction.id, "unit_specialization_id":unit_specialization_id})
         except Exception as e:
             await self.database.faction.delete(where={"id": faction.id})
             raise e
@@ -72,21 +72,21 @@ class FactionService:
             data=faction_dict 
         )
     
-    async def add_unit(self, id: str, unit_id: str) -> FactionDTO:
+    async def add_unit(self, id: str, unit_specialization_id: str) -> FactionDTO:
         faction = await self.get_by_id(id, True)
         if(not faction): return None
 
-        # Assign unit
-        await self.faction_unit_service.create({"faction_id":faction.id, "unit_id":unit_id})
+        # Assign unit_specializations
+        await self.faction_unit_service.create({"faction_id":faction.id, "unit_specialization_id":unit_specialization_id})
 
         return await self.get_by_id(faction.id, True)
     
-    async def remove_unit(self, id: str, unit_id: str) -> FactionDTO:
+    async def remove_unit(self, id: str, unit_specialization_id: str) -> FactionDTO:
         faction = await self.get_by_id(id, True)
         if(not faction): return None
 
-        # Remove unit
-        await self.faction_unit_service.delete_by_ids(faction.id, unit_id)
+        # Remove unit_specializations
+        await self.faction_unit_service.delete_by_ids(faction.id, unit_specialization_id)
 
         return await self.get_by_id(faction.id, True)
 

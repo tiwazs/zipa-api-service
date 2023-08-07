@@ -1,12 +1,15 @@
 from pydantic import BaseModel
 from typing import List, Optional
 
-class UnitBaseDTO(BaseModel):
+class UnitSpecializationBaseDTO(BaseModel):
     name: str
     description: str
     vitality: float
     range: float
-    damage: float
+    strength: float
+    dexterity: float
+    mind: float
+    faith: float
     armor: float
     magic_armor: float
     essence: float
@@ -19,16 +22,16 @@ class UnitBaseDTO(BaseModel):
     shield: float
     tier: int
 
-class UnitItemCreateDTO(BaseModel):
+class UnitSpecializationItemCreateDTO(BaseModel):
     item_id: str
     quantity: int
 
-class UnitCreateDTO(UnitBaseDTO):
+class UnitSpecializationCreateDTO(UnitSpecializationBaseDTO):
     trait_ids: Optional[List[str]] = None
     skill_ids: Optional[List[str]] = None
-    items: Optional[List[UnitItemCreateDTO]] = None
+    items: Optional[List[UnitSpecializationItemCreateDTO]] = None
 
-class UnitUpdateDTO(UnitBaseDTO):
+class UnitSpecializationUpdateDTO(UnitSpecializationBaseDTO):
     name: Optional[str] = None
     description: Optional[str] = None
     vitality: Optional[float] = None
@@ -46,7 +49,7 @@ class UnitUpdateDTO(UnitBaseDTO):
     shield: Optional[float] = None
     tier: Optional[int] = None
 
-class UnitDTO(UnitBaseDTO):
+class UnitSpecializationDTO(UnitSpecializationBaseDTO):
     id: str
     created_at: str
     updated_at: str

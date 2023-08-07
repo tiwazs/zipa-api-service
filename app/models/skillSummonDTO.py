@@ -5,6 +5,7 @@ class SkillSummonBaseDTO(BaseModel):
     skill_id: str
     unit_id: str
     duration: float
+    conditions: Optional[str]
 
 class SkillSummonCreateDTO(SkillSummonBaseDTO):
     pass
@@ -13,6 +14,7 @@ class SkillSummonUpdateDTO(SkillSummonBaseDTO):
     skill_id: Optional[str]
     unit_id: Optional[str]
     duration: Optional[float] = None
+    conditions: Optional[str] = None
 
 class SkillSummonDTO(SkillSummonBaseDTO):
     id: int

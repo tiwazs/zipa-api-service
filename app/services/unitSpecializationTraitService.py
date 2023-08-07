@@ -1,19 +1,19 @@
-from ..models.unitTraitDTO import UnitTraitDTO, UnitTraitCreateDTO, UnitTraitUpdateDTO
+from ..models.unitSpecializationTraitDTO import UnitSpecializationTraitDTO, UnitSpecializationTraitCreateDTO, UnitSpecializationTraitUpdateDTO
 from typing import List
 
-class UnitTraitService:
+class UnitSpecializationTraitService:
     def __init__(self, database):
         self.database = database
 
-    async def get_all(self) -> List[UnitTraitDTO]:
+    async def get_all(self) -> List[UnitSpecializationTraitDTO]:
         return await self.database.unittrait.find_many()
 
-    async def get_by_id(self, id: str) -> UnitTraitDTO:
+    async def get_by_id(self, id: str) -> UnitSpecializationTraitDTO:
         return await self.database.unittrait.find_unique( 
             where={"id": id} 
         )
     
-    async def update_unit_trait(self, id: str, unit_trait: UnitTraitUpdateDTO) -> UnitTraitDTO:
+    async def update_unit_trait(self, id: str, unit_trait: UnitSpecializationTraitUpdateDTO) -> UnitSpecializationTraitDTO:
         unit_trait_dict = unit_trait.dict()
 
         # Get unit_trait Data
@@ -34,21 +34,21 @@ class UnitTraitService:
         )
     
 
-    async def create(self, unit_trait: UnitTraitCreateDTO) -> UnitTraitDTO:
-        data = unit_trait.dict() if isinstance(unit_trait, UnitTraitCreateDTO) else unit_trait
+    async def create(self, unit_trait: UnitSpecializationTraitCreateDTO) -> UnitSpecializationTraitDTO:
+        data = unit_trait.dict() if isinstance(unit_trait, UnitSpecializationTraitCreateDTO) else unit_trait
 
         return await self.database.unittrait.create( 
             data=data
         )
 
-    async def delete(self, id: str) -> UnitTraitDTO:
+    async def delete(self, id: str) -> UnitSpecializationTraitDTO:
         return await self.database.unittrait.delete(
             where={"id": id}
         )
     
-    async def delete_by_ids(self, unit_id: str, trait_id: str) -> UnitTraitDTO:
+    async def delete_by_ids(self, unit_specialization_id: str, trait_id: str) -> UnitSpecializationTraitDTO:
         unit_trait = await self.database.unittrait.find_first(
-            where={"unit_id": unit_id, "trait_id": trait_id}
+            where={"unit_specialization_id": unit_specialization_id, "trait_id": trait_id}
         )
 
         if unit_trait:
