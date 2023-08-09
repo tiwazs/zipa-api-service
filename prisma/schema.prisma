@@ -23,33 +23,31 @@ model Faction {
 }
 
 model UnitSpecialization {
-    id            String                      @id @default(cuid())
-    name          String
-    description   String                      @db.Text
-    vitality      Float
-    range         Float
-    strength      Float
-    dexterity     Float
-    mind          Float
-    faith         Float
-    armor         Float
-    magic_armor   Float
-    essence       Float
-    agility       Float
-    hit_chance    Float
-    evasion       Float
-    hit_rate      Float
-    movement      Float
-    ammo          Float
-    shield        Float
-    tier          Int
-    skills        UnitSpecializationSkill[]
-    items         UnitSpecializationItem[]
-    traits        UnitSpecializationTrait[]
-    created_at    DateTime                    @default(now())
-    updated_at    DateTime                    @updatedAt
-    factions      FactionUnitSpecialization[]
-    skills_summon SkillSummon[]
+    id                   String                      @id @default(cuid())
+    name                 String
+    description          String                      @db.Text
+    vitality             Float
+    strength             Float
+    dexterity            Float
+    mind                 Float
+    faith                Float
+    armor                Float
+    magic_armor          Float
+    essence              Float
+    agility              Float
+    hit_chance           Float
+    evasion              Float
+    hit_rate             Float
+    movement             Float
+    weapon_proficiencies String                      @db.Text
+    tier                 Int
+    skills               UnitSpecializationSkill[]
+    items                UnitSpecializationItem[]
+    traits               UnitSpecializationTrait[]
+    created_at           DateTime                    @default(now())
+    updated_at           DateTime                    @updatedAt
+    factions             FactionUnitSpecialization[]
+    skills_summon        SkillSummon[]
 }
 
 model FactionUnitSpecialization {
@@ -144,6 +142,8 @@ model Item {
     description           String                   @db.Text
     conditions            String?
     rarity                ItemRarity               @default(COMMON)
+    is_weapon             Boolean                  @default(false)
+    object_type           ObjectType               @default(OTHER)
     magic_effectiveness   String?
     physical_damage       String?
     magical_damage        String?
@@ -151,7 +151,7 @@ model Item {
     vitality_recovery     String?
     essence_recovery      String?
     vitality              String?
-    range                 String?
+    range                 String?                  @default("1")
     damage                String?
     armor                 String?
     magic_armor           String?
@@ -302,4 +302,36 @@ model SkillSummon {
     duration               Float              @default(1)
     created_at             DateTime           @default(now())
     updated_at             DateTime           @updatedAt
+}
+
+enum ObjectType {
+    CURVED_SWORD_1H
+    CURVED_SWORD_2H
+    STRAIGHT_SWORD_1H
+    STRAIGHT_SWORD_2H
+    AXE_1H
+    AXE_2H
+    HAMMER_1H
+    HAMMER_2H
+    SPEAR_1H
+    SPEAR_2H
+    JAVELIN_1H
+    STAFF_1H
+    STAFF_2H
+    BOW_2H
+    CROSSBOW_2H
+    DAGGER_1H
+    SMALL_SHIELD
+    MEDIUM_SHIELD
+    LARGE_SHIELD
+    LIGHT_ARMOR
+    MEDIUM_ARMOR
+    HEAVY_ARMOR
+    AMULET
+    TRINKET
+    RING
+    CONSUMABLE
+    MATERIAL
+    KEY
+    OTHER
 }

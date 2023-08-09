@@ -6,6 +6,8 @@ class ItemBaseDTO(BaseModel):
     description: str
     conditions: Optional[str]
     rarity: Optional[str]
+    is_weapon: Optional[bool]
+    object_type: Optional[str]
     magic_effectiveness: Optional[str]
     physical_damage: Optional[str]
     magical_damage: Optional[str]
@@ -43,6 +45,8 @@ class ItemUpdateDTO(ItemBaseDTO):
     description: Optional[str]
     conditions: Optional[str]
     rarity: Optional[str]
+    is_weapon: Optional[bool]
+    ObjectType: Optional[str]
     magic_effectiveness: Optional[str]
     physical_damage: Optional[str]
     magical_damage: Optional[str]

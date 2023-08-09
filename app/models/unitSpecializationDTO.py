@@ -5,7 +5,6 @@ class UnitSpecializationBaseDTO(BaseModel):
     name: str
     description: str
     vitality: float
-    range: float
     strength: float
     dexterity: float
     mind: float
@@ -18,8 +17,7 @@ class UnitSpecializationBaseDTO(BaseModel):
     evasion: float
     hit_rate: float
     movement: float
-    ammo: float
-    shield: float
+    weapon_proficiencies: str
     tier: int
 
 class UnitSpecializationItemCreateDTO(BaseModel):
@@ -35,7 +33,6 @@ class UnitSpecializationUpdateDTO(UnitSpecializationBaseDTO):
     name: Optional[str] = None
     description: Optional[str] = None
     vitality: Optional[float] = None
-    range: Optional[float] = None
     damage: Optional[float] = None
     armor: Optional[float] = None
     magic_armor: Optional[float] = None
@@ -45,8 +42,7 @@ class UnitSpecializationUpdateDTO(UnitSpecializationBaseDTO):
     evasion: Optional[float] = None
     hit_rate: Optional[float] = None
     movement: Optional[float] = None
-    ammo: Optional[float] = None
-    shield: Optional[float] = None
+    weapon_proficiencies: Optional[str] = None
     tier: Optional[int] = None
 
 class UnitSpecializationDTO(UnitSpecializationBaseDTO):
