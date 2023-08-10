@@ -33,7 +33,10 @@ class UnitSpecializationUpdateDTO(UnitSpecializationBaseDTO):
     name: Optional[str] = None
     description: Optional[str] = None
     vitality: Optional[float] = None
-    damage: Optional[float] = None
+    strength: Optional[float] = None
+    dexterity: Optional[float] = None
+    mind: Optional[float] = None
+    faith: Optional[float] = None
     armor: Optional[float] = None
     magic_armor: Optional[float] = None
     essence: Optional[float] = None
