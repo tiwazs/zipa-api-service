@@ -6,10 +6,10 @@ class UnitSpecializationItemService:
         self.database = database
 
     async def get_all(self) -> List[UnitSpecializationItemDTO]:
-        return await self.database.unititem.find_many()
+        return await self.database.unitspecializationitem.find_many()
 
     async def get_by_id(self, id: str) -> UnitSpecializationItemDTO:
-        return await self.database.unititem.find_unique( 
+        return await self.database.unitspecializationitem.find_unique( 
             where={"id": id} 
         )
     
@@ -17,7 +17,7 @@ class UnitSpecializationItemService:
         unit_item_dict = unit_item.dict() if isinstance(unit_item, UnitSpecializationItemUpdateDTO) else unit_item
 
         # Get unit_item Data
-        unit_item_current = await self.database.unititem.find_first( 
+        unit_item_current = await self.database.unitspecializationitem.find_first( 
             where={"unit_specialization_id": unit_item_dict["unit_specialization_id"], "item_id": unit_item_dict["item_id"]}
         )
         if(not unit_item_current): return None
@@ -28,7 +28,7 @@ class UnitSpecializationItemService:
             if unit_item_dict[key] is None:
                 unit_item_dict[key] = unit_item_current_dict[key]
         
-        return await self.database.unititem.update( 
+        return await self.database.unitspecializationitem.update( 
             where={"id": unit_item_current_dict["id"]}, 
             data=unit_item_dict 
         )
@@ -37,21 +37,21 @@ class UnitSpecializationItemService:
     async def create(self, unit_item: UnitSpecializationItemCreateDTO) -> UnitSpecializationItemDTO:
         data = unit_item.dict() if isinstance(unit_item, UnitSpecializationItemCreateDTO) else unit_item
 
-        return await self.database.unititem.create( 
+        return await self.database.unitspecializationitem.create( 
             data=data
         )
 
     async def delete(self, id: str) -> UnitSpecializationItemDTO:
-        return await self.database.unititem.delete(
+        return await self.database.unitspecializationitem.delete(
             where={"id": id}
         )
     
     async def delete_by_ids(self, unit_specialization_id: str, item_id: str) -> UnitSpecializationItemDTO:
-        unit_item = await self.database.unititem.find_first(
+        unit_item = await self.database.unitspecializationitem.find_first(
             where={"unit_specialization_id": unit_specialization_id, "item_id": item_id}
         )
 
         if unit_item:
-            return await self.database.unititem.delete(
+            return await self.database.unitspecializationitem.delete(
                 where={"id": unit_item.id}
             )

@@ -6,10 +6,10 @@ class UnitSpecializationSkillService:
         self.database = database
 
     async def get_all(self) -> List[UnitSpecializationSkillDTO]:
-        return await self.database.unitskill.find_many()
+        return await self.database.unitspecializationskill.find_many()
 
     async def get_by_id(self, id: str) -> UnitSpecializationSkillDTO:
-        return await self.database.unitskill.find_unique( 
+        return await self.database.unitspecializationskill.find_unique( 
             where={"id": id} 
         )
     
@@ -17,7 +17,7 @@ class UnitSpecializationSkillService:
         unit_skill_dict = unit_skill.dict()
 
         # Get unit_skill Data
-        unit_skill_current = await self.database.unitskill.find_unique( 
+        unit_skill_current = await self.database.unitspecializationskill.find_unique( 
             where={"id": id} 
         )
         if(not unit_skill_current): return None
@@ -28,7 +28,7 @@ class UnitSpecializationSkillService:
             if unit_skill_dict[key] is None:
                 unit_skill_dict[key] = unit_skill_current_dict[key]
         
-        return await self.database.unitskill.update( 
+        return await self.database.unitspecializationskill.update( 
             where={"id": id}, 
             data=unit_skill_dict 
         )
@@ -37,21 +37,21 @@ class UnitSpecializationSkillService:
     async def create(self, unit_skill: UnitSpecializationSkillCreateDTO) -> UnitSpecializationSkillDTO:
         data = unit_skill.dict() if isinstance(unit_skill, UnitSpecializationSkillCreateDTO) else unit_skill
 
-        return await self.database.unitskill.create( 
+        return await self.database.unitspecializationskill.create( 
             data=data
         )
 
     async def delete(self, id: str) -> UnitSpecializationSkillDTO:
-        return await self.database.unitskill.delete(
+        return await self.database.unitspecializationskill.delete(
             where={"id": id}
         )
     
     async def delete_by_ids(self, unit_specialization_id: str, skill_id: str) -> UnitSpecializationSkillDTO:
-        unit_skill = await self.database.unitskill.find_first(
+        unit_skill = await self.database.unitspecializationskill.find_first(
             where={"unit_specialization_id": unit_specialization_id, "skill_id": skill_id}
         )
 
         if unit_skill:
-            return await self.database.unitskill.delete(
+            return await self.database.unitspecializationskill.delete(
                 where={"id": unit_skill.id}
             )
