@@ -25,6 +25,8 @@ class EffectBaseDTO(BaseModel):
     ammo: Optional[str]
     shield: Optional[str]
     barrier: Optional[float]
+    incoming_physical_damage: Optional[str]
+    incoming_magical_damage: Optional[str]
     max_stack: Optional[int]
 
 class EffectCreateDTO(EffectBaseDTO):
@@ -53,6 +55,8 @@ class EffectUpdateDTO(EffectBaseDTO):
     ammo: Optional[str]
     shield: Optional[str]
     barrier: Optional[float]
+    incoming_physical_damage: Optional[str]
+    incoming_magical_damage: Optional[str]
     max_stack: Optional[int]
 
 class EffectDTO(EffectBaseDTO):
