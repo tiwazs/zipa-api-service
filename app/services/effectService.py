@@ -1,10 +1,14 @@
+from fastapi import UploadFile
 from prisma import Prisma
+
+from ..services.fileService import FileService
 from ..models.effectDTO import EffectDTO, EffectUpdateDTO, EffectCreateDTO
 from typing import List
 
 class EffectService:
     def __init__(self, database):
         self.database = database
+        self.file_service = FileService()
 
     async def get_all(self) -> List[EffectDTO]:
         return await self.database.effect.find_many()
@@ -43,3 +47,15 @@ class EffectService:
         return await self.database.effect.delete(
             where={"id": id}
         )
+
+    async def upload_image(self, id: str, image: UploadFile) -> EffectDTO:
+        effect = await self.database.effect.find_unique( 
+            where={"id": id} 
+        )
+        if(not effect): return None
+
+        # Save image
+        filename = f"{effect.id}.jpg"
+        filepath = self.file_service.save(image, "app/static/effects", filename)
+
+        return filepath

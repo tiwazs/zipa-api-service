@@ -1,6 +1,7 @@
 from dotenv import find_dotenv, load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from .configurations.dbinit import database
 from .configurations.information import *
@@ -24,6 +25,8 @@ def create_server():
     app.include_router(traitController.router)
     app.include_router(itemController.router)
     app.include_router(effectController.router)
+    
+    app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
     # Origins
     origins = [
