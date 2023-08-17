@@ -1,4 +1,7 @@
+from fastapi import UploadFile
 from prisma import Prisma
+
+from ..services.fileService import FileService
 from .unitSpecializationItemService import UnitSpecializationItemService
 from .unitSpecializationSkillService import UnitSpecializationSkillService
 from .unitSpecializationTraitService import UnitSpecializationTraitService
@@ -11,6 +14,7 @@ class UnitSpecializationService:
         self.unit_trait_service = UnitSpecializationTraitService(database)
         self.unit_skill_service = UnitSpecializationSkillService(database)
         self.unit_item_service = UnitSpecializationItemService(database)
+        self.file_service = FileService()
     
     async def get_all(self, include_traits, include_skills, include_items) -> List[UnitSpecializationDTO]:
         return await self.database.unitspecialization.find_many(
@@ -334,3 +338,15 @@ class UnitSpecializationService:
         return await self.database.unitspecialization.delete(
             where={"id": id}
         )
+        
+    async def upload_image(self, id: str, image: UploadFile):
+        unitspecialization = await self.database.unitspecialization.find_unique( 
+            where={"id": id} 
+        )
+        if(not unitspecialization): return None
+
+        # Save image
+        filename = f"{unitspecialization.id}.jpg"
+        filepath = self.file_service.save(image, "app/static/specializations", filename)
+
+        return filepath

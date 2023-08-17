@@ -1,4 +1,7 @@
+from fastapi import UploadFile
 from prisma import Prisma
+
+from ..services.fileService import FileService
 from .traitEffectService import TraitEffectService
 from ..models.traitDTO import TraitDTO, TraitUpdateDTO, TraitCreateDTO
 from ..models.traitEffectDTO import TraitEffectCreateDTO
@@ -8,6 +11,7 @@ class TraitService:
     def __init__(self, database):
         self.database = database
         self.trait_effect_service = TraitEffectService(database)
+        self.file_service = FileService()
 
     async def get_all(self) -> List[TraitDTO]:
         return await self.database.trait.find_many()
@@ -103,3 +107,15 @@ class TraitService:
         return await self.database.trait.delete(
             where={"id": id}
         )
+    
+    async def upload_image(self, id: str, image: UploadFile):
+        trait = await self.database.trait.find_unique( 
+            where={"id": id} 
+        )
+        if(not trait): return None
+
+        # Save image
+        filename = f"{trait.id}.jpg"
+        filepath = self.file_service.save(image, "app/static/traits", filename)
+
+        return filepath

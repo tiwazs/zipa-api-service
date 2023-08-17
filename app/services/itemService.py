@@ -1,5 +1,7 @@
+from fastapi import UploadFile
 from prisma import Prisma
 
+from ..services.fileService import FileService
 
 from ..models.itemDTO import ItemDTO, ItemUpdateDTO, ItemCreateDTO
 from ..models.itemSkillDTO import ItemSkillCreateDTO
@@ -10,6 +12,7 @@ class ItemService:
     def __init__(self, database):
         self.database = database
         self.item_skill_service = ItemSkillService(database)
+        self.file_service = FileService()
 
     async def get_all(self, include_skills: bool) -> List[ItemDTO]:
         return await self.database.item.find_many(
@@ -135,3 +138,15 @@ class ItemService:
         return await self.database.item.delete(
             where={"id": id}
         )
+
+    async def upload_image(self, id: str, image: UploadFile):
+        item = await self.database.item.find_unique( 
+            where={"id": id} 
+        )
+        if(not item): return None
+
+        # Save image
+        filename = f"{item.id}.jpg"
+        filepath = self.file_service.save(image, "app/static/items", filename)
+
+        return filepath

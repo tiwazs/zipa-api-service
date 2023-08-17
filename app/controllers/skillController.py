@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Response, status
+from fastapi import APIRouter, Request, Response, status, File, UploadFile
 
 from ..models.skillDTO import SkillDTO, SkillUpdateDTO, SkillCreateDTO
 from ..services.skillService import SkillService
@@ -155,6 +155,19 @@ async def delete_skill(id: str, request: Request, response: Response):
             return { "error" : msg_not_found }
         
         return skill
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
+@router.post("/image/{id}")
+async def upload_effect_image(id: str, request: Request, response: Response, image: UploadFile = File(...)):
+    try:
+        filepath = await SkillService(request.app.state.db).upload_image(id, image)
+        if filepath is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return filepath
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"error": str(e)}

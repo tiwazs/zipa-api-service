@@ -1,5 +1,7 @@
+from fastapi import UploadFile
 from prisma import Prisma
 
+from ..services.fileService import FileService
 from ..services.factionUnitService import FactionUnitService
 from ..models.factionDTO import FactionDTO, FactionUpdateDTO, FactionCreateDTO
 from typing import List
@@ -8,6 +10,7 @@ class FactionService:
     def __init__(self, database):
         self.database = database
         self.faction_unit_service = FactionUnitService(database)
+        self.file_service = FileService()
 
     async def get_all(self, include_units: bool) -> List[FactionDTO]:
         return await self.database.faction.find_many(
@@ -94,3 +97,15 @@ class FactionService:
         return await self.database.faction.delete(
             where={"id": id}
         )
+        
+    async def upload_image(self, id: str, image: UploadFile):
+        faction = await self.database.faction.find_unique( 
+            where={"id": id} 
+        )
+        if(not faction): return None
+
+        # Save image
+        filename = f"{faction.id}.jpg"
+        filepath = self.file_service.save(image, "app/static/factions", filename)
+
+        return filepath

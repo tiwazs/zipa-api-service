@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Response, status
+from fastapi import APIRouter, Request, Response, status, File, UploadFile
 
 from ..models.traitDTO import TraitDTO, TraitUpdateDTO, TraitCreateDTO
 from ..models.traitEffectDTO import TraitEffectCreateDTO
@@ -87,3 +87,16 @@ async def delete_trait(id: str, request: Request, response: Response):
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"error": str(e)}
+
+@router.post("/image/{id}")
+async def upload_effect_image(id: str, request: Request, response: Response, image: UploadFile = File(...)):
+    try:
+        filepath = await TraitService(request.app.state.db).upload_image(id, image)
+        if filepath is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return filepath
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}    

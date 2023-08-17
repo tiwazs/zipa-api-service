@@ -1,4 +1,7 @@
+from fastapi import UploadFile
 from prisma import Prisma
+
+from ..services.fileService import FileService
 from ..models.skillDTO import SkillDTO, SkillUpdateDTO, SkillCreateDTO
 from .assignedSkillTypeService import AssignedSkillTypeService
 from .skillEffectService import SkillEffectService
@@ -11,6 +14,7 @@ class SkillService:
         self.assigned_skill_type_service = AssignedSkillTypeService(database)
         self.skill_effect_service = SkillEffectService(database)
         self.skill_summon_service = SkillSummonService(database)
+        self.file_service = FileService()
 
     async def get_all(self, include_type, include_effects, include_summons) -> List[SkillDTO]:
         return await self.database.skill.find_many(
@@ -244,3 +248,15 @@ class SkillService:
         return await self.database.skill.delete(
             where={"id": id}
         )
+        
+    async def upload_image(self, id: str, image: UploadFile):
+        skill = await self.database.skill.find_unique( 
+            where={"id": id} 
+        )
+        if(not skill): return None
+
+        # Save image
+        filename = f"{skill.id}.jpg"
+        filepath = self.file_service.save(image, "app/static/skills", filename)
+
+        return filepath
