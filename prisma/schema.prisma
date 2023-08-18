@@ -15,11 +15,12 @@ model Faction {
     id                   String                      @id @default(cuid())
     name                 String
     description          String                      @db.Text
-    identity             String?
-    aspects              String?
+    identity             String?                     @db.Text
+    aspects              String?                     @db.Text
     created_at           DateTime                    @default(now())
     updated_at           DateTime                    @updatedAt
     unit_specializations FactionUnitSpecialization[]
+    traits               FactionTrait[]
 }
 
 model UnitSpecialization {
@@ -134,6 +135,7 @@ model Trait {
     unit_specializations UnitSpecializationTrait[]
     created_at           DateTime                  @default(now())
     updated_at           DateTime                  @updatedAt
+    FactionTrait         FactionTrait[]
 }
 
 model Item {
@@ -265,6 +267,7 @@ model UnitSpecializationTrait {
     unit_specialization_id String
     trait                  Trait              @relation(fields: [trait_id], references: [id], onDelete: Cascade)
     trait_id               String
+    conditions             String?
     created_at             DateTime           @default(now())
     updated_at             DateTime           @updatedAt
 }
@@ -336,4 +339,15 @@ enum ObjectType {
     MATERIAL
     KEY
     OTHER
+}
+
+model FactionTrait {
+    id         String   @id @default(cuid())
+    faction    Faction  @relation(fields: [faction_id], references: [id], onDelete: Cascade)
+    faction_id String
+    trait      Trait    @relation(fields: [trait_id], references: [id], onDelete: Cascade)
+    trait_id   String
+    conditions String?
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
 }

@@ -44,7 +44,33 @@ async def update_faction(id: str, faction: FactionUpdateDTO, request: Request, r
     except Exception as e:
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"error": str(e)}
+    
+@router.put("/add_trait/{id}")
+async def add_trait_to_faction(id: str, trait_id: str, request: Request, response: Response):
+    try:
+        faction = await FactionService(request.app.state.db).add_trait(id, trait_id)
+        if faction is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return faction
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
 
+@router.put("/remove_trait/{id}")
+async def remove_trait_from_faction(id: str, trait_id: str, request: Request, response: Response):
+    try:
+        faction = await FactionService(request.app.state.db).remove_trait(id, trait_id)
+        if faction is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return faction
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+    
 @router.put("/add_unit/{id}")
 async def add_unit_to_faction(id: str, unit_id: str, request: Request, response: Response):
     try:

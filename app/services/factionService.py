@@ -3,6 +3,7 @@ from prisma import Prisma
 
 from ..services.fileService import FileService
 from ..services.factionUnitService import FactionUnitService
+from ..services.factionTraitService import FactionTraitService
 from ..models.factionDTO import FactionDTO, FactionUpdateDTO, FactionCreateDTO
 from typing import List
 
@@ -10,6 +11,7 @@ class FactionService:
     def __init__(self, database):
         self.database = database
         self.faction_unit_service = FactionUnitService(database)
+        self.faction_trait_service = FactionTraitService(database)
         self.file_service = FileService()
 
     async def get_all(self, include_units: bool) -> List[FactionDTO]:
@@ -36,8 +38,8 @@ class FactionService:
         )
 
     async def create(self, faction: FactionCreateDTO) -> FactionDTO:
-        units_ids = faction.unit_ids.copy() if faction.unit_ids else None
-        del faction.unit_ids
+        units_ids = faction.unit_specialization_ids.copy() if faction.unit_specialization_ids else None
+        del faction.unit_specialization_ids
 
         # Create faction
         faction = await self.database.faction.create( 
@@ -73,6 +75,34 @@ class FactionService:
         return await self.database.faction.update( 
             where={"id": id}, 
             data=faction_dict 
+        )
+    
+    async def add_trait(self, id: str, trait_id: str) -> FactionDTO:
+        await self.faction_trait_service.create({"faction_id":id, "trait_id":trait_id})
+
+        return await self.database.faction.find_unique(
+            where={"id": id},
+            include={
+                "traits": {
+                    "include": {
+                        "trait": True
+                    }
+                }
+            }
+        )
+
+    async def remove_trait(self, id: str, trait_id: str) -> FactionDTO:
+        await self.faction_trait_service.delete_by_ids(id, trait_id)
+
+        return await self.database.faction.find_unique(
+            where={"id": id},
+            include={
+                "traits": {
+                    "include": {
+                        "trait": True
+                    }
+                }
+            }
         )
     
     async def add_unit(self, id: str, unit_specialization_id: str) -> FactionDTO:
