@@ -185,37 +185,40 @@ enum ItemRarity {
 }
 
 model Effect {
-    id                       String        @id @default(cuid())
-    name                     String
-    description              String        @db.Text
-    conditions               String?
-    magic_effectiveness      String?
-    physical_damage          String?
-    magical_damage           String?
-    healing                  String?
-    vitality_recovery        String?
-    essence_recovery         String?
-    vitality                 String?
-    range                    String?
-    damage                   String?
-    armor                    String?
-    magic_armor              String?
-    essence                  String?
-    agility                  String?
-    hit_chance               String?
-    evasion                  String?
-    hit_rate                 String?
-    movement                 String?
-    ammo                     String?
-    shield                   String?
-    barrier                  Float?
-    incoming_physical_damage String?
-    incoming_magical_damage  String?
-    max_stack                Int?          @default(1)
-    skills                   SkillEffect[]
-    traits                   TraitEffect[]
-    created_at               DateTime      @default(now())
-    updated_at               DateTime      @updatedAt
+    id                        String        @id @default(cuid())
+    name                      String
+    description               String        @db.Text
+    conditions                String?
+    magic_effectiveness       String?
+    physical_damage           String?
+    magical_damage            String?
+    healing                   String?
+    vitality                  String?
+    range                     String?
+    damage                    String?
+    armor                     String?
+    magic_armor               String?
+    essence                   String?
+    agility                   String?
+    hit_chance                String?
+    evasion                   String?
+    hit_rate                  String?
+    movement                  String?
+    ammo                      String?
+    shield                    String?
+    barrier                   Float?
+    instant_vitality_recovery String?
+    instant_essence_recovery  String?
+    instant_physical_damage   String?
+    instant_magical_damage    String?
+    instant_target            Target        @default(SELF)
+    instant_area_of_effect    String?
+    instant_conditions        String?
+    max_stack                 Int?          @default(1)
+    skills                    SkillEffect[]
+    traits                    TraitEffect[]
+    created_at                DateTime      @default(now())
+    updated_at                DateTime      @updatedAt
 }
 
 model AssignedSkillType {
