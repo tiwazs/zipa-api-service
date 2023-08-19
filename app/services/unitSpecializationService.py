@@ -61,8 +61,7 @@ class UnitSpecializationService:
 
     async def get_by_faction_id(self, id: str, include_traits, include_skills, include_items) -> List[UnitSpecializationDTO]:
         return await self.database.unitspecialization.find_many( 
-            where={"faction_id": id},
-                        include={
+            include={
                 "traits": False if not include_traits else {
                     "include": {
                         "trait": include_traits
@@ -76,6 +75,13 @@ class UnitSpecializationService:
                 "items": False if not include_items else {
                     "include": {
                         "item": include_items
+                    }
+                }
+            },
+            where={
+                "factions": {
+                    "some": {
+                        "faction_id": id
                     }
                 }
             }
