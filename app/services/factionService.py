@@ -14,24 +14,34 @@ class FactionService:
         self.faction_trait_service = FactionTraitService(database)
         self.file_service = FileService()
 
-    async def get_all(self, include_units: bool) -> List[FactionDTO]:
+    async def get_all(self, include_traits: bool, include_units: bool) -> List[FactionDTO]:
         return await self.database.faction.find_many(
             include={
                 "unit_specializations": False if not include_units else {
                     "include": {
                         "unit_specialization": include_units
                     }
+                },
+                "traits": False if not include_traits else {
+                    "include": {
+                        "trait": include_traits
+                    }
                 }
             }
         )
 
-    async def get_by_id(self, id: str, include_units: bool) -> FactionDTO:
+    async def get_by_id(self, id: str, include_traits: bool, include_units: bool) -> FactionDTO:
         return await self.database.faction.find_unique( 
             where={"id": id},
             include={
                 "unit_specializations": False if not include_units else {
                     "include": {
                         "unit_specialization": include_units
+                    }
+                },
+                "traits": False if not include_traits else {
+                    "include": {
+                        "trait": include_traits
                     }
                 }
             }

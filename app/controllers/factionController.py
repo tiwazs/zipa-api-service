@@ -8,13 +8,13 @@ router = APIRouter(prefix="/factions", tags=["Factions"])
 msg_not_found = 'Faction not found'
 
 @router.get("/")
-async def get_factions(request: Request, response: Response, include_units: bool = False):
-    return await FactionService(request.app.state.db).get_all(include_units)
+async def get_factions(request: Request, response: Response,  include_traits: bool = True, include_units: bool = False):
+    return await FactionService(request.app.state.db).get_all(include_traits, include_units)
 
 @router.get("/{id}")
-async def get_faction_by_id(id: str, request: Request, response: Response, include_units: bool = False):
+async def get_faction_by_id(id: str, request: Request, response: Response,  include_traits: bool = True, include_units: bool = False):
     try:
-        faction = await FactionService(request.app.state.db).get_by_id(id, include_units)
+        faction = await FactionService(request.app.state.db).get_by_id(id, include_traits, include_units)
         if faction is None:
             response.status_code = status.HTTP_204_NO_CONTENT
             return { "error" : msg_not_found }
