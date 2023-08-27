@@ -14,8 +14,8 @@ class SkillBaseDTO(BaseModel):
     area_of_effect: Optional[str]
     essence_cost: Optional[str]
     vitality_cost: Optional[str]
-    cooldown: Optional[float]
-    channeled: Optional[bool]
+    cooldown: Optional[str]
+    channeled: Optional[str]
     target: Optional[str]
     skill_on: Optional[str]
 
@@ -40,8 +40,8 @@ class SkillUpdateDTO(SkillBaseDTO):
     area_of_effect: Optional[str]
     essence_cost: Optional[str]
     vitality_cost: Optional[str]
-    cooldown: Optional[float]
-    channeled: Optional[bool]
+    cooldown: Optional[str]
+    channeled: Optional[str]
     target: Optional[str]
     skill_on: Optional[str]
 

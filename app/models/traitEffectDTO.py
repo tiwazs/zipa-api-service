@@ -5,8 +5,8 @@ class TraitEffectBaseDTO(BaseModel):
     trait_id: str
     effect_id: str
     conditions: Optional[str]
-    duration: Optional[float]
-    cooldown: Optional[float]
+    duration: Optional[str]
+    cooldown: Optional[str]
 
 class TraitEffectCreateDTO(TraitEffectBaseDTO):
     pass

@@ -84,8 +84,8 @@ model Skill {
     area_of_effect       String?
     essence_cost         String?
     vitality_cost        String?
-    cooldown             Float                     @default(0)
-    channeled            Boolean                   @default(false)
+    cooldown             String?                   @default("0")
+    channeled            String?                   @default("")
     target               Target                    @default(ENEMY)
     skill_on             SkillOn                   @default(INSTANT)
     skill_types          AssignedSkillType[]
@@ -206,7 +206,7 @@ model Effect {
     movement                  String?
     ammo                      String?
     shield                    String?
-    barrier                   Float?
+    barrier                   String?       @default("0")
     instant_vitality_recovery String?
     instant_essence_recovery  String?
     instant_physical_damage   String?
@@ -253,15 +253,16 @@ model UnitSpecializationItem {
 }
 
 model ItemSkill {
-    id           String   @id @default(cuid())
-    item         Item     @relation(fields: [item_id], references: [id], onDelete: Cascade)
-    item_id      String
-    skill        Skill    @relation(fields: [skill_id], references: [id], onDelete: Cascade)
-    skill_id     String
-    essence_cost Float
-    cooldown     Float    @default(0)
-    created_at   DateTime @default(now())
-    updated_at   DateTime @updatedAt
+    id            String   @id @default(cuid())
+    item          Item     @relation(fields: [item_id], references: [id], onDelete: Cascade)
+    item_id       String
+    skill         Skill    @relation(fields: [skill_id], references: [id], onDelete: Cascade)
+    skill_id      String
+    essence_cost  String?  @default("0")
+    vitality_cost String?  @default("0")
+    cooldown      String?  @default("0")
+    created_at    DateTime @default(now())
+    updated_at    DateTime @updatedAt
 }
 
 model UnitSpecializationTrait {
@@ -282,7 +283,7 @@ model SkillEffect {
     effect     Effect   @relation(fields: [effect_id], references: [id], onDelete: Cascade)
     effect_id  String
     conditions String?
-    duration   Float    @default(1)
+    duration   String?  @default("1")
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 }
@@ -294,8 +295,8 @@ model TraitEffect {
     effect     Effect   @relation(fields: [effect_id], references: [id], onDelete: Cascade)
     effect_id  String
     conditions String?
-    duration   Float    @default(1)
-    cooldown   Float    @default(0)
+    duration   String?  @default("1")
+    cooldown   String?  @default("0")
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 }
@@ -307,7 +308,7 @@ model SkillSummon {
     unit_specialization    UnitSpecialization @relation(fields: [unit_specialization_id], references: [id], onDelete: Cascade)
     unit_specialization_id String
     conditions             String?
-    duration               Float              @default(1)
+    duration               String?            @default("1")
     created_at             DateTime           @default(now())
     updated_at             DateTime           @updatedAt
 }

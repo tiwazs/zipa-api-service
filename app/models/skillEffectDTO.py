@@ -4,7 +4,7 @@ from typing import Optional
 class SkillEffectBaseDTO(BaseModel):
     skill_id: str
     effect_id: str
-    duration: float
+    duration: str
     conditions: Optional[str]
 
 class SkillEffectCreateDTO(SkillEffectBaseDTO):
@@ -13,7 +13,7 @@ class SkillEffectCreateDTO(SkillEffectBaseDTO):
 class SkillEffectUpdateDTO(SkillEffectBaseDTO):
     skill_id: Optional[str]
     effect_id: Optional[str]
-    duration: Optional[float] = None
+    duration: Optional[str] = None
     conditions: Optional[str] = None
 
 class SkillEffectDTO(SkillEffectBaseDTO):

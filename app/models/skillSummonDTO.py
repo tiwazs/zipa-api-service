@@ -4,7 +4,7 @@ from typing import Optional
 class SkillSummonBaseDTO(BaseModel):
     skill_id: str
     unit_id: str
-    duration: float
+    duration: str
     conditions: Optional[str]
 
 class SkillSummonCreateDTO(SkillSummonBaseDTO):
@@ -13,7 +13,7 @@ class SkillSummonCreateDTO(SkillSummonBaseDTO):
 class SkillSummonUpdateDTO(SkillSummonBaseDTO):
     skill_id: Optional[str]
     unit_id: Optional[str]
-    duration: Optional[float] = None
+    duration: Optional[str] = None
     conditions: Optional[str] = None
 
 class SkillSummonDTO(SkillSummonBaseDTO):
