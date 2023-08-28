@@ -21,6 +21,7 @@ model Faction {
     updated_at           DateTime                    @updatedAt
     unit_specializations FactionUnitSpecialization[]
     traits               FactionTrait[]
+    Unit                 Unit[]
 }
 
 model UnitSpecialization {
@@ -49,6 +50,7 @@ model UnitSpecialization {
     updated_at           DateTime                    @updatedAt
     factions             FactionUnitSpecialization[]
     skills_summon        SkillSummon[]
+    Unit                 Unit[]
 }
 
 model FactionUnitSpecialization {
@@ -174,6 +176,7 @@ model Item {
     unit_specializations  UnitSpecializationItem[]
     created_at            DateTime                 @default(now())
     updated_at            DateTime                 @updatedAt
+    UnitItem              UnitItem[]
 }
 
 enum ItemRarity {
@@ -352,6 +355,96 @@ model FactionTrait {
     trait      Trait    @relation(fields: [trait_id], references: [id], onDelete: Cascade)
     trait_id   String
     conditions String?
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+}
+
+// User Management for NextAuth.js
+// ========================================
+model User {
+    id            String    @id @default(cuid())
+    name          String?   @unique
+    email         String    @unique
+    emailVerified DateTime?
+    password      String?
+    firstName     String?
+    lastName      String?
+    image         String?
+    apiKey        String?   @unique
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    accounts      Account[]
+    sessions      Session[]
+}
+
+model Account {
+    id                String  @id @default(cuid())
+    userId            String
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String? @db.Text
+    access_token      String? @db.Text
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String? @db.Text
+    session_state     String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+}
+
+// ========================================
+model Unit {
+    id                String             @id @default(cuid())
+    name              String
+    title             String?
+    description       String?            @db.Text
+    base_vitality     Float
+    base_strength     Float
+    base_dexterity    Float
+    base_mind         Float
+    base_faith        Float
+    base_essence      Float
+    base_agility      Float
+    base_hit_chance   Float
+    base_evasion      Float
+    faction           Faction            @relation(fields: [faction_id], references: [id], onDelete: Cascade)
+    faction_id        String
+    specialization    UnitSpecialization @relation(fields: [specialization_id], references: [id], onDelete: Cascade)
+    specialization_id String
+    skill_picks       String?
+    rank              Int                @default(1)
+    UnitItem          UnitItem[]
+    created_at        DateTime           @default(now())
+    updated_at        DateTime           @updatedAt
+}
+
+model UnitItem {
+    id         String   @id @default(cuid())
+    unit       Unit     @relation(fields: [unit_id], references: [id], onDelete: Cascade)
+    unit_id    String
+    item       Item     @relation(fields: [item_id], references: [id], onDelete: Cascade)
+    item_id    String
+    quantity   Float
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 }
