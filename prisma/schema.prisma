@@ -375,6 +375,7 @@ model User {
     updatedAt     DateTime  @updatedAt
     accounts      Account[]
     sessions      Session[]
+    Unit          Unit[]
 }
 
 model Account {
@@ -433,7 +434,9 @@ model Unit {
     specialization_id String
     skill_picks       String?
     rank              Int                @default(1)
-    UnitItem          UnitItem[]
+    items             UnitItem[]
+    user              User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    user_id           String
     created_at        DateTime           @default(now())
     updated_at        DateTime           @updatedAt
 }
