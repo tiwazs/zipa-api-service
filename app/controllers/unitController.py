@@ -8,13 +8,13 @@ router = APIRouter(prefix="/units", tags=["Units"])
 msg_not_found = 'Unit not found'
 
 @router.get("/")
-async def get_units(request: Request, response: Response, include_items: bool = True):
-    return await UnitService(request.app.state.db).get_all(include_items)
+async def get_units(request: Request, response: Response, include_items: bool = True, include_faction: bool = True, include_specialization: bool = True):
+    return await UnitService(request.app.state.db).get_all(include_items, include_faction, include_specialization)
 
 @router.get("/{id}")
-async def get_unit_by_id(id: str, request: Request, response: Response, include_items: bool = True):
+async def get_unit_by_id(id: str, request: Request, response: Response, include_items: bool = True, include_faction: bool = True, include_specialization: bool = True):
     try:
-        unit = await UnitService(request.app.state.db).get_by_id(id, include_items)
+        unit = await UnitService(request.app.state.db).get_by_id(id, include_items, include_faction, include_specialization)
         if unit is None:
             response.status_code = status.HTTP_204_NO_CONTENT
             return { "error" : msg_not_found }

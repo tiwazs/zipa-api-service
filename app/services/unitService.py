@@ -12,18 +12,46 @@ class UnitService:
         self.unit_item_service = UnitItemService(database)
         self.file_service = FileService()
     
-    async def get_all(self, include_items) -> List[UnitDTO]:
+    async def get_all(self, include_items, include_faction, include_specialization) -> List[UnitDTO]:
         return await self.database.unit.find_many(
             include={
                 "items": False if not include_items else {
                     "include": {
                         "item": include_items
                     }
-                }
+                },
+                "faction": False if not include_faction else {
+                    "include": {
+                        "traits": {
+                            "include": {
+                                "trait": include_faction
+                            }
+                        }
+                    }
+                },
+                "specialization": False if not include_specialization else {
+                    "include": {
+                        "traits": {
+                            "include": {
+                                "trait": include_specialization
+                            }
+                        },
+                        "items": {
+                            "include": {
+                                "item": include_specialization
+                            }
+                        },
+                        "skills": {
+                            "include": {
+                                "skill": include_specialization
+                            }
+                        },
+                    }
+                },
             }
         )
     
-    async def get_by_id(self, id: str, include_items) -> UnitDTO:
+    async def get_by_id(self, id: str, include_items, include_faction, include_specialization) -> UnitDTO:
         return await self.database.unit.find_unique( 
             where={"id": id},
             include={
@@ -31,7 +59,35 @@ class UnitService:
                     "include": {
                         "item": include_items
                     }
-                }
+                },
+                "faction": False if not include_faction else {
+                    "include": {
+                        "traits": {
+                            "include": {
+                                "trait": include_faction
+                            }
+                        }
+                    }
+                },
+                "specialization": False if not include_specialization else {
+                    "include": {
+                        "traits": {
+                            "include": {
+                                "trait": include_specialization
+                            }
+                        },
+                        "items": {
+                            "include": {
+                                "item": include_specialization
+                            }
+                        },
+                        "skills": {
+                            "include": {
+                                "skill": include_specialization
+                            }
+                        },
+                    }
+                },
             }
         )
 
