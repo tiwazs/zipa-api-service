@@ -3,12 +3,14 @@ from prisma import Prisma
 
 from ..services.fileService import FileService
 from ..services.subFactionMemberService import SubFactionMemberService
-from ..models.subFactionDTO import SubFactionDTO, SubFactionUpdateDTO, SubFactionCreateDTO, SubFactionMemberDTO
+from ..services.subFactionRankService import SubFactionRankService
+from ..models.subFactionDTO import SubFactionDTO, SubFactionRankCreateDTO, SubFactionUpdateDTO, SubFactionCreateDTO, SubFactionMemberDTO
 from typing import List
 
 class SubFactionService:
     def __init__(self, database):
         self.database = database
+        self.sub_faction_rank_service = SubFactionRankService(database)
         self.sub_faction_unit_service = SubFactionMemberService(database)
         self.file_service = FileService()
 
@@ -17,7 +19,8 @@ class SubFactionService:
             include={
                 "members": False if not include_units else {
                     "include": {
-                        "unit": include_units
+                        "unit": include_units,
+                        "faction_rank": include_units
                     }
                 },
                 "faction_ranks": include_ranks
@@ -30,7 +33,8 @@ class SubFactionService:
             include={
                 "members": False if not include_units else {
                     "include": {
-                        "unit": include_units
+                        "unit": include_units,
+                        "faction_rank": include_units
                     }
                 },
                 "faction_ranks": include_ranks
@@ -65,6 +69,24 @@ class SubFactionService:
             where={"id": id}, 
             data=faction_dict 
         )
+    
+    async def add_rank(self, rank: SubFactionRankCreateDTO) -> SubFactionDTO:
+        sub_faction = await self.get_by_id(rank.faction_id, True, True)
+        if(not sub_faction): return None
+
+        # Assign Ranks
+        await self.sub_faction_rank_service.create(rank)
+
+        return await self.get_by_id(sub_faction.id, True, True)
+    
+    async def delete_rank(self, id, rank_id: str) -> SubFactionDTO:
+        sub_faction = await self.get_by_id(id, True, True)
+        if(not sub_faction): return None
+
+        # Remove Ranks
+        await self.sub_faction_rank_service.delete(rank_id)
+
+        return await self.get_by_id(sub_faction.id, True, True)
     
     async def add_unit(self, member: SubFactionMemberDTO) -> SubFactionDTO:
         sub_faction = await self.get_by_id(member.faction_id, True, True)
