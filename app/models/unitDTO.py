@@ -2,9 +2,9 @@ from pydantic import BaseModel
 from typing import List, Optional
 
 class UnitBaseDTO(BaseModel):
-    user_id: str
     name: str
     title: Optional[str] = None
+    prefix_title: Optional[str] = None
     description: Optional[str] = None
     base_vitality: float
     base_strength: float
@@ -25,11 +25,13 @@ class UnitItemCreateDTO(BaseModel):
     quantity: int
 
 class UnitCreateDTO(UnitBaseDTO):
+    user_id: str
     items: Optional[List[UnitItemCreateDTO]] = None
 
 class UnitUpdateDTO(UnitBaseDTO):
     name: Optional[str]
-    title: Optional[str]
+    title: Optional[str] = None
+    prefix_title: Optional[str] = None
     description: Optional[str]
     base_vitality: Optional[float]
     base_strength: Optional[float]
