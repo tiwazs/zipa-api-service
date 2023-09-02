@@ -43,3 +43,9 @@ class SubFactionDTO(SubFactionBaseDTO):
     updated_at: str
     class Config:
         orm_mode = True
+
+# SubFaction Relations
+class SubFactionRelationDTO(BaseModel):
+    faction_id: str
+    faction2_id: str
+    type: str

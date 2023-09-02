@@ -4,6 +4,7 @@ from prisma import Prisma
 from ..services.fileService import FileService
 from ..services.subFactionMemberService import SubFactionMemberService
 from ..services.subFactionRankService import SubFactionRankService
+from ..services.subFactionRelationService import SubFactionRelationService
 from ..models.subFactionDTO import SubFactionDTO, SubFactionRankCreateDTO, SubFactionUpdateDTO, SubFactionCreateDTO, SubFactionMemberDTO
 from typing import List
 
@@ -12,10 +13,23 @@ class SubFactionService:
         self.database = database
         self.sub_faction_rank_service = SubFactionRankService(database)
         self.sub_faction_unit_service = SubFactionMemberService(database)
+        self.sub_faction_relation_service = SubFactionRelationService(database)
         self.file_service = FileService()
 
-    async def get_all(self, include_ranks: bool, include_units: bool) -> List[SubFactionDTO]:
+    async def get_all(self, include_ranks: bool, include_units: bool,  include_vassal_subjects:bool, include_overlord:bool, only_overlords:bool) -> List[SubFactionDTO]:
         return await self.database.subfaction.find_many(
+            where={
+                "NOT": {
+                    "factions_relations2": {
+                        "some": {
+                            "OR": [
+                                {"type": "SUBJECT"},
+                                {"type": "VASSAL"}
+                            ]
+                        }
+                    }
+                }
+                } if only_overlords else {},
             include={
                 "members": False if not include_units else {
                     "include": {
@@ -23,11 +37,27 @@ class SubFactionService:
                         "faction_rank": include_units
                     }
                 },
-                "faction_ranks": include_ranks
+                "faction_ranks": include_ranks,
+                "factions_relations": False if not include_vassal_subjects else {
+                    "include": {
+                        "faction2": include_vassal_subjects,
+                    },
+                    "where": {
+                        'OR': [ {"type": "SUBJECT" },{"type": "VASSAL" } ]
+                    }
+                },
+                "factions_relations2": False if not include_overlord else {
+                    "include": {
+                        "faction": include_overlord
+                    },
+                    "where": {
+                        'OR': [ {"type": "SUBJECT" },{"type": "VASSAL" } ]
+                    }
+                },
             }
         )
 
-    async def get_by_id(self, id: str, include_ranks: bool, include_units: bool) -> SubFactionDTO:
+    async def get_by_id(self, id: str, include_ranks: bool, include_units: bool,  include_vassal_subjects:bool, include_overlord:bool) -> SubFactionDTO:
         return await self.database.subfaction.find_unique( 
             where={"id": id},
             include={
@@ -37,7 +67,23 @@ class SubFactionService:
                         "faction_rank": include_units
                     }
                 },
-                "faction_ranks": include_ranks
+                "faction_ranks": include_ranks,
+                "factions_relations": False if not include_vassal_subjects else {
+                    "include": {
+                        "faction2": include_vassal_subjects,
+                    },
+                    "where": {
+                        'OR': [ {"type": "SUBJECT" },{"type": "VASSAL" } ]
+                    }
+                },
+                "factions_relations2": False if not include_overlord else {
+                    "include": {
+                        "faction": include_overlord
+                    },
+                    "where": {
+                        'OR': [ {"type": "SUBJECT" },{"type": "VASSAL" } ]
+                    }
+                },
             }
         )
 
@@ -103,6 +149,30 @@ class SubFactionService:
 
         # Remove units
         await self.sub_faction_unit_service.delete_by_ids(sub_faction.id, unit_id)
+
+        return await self.get_by_id(sub_faction.id, True, True)
+
+    async def add_relation(self, relation: SubFactionRankCreateDTO) -> SubFactionDTO:
+        sub_faction = await self.get_by_id(relation.faction_id, True, True)
+        if(not sub_faction): return None
+
+        sub_faction2 = await self.get_by_id(relation.faction2_id, True, True)
+        if(not sub_faction2): return None
+
+        # Assign Relations
+        await self.sub_faction_relation_service.create(relation)
+
+        return await self.get_by_id(sub_faction.id, True, True)
+    
+    async def delete_relation(self, faction_id, faction2_id: str) -> SubFactionDTO:
+        sub_faction = await self.get_by_id(id, True, True)
+        if(not sub_faction): return None
+
+        sub_faction2 = await self.get_by_id(id, True, True)
+        if(not sub_faction2): return None
+
+        # Remove Relations
+        await self.sub_faction_relation_service.delete_by_ids(faction_id, faction2_id)
 
         return await self.get_by_id(sub_faction.id, True, True)
 
