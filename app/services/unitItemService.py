@@ -18,7 +18,7 @@ class UnitItemService:
 
         # Get unit_item Data
         unit_item_current = await self.database.unititem.find_first( 
-            where={"unit_specialization_id": unit_item_dict["unit_specialization_id"], "item_id": unit_item_dict["item_id"]}
+            where={"unit_id": unit_item_dict["unit_id"], "item_id": unit_item_dict["item_id"]}
         )
         if(not unit_item_current): return None
         unit_item_current_dict = unit_item_current.dict()
@@ -46,9 +46,9 @@ class UnitItemService:
             where={"id": id}
         )
     
-    async def delete_by_ids(self, unit_specialization_id: str, item_id: str) -> UnitItemDTO:
+    async def delete_by_ids(self, unit_id: str, item_id: str) -> UnitItemDTO:
         unit_item = await self.database.unititem.find_first(
-            where={"unit_specialization_id": unit_specialization_id, "item_id": item_id}
+            where={"unit_id": unit_id, "item_id": item_id}
         )
 
         if unit_item:

@@ -122,7 +122,7 @@ class UnitService:
         try:
             if unit_items:
                 for unit_item in unit_items:
-                    await self.unit_item_service.create({"unit_specialization_id":unit.id, "item_id":unit_item.item_id, "quantity":unit_item.quantity})
+                    await self.unit_item_service.create({"unit_id":unit.id, "item_id":unit_item.item_id, "quantity":unit_item.quantity})
         except Exception as e:
             await self.database.unit.delete(where={"id": unit.id})
             raise e
@@ -159,7 +159,7 @@ class UnitService:
         )
     
     async def add_item(self, id: str, item_id: str, quantity: int) -> UnitDTO:
-        await self.unit_item_service.create({"unit_specialization_id":id, "item_id":item_id, "quantity":quantity})
+        await self.unit_item_service.create({"unit_id":id, "item_id":item_id, "quantity":quantity})
 
         return await self.database.unit.find_unique(
             where={"id": id},
@@ -187,7 +187,7 @@ class UnitService:
         )
     
     async def update_item(self, id: str, unit_item: UnitItemCreateDTO) -> UnitDTO:
-        await self.unit_item_service.update({"unit_specialization_id": id, "item_id": unit_item.item_id, "quantity": unit_item.quantity})
+        await self.unit_item_service.update({"unit_id": id, "item_id": unit_item.item_id, "quantity": unit_item.quantity})
 
         return await self.database.unit.find_unique(
             where={"id": id},
@@ -213,6 +213,6 @@ class UnitService:
 
         # Save image
         filename = f"{unit.id}.jpg"
-        filepath = self.file_service.save(image, "app/static/specializations", filename)
+        filepath = self.file_service.save(image, "app/static/units", filename)
 
         return filepath
