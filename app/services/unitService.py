@@ -24,7 +24,15 @@ class UnitService:
                     "include": {
                         "traits": {
                             "include": {
-                                "trait": include_faction
+                                "trait": {
+                                    "include": {
+                                        "effects": {
+                                            "include": {
+                                                "effect": True
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -64,7 +72,15 @@ class UnitService:
                     "include": {
                         "traits": {
                             "include": {
-                                "trait": include_faction
+                                "trait": {
+                                    "include": {
+                                        "effects": {
+                                            "include": {
+                                                "effect": True
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

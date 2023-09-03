@@ -46,7 +46,7 @@ class ItemUpdateDTO(ItemBaseDTO):
     conditions: Optional[str]
     rarity: Optional[str]
     is_weapon: Optional[bool]
-    ObjectType: Optional[str]
+    object_type: Optional[str]
     magic_effectiveness: Optional[str]
     physical_damage: Optional[str]
     magical_damage: Optional[str]
