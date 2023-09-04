@@ -49,7 +49,7 @@ class UnitUpdateDTO(UnitBaseDTO):
 
 class UnitDTO(UnitBaseDTO):
     id: str
-    created_at: str
-    updated_at: str
+    created_at: Optional[str]
+    updated_at: Optional[str]
     class Config:
         orm_mode = True

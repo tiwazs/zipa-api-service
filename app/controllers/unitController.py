@@ -7,14 +7,39 @@ router = APIRouter(prefix="/units", tags=["Units"])
 
 msg_not_found = 'Unit not found'
 
-@router.get("/")
+@router.get("/normal")
 async def get_units(request: Request, response: Response, include_items: bool = True, include_faction: bool = True, include_specialization: bool = True):
     return await UnitService(request.app.state.db).get_all(include_items, include_faction, include_specialization)
 
-@router.get("/{id}")
+@router.get("/extended")
+async def get_units(request: Request, response: Response, include_items: bool = True, include_faction: bool = True, include_specialization: bool = True):
+    return await UnitService(request.app.state.db).get_all_extended(include_items, include_faction, include_specialization)
+
+@router.get("/user/normal/{user_id}")
+async def get_units_by_user(user_id: str, request: Request, response: Response, include_items: bool = True, include_faction: bool = True, include_specialization: bool = True):
+    return await UnitService(request.app.state.db).get_all_by_user(user_id, include_items, include_faction, include_specialization)
+
+@router.get("/user/extended/{user_id}")
+async def get_units_by_user(user_id: str, request: Request, response: Response, include_items: bool = True, include_faction: bool = True, include_specialization: bool = True):
+    return await UnitService(request.app.state.db).get_all_extended_by_user(user_id, include_items, include_faction, include_specialization)
+
+@router.get("/normal/{id}")
 async def get_unit_by_id(id: str, request: Request, response: Response, include_items: bool = True, include_faction: bool = True, include_specialization: bool = True):
     try:
         unit = await UnitService(request.app.state.db).get_by_id(id, include_items, include_faction, include_specialization)
+        if unit is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return unit
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+    
+@router.get("/extended/{id}")
+async def get_unit_by_id(id: str, request: Request, response: Response, include_items: bool = True, include_faction: bool = True, include_specialization: bool = True):
+    try:
+        unit = await UnitService(request.app.state.db).get_extended_by_id(id, include_items, include_faction, include_specialization)
         if unit is None:
             response.status_code = status.HTTP_204_NO_CONTENT
             return { "error" : msg_not_found }

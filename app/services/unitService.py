@@ -1,5 +1,7 @@
+import functools
 from fastapi import UploadFile
 from prisma import Prisma
+import re
 
 from ..services.fileService import FileService
 from .unitItemService import UnitItemService
@@ -58,7 +60,57 @@ class UnitService:
                 },
             }
         )
-    
+
+    async def get_all_by_user(self, user_id, include_items, include_faction, include_specialization) -> List[UnitDTO]:
+        return await self.database.unit.find_many(
+            where={
+                "user_id": user_id
+            },
+            include={
+                "items": False if not include_items else {
+                    "include": {
+                        "item": include_items
+                    }
+                },
+                "faction": False if not include_faction else {
+                    "include": {
+                        "traits": {
+                            "include": {
+                                "trait": {
+                                    "include": {
+                                        "effects": {
+                                            "include": {
+                                                "effect": True
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "specialization": False if not include_specialization else {
+                    "include": {
+                        "traits": {
+                            "include": {
+                                "trait": include_specialization
+                            }
+                        },
+                        "items": {
+                            "include": {
+                                "item": include_specialization
+                            }
+                        },
+                        "skills": {
+                            "include": {
+                                "skill": include_specialization
+                            }
+                        },
+                    }
+                },
+            }
+        )
+
     async def get_by_id(self, id: str, include_items, include_faction, include_specialization) -> UnitDTO:
         return await self.database.unit.find_unique( 
             where={"id": id},
@@ -106,6 +158,21 @@ class UnitService:
                 },
             }
         )
+
+    async def get_all_extended(self, include_items, include_faction, include_specialization) -> List[UnitDTO]:
+        users = await self.get_all(include_items, include_faction, include_specialization)
+
+        return [self.extend_unit(unit) for unit in users]
+    
+    async def get_all_extended_by_user(self, user_id, include_items, include_faction, include_specialization) -> List[UnitDTO]:
+        users = await self.get_all_by_user(user_id, include_items, include_faction, include_specialization)
+
+        return [self.extend_unit(unit) for unit in users]
+    
+    async def get_extended_by_id(self, id: str, include_items, include_faction, include_specialization) -> UnitDTO:
+        unit = await self.get_by_id(id, include_items, include_faction, include_specialization)
+
+        return self.extend_unit(unit)
 
     async def get_by_faction_id(self, id: str, include_items) -> List[UnitDTO]:
         return await self.database.unit.find_many( 
@@ -232,3 +299,153 @@ class UnitService:
         filepath = self.file_service.save(image, "app/static/units", filename)
 
         return filepath
+
+    # Extend unit. making calculations
+    def value_multiplier(self, base_value: float, multiplier: float, offset: float):
+        rate = 0.1
+        result = ( base_value + offset )*( rate )*( multiplier )
+        return result
+    
+    def mod_parameter_operation(self, mod_parameter_string: str, parameter: float):
+        regex = '(?P<sign>[+-])?(?P<value>(\d+|ND|MD|HP))?(?P<porcentage>\s*%)?(?P<max>\s*max)?'
+        match = re.search(regex, mod_parameter_string)
+        sign = match['sign']
+        max = match['max']
+        value = match['value']
+        porcentage = match['porcentage']
+
+        if(not value): return parameter
+
+        result = parameter
+
+        if(porcentage and sign == '+'):
+            result += result * (int(value) / 100)
+        elif(porcentage and sign == '-'):
+            result -= result * (int(value) / 100)
+        elif(sign == '+'):
+            result += int(value)
+        elif(sign == '-'):
+            result -= int(value)
+        
+
+        return result
+    
+    def extend_unit(self, unit: UnitDTO) -> UnitDTO:
+        vitality = 0
+        strength = 0
+        dexterity = 0
+        mind = 0
+        faith = 0
+        essence = 0
+        agility = 0
+        hit_chance = 0
+        evasion = 0
+        armor = 0
+        magic_armor = 0
+        hit_rate = 0
+        movement = 0
+        shield = 0
+        physical_damage = 0
+        magical_damage = 0
+
+        vitality = self.value_multiplier( unit.base_vitality, unit.specialization.vitality, 10 )
+        strength = self.value_multiplier( unit.base_strength, unit.specialization.strength, 5 );
+        dexterity = self.value_multiplier( unit.base_dexterity, unit.specialization.dexterity, 5 );
+        mind = self.value_multiplier( unit.base_mind, unit.specialization.mind, 5 );
+        faith = self.value_multiplier( unit.base_faith, unit.specialization.faith, 5 );
+
+        essence = self.value_multiplier( unit.base_essence, unit.specialization.essence, 10 );
+        agility = self.value_multiplier( unit.base_agility, unit.specialization.agility, 5 );
+        hit_chance = self.value_multiplier( unit.base_hit_chance, unit.specialization.hit_chance, 5 );
+        evasion = self.value_multiplier( unit.base_evasion, unit.specialization.evasion, 5 );
+
+        hit_rate = unit.specialization.hit_rate
+        movement = unit.specialization.movement
+
+        # Main stats Bonuses
+        vitality += faith;
+        essence += mind;
+        hit_chance += dexterity/2;
+        evasion += dexterity/2;
+
+        # Damage
+        physical_damage = strength + dexterity;
+        magical_damage = mind + faith;
+
+        # From items
+        vitality += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.vitality, acc), unit.items, 0)
+        #strength += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.strength, acc), unit.items, 0)
+        #dexterity += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.dexterity, acc), unit.items, 0)
+        #mind += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.mind, acc), unit.items, 0)
+        #faith += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.faith, acc), unit.items, 0)
+        essence += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.essence, acc), unit.items, 0)
+        agility += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.agility, acc), unit.items, 0)
+        hit_chance += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.hit_chance, acc), unit.items, 0)
+        evasion += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.evasion, acc), unit.items, 0)
+        physical_damage += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.physical_damage, acc), unit.items, 0)
+        magical_damage += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.magical_damage, acc), unit.items, 0)
+        armor += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.armor, acc), unit.items, 0)
+        magic_armor += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.magic_armor, acc), unit.items, 0)
+
+        shield += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.shield, acc), unit.items, 0)
+
+        weight = functools.reduce(lambda acc, item: item.item.weight + acc, unit.items, 0)
+
+        # From traits
+        vitality += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.vitality, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+        #strength += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.strength, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+        #dexterity += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.dexterity, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+        #mind += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.mind, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+        #faith += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.faith, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+        essence += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.essence, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+        agility += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.agility, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+        hit_chance += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.hit_chance, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+        evasion += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.evasion, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+        physical_damage += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.physical_damage, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+        magical_damage += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.magical_damage, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+        armor += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.armor, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+        magic_armor += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.magic_armor, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+
+        shield += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.shield, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+
+        # Rounding
+        vitality = round(vitality, 1)
+        strength = round(strength, 1)
+        dexterity = round(dexterity, 1)
+        mind = round(mind, 1)
+        faith = round(faith, 1)
+        essence = round(essence, 1)
+        agility = round(agility, 1)
+        hit_chance = round(hit_chance, 1)
+        evasion = round(evasion, 1)
+        armor = round(armor, 1)
+        magic_armor = round(magic_armor, 1)
+        shield = round(shield, 1)
+        physical_damage = round(physical_damage, 1)
+        magical_damage = round(magical_damage, 1)
+        weight = round(weight, 1)
+        
+        # Assigning
+        unit_extended = unit.dict()
+
+        unit_extended["vitality"] = vitality
+        unit_extended["strength"] = strength
+        unit_extended["dexterity"] = dexterity
+        unit_extended["mind"] = mind
+        unit_extended["faith"] = faith
+        unit_extended["essence"] = essence
+        unit_extended["agility"] = agility
+        unit_extended["hit_chance"] = hit_chance
+        unit_extended["evasion"] = evasion
+        unit_extended["armor"] = armor
+        unit_extended["magic_armor"] = magic_armor
+        unit_extended["hit_rate"] = hit_rate
+        unit_extended["movement"] = movement
+        unit_extended["shield"] = shield
+        unit_extended["physical_damage"] = physical_damage
+        unit_extended["magical_damage"] = magical_damage
+        unit_extended["weight"] = weight
+
+        return unit_extended
+
+
