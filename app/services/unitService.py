@@ -307,7 +307,7 @@ class UnitService:
         return result
     
     def mod_parameter_operation(self, mod_parameter_string: str, parameter: float):
-        regex = '(?P<sign>[+-])?(?P<value>(\d+|ND|MD|HP))?(?P<porcentage>\s*%)?(?P<max>\s*max)?'
+        regex = '(?P<sign>[+-])?(?P<value>([\d+.]+|ND|MD|HP))?(?P<porcentage>\s*%)?(?P<max>\s*max)?'
         match = re.search(regex, mod_parameter_string)
         sign = match['sign']
         max = match['max']
@@ -319,16 +319,75 @@ class UnitService:
         result = parameter
 
         if(porcentage and sign == '+'):
-            result += result * (int(value) / 100)
+            result += result * (float(value) / 100)
         elif(porcentage and sign == '-'):
-            result -= result * (int(value) / 100)
+            result -= result * (float(value) / 100)
         elif(sign == '+'):
-            result += int(value)
+            result += float(value)
         elif(sign == '-'):
-            result -= int(value)
+            result -= float(value)
         
 
         return result
+
+    def weight_penalty(self, strength: float, weight: float, strength_rate: float):
+        strength_modified = strength * strength_rate
+        if(weight < strength_modified/4):
+            return 0
+        elif(weight < strength_modified/2):
+            return 1
+        elif(weight < 3*strength_modified/4):
+            return 2
+        elif(weight < strength_modified):
+            return 3
+        else:
+            return 4
+    
+    def apply_weight_penalty(self, weight_penalty, value,  parameter):
+        if(weight_penalty == 0):
+            return value
+        elif(weight_penalty == 1):
+            if(parameter == 'evasion'):
+                return value - value * 0.15
+            elif(parameter == 'agility'):
+                return value - value * 0.15
+            elif(parameter == 'hit_chance'):
+                return value - value * 0.1
+            else:
+                return value
+        elif(weight_penalty == 2):
+            if(parameter == 'evasion'):
+                return value - value * 0.3
+            elif(parameter == 'agility'):
+                return value - value * 0.3
+            elif(parameter == 'hit_chance'):
+                return value - value * 0.15
+            elif(parameter == 'movement'):
+                return value - 1
+            else:
+                return value
+        elif(weight_penalty == 3):
+            if(parameter == 'evasion'):
+                return value - value * 0.6
+            elif(parameter == 'agility'):
+                return value - value * 0.6
+            elif(parameter == 'hit_chance'):
+                return value - value * 0.25
+            elif(parameter == 'movement'):
+                return value - 1
+            else:
+                return value
+        elif(weight_penalty == 4):
+            if(parameter == 'evasion'):
+                return value - value * 0.75
+            elif(parameter == 'agility'):
+                return value - value * 0.75
+            elif(parameter == 'hit_chance'):
+                return value - value * 0.4
+            elif(parameter == 'movement'):
+                return value - 2
+            else:
+                return value
     
     def extend_unit(self, unit: UnitDTO) -> UnitDTO:
         vitality = 0
@@ -389,7 +448,7 @@ class UnitService:
 
         shield += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.shield, acc), unit.items, 0)
 
-        weight = functools.reduce(lambda acc, item: item.item.weight + acc, unit.items, 0)
+        weight = functools.reduce(lambda acc, item: item.item.weight*item.quantity + acc, unit.items, 0)
 
         # From traits
         vitality += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.vitality, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
@@ -407,6 +466,14 @@ class UnitService:
         magic_armor += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.magic_armor, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
 
         shield += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.shield, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+
+        weight_penalty = self.weight_penalty(strength, weight, 1.1)
+
+        # Apply weight penalty
+        evasion = self.apply_weight_penalty(weight_penalty, evasion, 'evasion')
+        agility = self.apply_weight_penalty(weight_penalty, agility, 'agility')
+        movement = self.apply_weight_penalty(weight_penalty, movement, 'movement')
+        hit_chance = self.apply_weight_penalty(weight_penalty, hit_chance, 'hit_chance')
 
         # Rounding
         vitality = round(vitality, 1)
@@ -445,6 +512,7 @@ class UnitService:
         unit_extended["physical_damage"] = physical_damage
         unit_extended["magical_damage"] = magical_damage
         unit_extended["weight"] = weight
+        unit_extended["weight_penalty"] = weight_penalty
 
         return unit_extended
 
