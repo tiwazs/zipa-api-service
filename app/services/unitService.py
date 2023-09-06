@@ -307,6 +307,7 @@ class UnitService:
         return result
     
     def mod_parameter_operation(self, mod_parameter_string: str, parameter: float):
+        if mod_parameter_string is None: return 0
         regex = '(?P<sign>[+-])?(?P<value>([\d+.]+|ND|MD|HP))?(?P<porcentage>\s*%)?(?P<max>\s*max)?'
         match = re.search(regex, mod_parameter_string)
         sign = match['sign']
@@ -401,6 +402,8 @@ class UnitService:
         evasion = 0
         armor = 0
         magic_armor = 0
+        armor_piercing = 0
+        spell_piercing = 0
         hit_rate = 0
         movement = 0
         shield = 0
@@ -445,6 +448,8 @@ class UnitService:
         magical_damage += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.magical_damage, acc), unit.items, 0)
         armor += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.armor, acc), unit.items, 0)
         magic_armor += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.magic_armor, acc), unit.items, 0)
+        armor_piercing += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.armor_piercing, acc), unit.items, 0)
+        spell_piercing += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.spell_piercing, acc), unit.items, 0)
 
         shield += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.shield, acc), unit.items, 0)
 
@@ -464,6 +469,8 @@ class UnitService:
         magical_damage += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.magical_damage, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
         armor += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.armor, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
         magic_armor += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.magic_armor, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+        armor_piercing += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.armor_piercing, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+        spell_piercing += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.spell_piercing, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
 
         shield += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.shield, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
 
@@ -506,6 +513,8 @@ class UnitService:
         unit_extended["evasion"] = evasion
         unit_extended["armor"] = armor
         unit_extended["magic_armor"] = magic_armor
+        unit_extended["armor_piercing"] = armor_piercing
+        unit_extended["spell_piercing"] = spell_piercing
         unit_extended["hit_rate"] = hit_rate
         unit_extended["movement"] = movement
         unit_extended["shield"] = shield

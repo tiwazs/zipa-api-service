@@ -152,6 +152,8 @@ model Item {
     physical_damage       String?
     magical_damage        String?
     healing               String?
+    armor_piercing        String?
+    spell_piercing        String?
     vitality_recovery     String?
     essence_recovery      String?
     vitality              String?
@@ -196,6 +198,8 @@ model Effect {
     physical_damage           String?
     magical_damage            String?
     healing                   String?
+    armor_piercing            String?
+    spell_piercing            String?
     vitality                  String?
     range                     String?
     damage                    String?
