@@ -439,6 +439,8 @@ model Unit {
     specialization    UnitSpecialization @relation(fields: [specialization_id], references: [id], onDelete: Cascade)
     specialization_id String
     skill_picks       String?
+    ascended          Boolean            @default(false)
+    ascended_params   String?
     rank              Int                @default(1)
     items             UnitItem[]
     user              User               @relation(fields: [user_id], references: [id], onDelete: Cascade)

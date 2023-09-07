@@ -390,6 +390,95 @@ class UnitService:
             else:
                 return value
     
+    def apply_ascension(self, value, tier):
+        if(tier == 1):
+            return value*1.24
+        elif(tier == 2):
+            return value*1.18
+        elif(tier == 3):
+            return value*1.12
+        elif(tier == 4):
+            return value*1.05
+    
+    def ascension_parameters(self, parameters, tier):
+        if parameters is None: parameters = ""
+
+        if tier == 1:
+            max_points = 23
+            max_points_single = 7
+            max_points_damage = 12
+        elif tier == 2:
+            max_points = 20
+            max_points_single = 6
+            max_points_damage = 10
+        elif tier == 3:
+            max_points = 17
+            max_points_single = 5
+            max_points_damage = 8
+        else:
+            max_points = 14
+            max_points_single = 4
+            max_points_damage = 6
+
+        count_points = 0
+
+        # Reading the parameters selected to increase
+        regex_vitality = '(?i)(?P<VITALITY>\d+)\s*vit'
+        regex_strength = '(?i)(?P<STRENGTH>\d+)\s*str'
+        regex_dexterity = '(?i)(?P<DEXTERITY>\d+)\s*dex'
+        regex_mind = '(?i)(?P<MIND>\d+)\s*min'
+        regex_faith = '(?i)(?P<FAITH>\d+)\s*fai'
+        regex_essence = '(?i)(?P<ESSENCE>\d+)\s*ess'
+        regex_agility = '(?i)(?P<AGILITY>\d+)\s*agi'
+        regex_hit_chance = '(?i)(?P<HIT_CHANCE>\d+)\s*hit'
+        regex_evasion = '(?i)(?P<EVASION>\d+)\s*eva'
+        
+        ascended_parameters = {}
+
+        match = re.search(regex_vitality, parameters)
+        ascended_parameters['vitality'] = int( match['VITALITY'] ) if match else 0
+        match = re.search(regex_strength, parameters)
+        ascended_parameters['strength'] = int( match['STRENGTH'] ) if match else 0
+        match = re.search(regex_dexterity, parameters)
+        ascended_parameters['dexterity'] = int( match['DEXTERITY'] ) if match else 0
+        match = re.search(regex_mind, parameters)
+        ascended_parameters['mind'] = int( match['MIND'] ) if match else 0
+        match = re.search(regex_faith, parameters)
+        ascended_parameters['faith'] = int( match['FAITH'] ) if match else 0
+        match = re.search(regex_essence, parameters)
+        ascended_parameters['essence'] = int( match['ESSENCE'] ) if match else 0
+        match = re.search(regex_agility, parameters)
+        ascended_parameters['agility'] = int( match['AGILITY'] ) if match else 0
+        match = re.search(regex_hit_chance, parameters)
+        ascended_parameters['hit_chance'] = int( match['HIT_CHANCE'] ) if match else 0
+        match = re.search(regex_evasion, parameters)
+        ascended_parameters['evasion'] = int( match['EVASION'] ) if match else 0
+
+        empty_parameters = {
+            "vitality": 0,
+            "strength": 0,
+            "dexterity": 0,
+            "mind": 0,
+            "faith": 0,
+            "essence": 0,
+            "agility": 0,
+            "hit_chance": 0,
+            "evasion": 0
+        }
+
+        count_points = ascended_parameters['vitality'] + ascended_parameters['strength'] + ascended_parameters['dexterity'] + ascended_parameters['mind'] + ascended_parameters['faith'] + ascended_parameters['essence'] + ascended_parameters['agility'] + ascended_parameters['hit_chance'] + ascended_parameters['evasion']
+        if count_points > max_points: return empty_parameters
+
+        if ascended_parameters['strength'] + ascended_parameters['dexterity'] > max_points_damage: return empty_parameters
+
+        for parameter in ascended_parameters.keys():
+            if ascended_parameters[parameter] > max_points_single:
+                return empty_parameters
+        
+        ascended_parameters['vitality'] = ascended_parameters["vitality"]*6
+        ascended_parameters['essence'] = ascended_parameters["essence"]*6
+        return ascended_parameters                        
+    
     def extend_unit(self, unit: UnitDTO) -> UnitDTO:
         vitality = 0
         strength = 0
@@ -423,6 +512,20 @@ class UnitService:
 
         hit_rate = unit.specialization.hit_rate
         movement = unit.specialization.movement
+
+        # Apply Ascention bonus
+        if unit.ascended:
+            ascension_parameters = self.ascension_parameters(unit.ascended_params, unit.specialization.tier)
+
+            vitality = self.apply_ascension(vitality, unit.specialization.tier) + ascension_parameters['vitality']
+            strength = self.apply_ascension(strength, unit.specialization.tier) + ascension_parameters['strength']
+            dexterity = self.apply_ascension(dexterity, unit.specialization.tier) + ascension_parameters['dexterity']
+            mind = self.apply_ascension(mind, unit.specialization.tier) + ascension_parameters['mind']
+            faith = self.apply_ascension(faith, unit.specialization.tier) + ascension_parameters['faith']
+            essence = self.apply_ascension(essence, unit.specialization.tier) + ascension_parameters['essence']
+            agility = self.apply_ascension(agility, unit.specialization.tier) + ascension_parameters['agility']
+            hit_chance = self.apply_ascension(hit_chance, unit.specialization.tier) + ascension_parameters['hit_chance']
+            evasion = self.apply_ascension(evasion, unit.specialization.tier) + ascension_parameters['evasion']
 
         # Main stats Bonuses
         vitality += faith;

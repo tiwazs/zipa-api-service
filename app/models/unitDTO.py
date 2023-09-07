@@ -15,6 +15,8 @@ class UnitBaseDTO(BaseModel):
     base_agility: float
     base_hit_chance: float
     base_evasion: float
+    ascended: Optional[bool] = False
+    ascended_params: Optional[str]
     faction_id: str
     specialization_id: str
     skill_picks: Optional[str] = None
@@ -42,6 +44,8 @@ class UnitUpdateDTO(UnitBaseDTO):
     base_agility: Optional[float]
     base_hit_chance: Optional[float]
     base_evasion: Optional[float]
+    ascended: Optional[bool]
+    ascended_params: Optional[str]
     faction_id: Optional[str]
     specialization_id: Optional[str]
     skill_picks: Optional[str] = None
