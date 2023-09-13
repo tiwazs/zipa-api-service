@@ -35,6 +35,8 @@ class DamageCalculatorService:
                 damage += float(value)
             elif(sign == '-'):
                 damage -= float(value)
+            elif(porcentage):
+                damage = damage * (float(value) / 100)
         
 
         return damage
