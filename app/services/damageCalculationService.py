@@ -1,4 +1,5 @@
 import random
+import re
 from typing import List
 
 import matplotlib.pyplot as plt
@@ -17,6 +18,27 @@ class DamageCalculatorService:
             if rand < weights[i]:
                 return i
     
+    def apply_modifiers(self, damage: float, modifiers: List[str]):
+        if modifiers is None: return damage
+        for modifier in modifiers:
+            regex = '(?P<sign>[+-])?(?P<value>([\d+.]+|ND|MD|HP))?(?P<porcentage>\s*%)?(?P<max>\s*max)?'
+            match = re.search(regex, modifier)
+            sign = match['sign']
+            value = match['value']
+            porcentage = match['porcentage']
+
+            if(porcentage and sign == '+'):
+                damage += damage * (float(value) / 100)
+            elif(porcentage and sign == '-'):
+                damage -= damage * (float(value) / 100)
+            elif(sign == '+'):
+                damage += float(value)
+            elif(sign == '-'):
+                damage -= float(value)
+        
+
+        return damage
+    
     def hit_evasion(self, hit_chance: float, evasion: float, hw: float=1, offset: float=25) -> List[float]:
         base_hit_probability = offset + ( (hit_chance*hw) / (hit_chance*hw + evasion) )*100
         base_hit_probability = base_hit_probability if base_hit_probability <= 100 else 100
@@ -32,7 +54,8 @@ class DamageCalculatorService:
     def damage_calculation(self, damage: float, 
                                  hit_chance: float,
                                  armor: float, 
-                                 evasion: float, 
+                                 evasion: float,
+                                 damage_modifiers: List[str] = None, 
                                  shield: float = 0,
                                  armor_penetration: float = 0, 
                                  is_projectile:bool = False, 
@@ -45,8 +68,12 @@ class DamageCalculatorService:
         block_reduction = 1-block_reduction/100
         deflect_reduction = 1-deflect_reduction/100
 
+        damage_after_modifiers = self.apply_modifiers(damage, damage_modifiers) if damage_modifiers else damage
+
         damage_calculation_dict = {
             'damage': damage,
+            'damage_modifiers': damage_modifiers if damage_modifiers else [],
+            'damage_after_modifiers': damage_after_modifiers,
             'hit_chance': hit_chance,
             'armor': armor,
             'evasion': evasion,
@@ -77,7 +104,7 @@ class DamageCalculatorService:
         if type_modifier is None:
             pass
         
-        final_damage = damage
+        final_damage = damage_after_modifiers
 
         # Evaluate if its blocked if its projectile
         block_result = 0
