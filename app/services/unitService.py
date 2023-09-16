@@ -19,7 +19,15 @@ class UnitService:
             include={
                 "items": False if not include_items else {
                     "include": {
-                        "item": include_items
+                        "item": {
+                            "include":{
+                                "skills": {
+                                    "include":{
+                                        "skill":True
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 "faction": False if not include_faction else {
@@ -69,7 +77,15 @@ class UnitService:
             include={
                 "items": False if not include_items else {
                     "include": {
-                        "item": include_items
+                        "item": {
+                            "include":{
+                                "skills": {
+                                    "include":{
+                                        "skill":True
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 "faction": False if not include_faction else {
@@ -117,7 +133,15 @@ class UnitService:
             include={
                 "items": False if not include_items else {
                     "include": {
-                        "item": include_items
+                        "item": {
+                            "include":{
+                                "skills": {
+                                    "include":{
+                                        "skill":True
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 "faction": False if not include_faction else {
