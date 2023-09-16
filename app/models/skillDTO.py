@@ -16,6 +16,7 @@ class SkillBaseDTO(BaseModel):
     vitality_cost: Optional[str]
     cooldown: Optional[str]
     channeled: Optional[str]
+    projectile: Optional[bool]
     target: Optional[str]
     skill_on: Optional[str]
 
@@ -42,6 +43,7 @@ class SkillUpdateDTO(SkillBaseDTO):
     vitality_cost: Optional[str]
     cooldown: Optional[str]
     channeled: Optional[str]
+    projectile: Optional[bool]
     target: Optional[str]
     skill_on: Optional[str]
 

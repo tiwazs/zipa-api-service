@@ -88,6 +88,7 @@ model Skill {
     vitality_cost        String?
     cooldown             String?                   @default("0")
     channeled            String?                   @default("")
+    projectile           Boolean                   @default(false)
     target               Target                    @default(ENEMY)
     skill_on             SkillOn                   @default(INSTANT)
     skill_types          AssignedSkillType[]
