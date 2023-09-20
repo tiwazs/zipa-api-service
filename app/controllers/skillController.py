@@ -72,7 +72,7 @@ async def remove_type_from_skill(id: str, skill_type_id: str, request: Request, 
         return {"error": str(e)}
     
 @router.put("/add_effect/{id}")
-async def add_effect_to_skill(id: str, effect_id: str, duration: int, request: Request, response: Response):
+async def add_effect_to_skill(id: str, effect_id: str, duration: str, request: Request, response: Response):
     try:
         skill = await SkillService(request.app.state.db).add_effect(id, effect_id, duration)
         if skill is None:

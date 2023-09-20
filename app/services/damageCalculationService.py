@@ -174,6 +174,52 @@ class DamageCalculatorService:
 
         damage_calculation_dict['final_damage'] = final_damage
         return final_damage, damage_calculation_dict
+    
+    def healing_calculation(self, healing: float, 
+                                 hit_chance: float,
+                                 healing_modifiers: List[str] = None, 
+                                 type_modifier: float = None):
+        hit_crit_types = ['critical', 'hit']
+
+        healing_after_modifiers = self.apply_modifiers(healing, healing_modifiers) if healing_modifiers else healing
+
+        healing_calculation_dict = {
+            'healing': healing,
+            'healing_modifiers': healing_modifiers if healing_modifiers else [],
+            'healing_after_modifiers': healing_after_modifiers,
+            'hit_chance': hit_chance,
+            'type_modifier': type_modifier,
+            'result_details': {
+                'critical_probability': 0,
+                'hit_probability': 0,
+                'hit_crit_result': 0,
+                'healing_after_hit_crit': 0
+            },
+            'final_healing': 0
+        }
+
+        if type_modifier is None:
+            pass
+        
+        final_healing = healing_after_modifiers                
+        
+        # Determine probability to hit normally, critically
+        hit_crit_probabilities = self.hit_evasion(hit_chance, 0)
+        healing_calculation_dict['result_details']['critical_probability'] = hit_crit_probabilities[0]
+        healing_calculation_dict['result_details']['hit_probability'] = hit_crit_probabilities[1]
+
+        # Evualate if it hits normally, critically
+        hit_crit_result = self.weighted_random(hit_crit_probabilities)
+        healing_calculation_dict['result_details']['hit_crit_result'] = hit_crit_types[hit_crit_result]
+
+        # Critical hit
+        if hit_crit_result == 0:
+            final_healing = final_healing*1.5
+        
+        healing_calculation_dict['result_details']['healing_after_hit_crit'] = final_healing
+
+        healing_calculation_dict['final_healing'] = final_healing
+        return final_healing, healing_calculation_dict
 
 if __name__ == '__main__':
     options = [10,50,20,15,5]

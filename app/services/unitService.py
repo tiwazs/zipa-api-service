@@ -109,7 +109,15 @@ class UnitService:
                     "include": {
                         "traits": {
                             "include": {
-                                "trait": include_specialization
+                                "trait": {
+                                    "include": {
+                                        "effects": {
+                                            "include": {
+                                                "effect": True
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         },
                         "items": {
@@ -119,7 +127,15 @@ class UnitService:
                         },
                         "skills": {
                             "include": {
-                                "skill": include_specialization
+                                "skill": {
+                                    "include": {
+                                        "effects": {
+                                            "include": {
+                                                "effect": True
+                                            }
+                                        }
+                                    }                                          
+                                }
                             }
                         },
                     }

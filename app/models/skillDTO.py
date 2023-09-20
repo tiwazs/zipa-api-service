@@ -22,7 +22,7 @@ class SkillBaseDTO(BaseModel):
 
 class SkillEffectToCreate(BaseModel):
     effect_id: str
-    duration: float
+    duration: str
 
 class SkillCreateDTO(SkillBaseDTO):
     skill_type_ids: Optional[List[str]] = None
