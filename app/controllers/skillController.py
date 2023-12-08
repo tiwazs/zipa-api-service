@@ -111,7 +111,7 @@ async def update_effect_from_skill(id: str, effect_id: str, duration: int, reque
         return {"error": str(e)}
 
 @router.put("/add_summon/{id}")
-async def add_summon_to_skill(id: str, summon_id: str, duration: int, request: Request, response: Response):
+async def add_summon_to_skill(id: str, summon_id: str, duration: str, request: Request, response: Response):
         skill = await SkillService(request.app.state.db).add_summon(id, summon_id, duration)
         if skill is None:
             response.status_code = status.HTTP_204_NO_CONTENT

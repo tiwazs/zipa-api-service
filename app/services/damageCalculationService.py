@@ -41,7 +41,7 @@ class DamageCalculatorService:
 
         return damage
     
-    def hit_evasion(self, hit_chance: float, evasion: float, hw: float=1, offset: float=25) -> List[float]:
+    def hit_evasion(self, hit_chance: float, evasion: float, hw: float=1, offset: float=20) -> List[float]:
         base_hit_probability = offset + ( (hit_chance*hw) / (hit_chance*hw + evasion) )*100
         base_hit_probability = base_hit_probability if base_hit_probability <= 100 else 100
         base_evasion_probability = 100 - base_hit_probability

@@ -4,8 +4,8 @@ from typing import Optional
 class SkillSummonBaseDTO(BaseModel):
     skill_id: str
     unit_id: str
-    duration: str
-    conditions: Optional[str]
+    duration: Optional[str] = None
+    conditions: Optional[str] = None
 
 class SkillSummonCreateDTO(SkillSummonBaseDTO):
     pass

@@ -81,7 +81,15 @@ class UnitService:
                             "include":{
                                 "skills": {
                                     "include":{
-                                        "skill":True
+                                        "skill": {
+                                            "include":{
+                                                "effects": {
+                                                    "include":{
+                                                        "effect": True
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
