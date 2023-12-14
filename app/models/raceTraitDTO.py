@@ -1,20 +1,20 @@
 from pydantic import BaseModel
 from typing import Optional
 
-class FactionTraitBaseDTO(BaseModel):
+class RaceTraitBaseDTO(BaseModel):
     unit_id: str
     trait_id: str
     conditions: Optional[str]
 
-class FactionTraitCreateDTO(FactionTraitBaseDTO):
+class RaceTraitCreateDTO(RaceTraitBaseDTO):
     pass
 
-class FactionTraitUpdateDTO(FactionTraitBaseDTO):
+class RaceTraitUpdateDTO(RaceTraitBaseDTO):
     unit_id: Optional[str]
     trait_id: Optional[str]
     conditions: Optional[str]
 
-class FactionTraitDTO(FactionTraitBaseDTO):
+class RaceTraitDTO(RaceTraitBaseDTO):
     id: str
     created_at: str
     updated_at: str

@@ -1,17 +1,17 @@
 from pydantic import BaseModel
 from typing import List, Optional
 
-class FactionUnitDTO(BaseModel):
+class RaceUnitDTO(BaseModel):
     faction_id: str
     unit_specialization_id: str
 
-class FactionUnitCreateDTO(FactionUnitDTO):
+class RaceUnitCreateDTO(RaceUnitDTO):
     pass
 
-class FactionUnitUpdateDTO(FactionUnitDTO):
+class RaceUnitUpdateDTO(RaceUnitDTO):
     pass
 
-class FactionUnitDTO(FactionUnitDTO):
+class RaceUnitDTO(RaceUnitDTO):
     id: str
     created_at: str
     updated_at: str

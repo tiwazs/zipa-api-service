@@ -11,23 +11,22 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Faction {
-    id                   String                      @id @default(cuid())
-    name                 String
-    description          String                      @db.Text
-    identity             String?                     @db.Text
-    aspects              String?                     @db.Text
-    created_at           DateTime                    @default(now())
-    updated_at           DateTime                    @updatedAt
-    unit_specializations FactionUnitSpecialization[]
-    traits               FactionTrait[]
-    Unit                 Unit[]
+model Race {
+    id          String      @id @default(cuid())
+    name        String
+    description String      @db.Text
+    identity    String?     @db.Text
+    aspects     String?     @db.Text
+    created_at  DateTime    @default(now())
+    updated_at  DateTime    @updatedAt
+    traits      RaceTrait[]
+    Unit        Unit[]
 }
 
 model UnitSpecialization {
-    id                   String                      @id @default(cuid())
+    id                   String                    @id @default(cuid())
     name                 String
-    description          String                      @db.Text
+    description          String                    @db.Text
     vitality             Float
     strength             Float
     dexterity            Float
@@ -41,26 +40,15 @@ model UnitSpecialization {
     evasion              Float
     hit_rate             Float
     movement             Float
-    weapon_proficiencies String                      @db.Text
+    weapon_proficiencies String                    @db.Text
     tier                 Int
     skills               UnitSpecializationSkill[]
     items                UnitSpecializationItem[]
     traits               UnitSpecializationTrait[]
-    created_at           DateTime                    @default(now())
-    updated_at           DateTime                    @updatedAt
-    factions             FactionUnitSpecialization[]
+    created_at           DateTime                  @default(now())
+    updated_at           DateTime                  @updatedAt
     skills_summon        SkillSummon[]
     Unit                 Unit[]
-}
-
-model FactionUnitSpecialization {
-    id                     String             @id @default(cuid())
-    faction                Faction            @relation(fields: [faction_id], references: [id], onDelete: Cascade)
-    faction_id             String
-    unit_specialization    UnitSpecialization @relation(fields: [unit_specialization_id], references: [id], onDelete: Cascade)
-    unit_specialization_id String
-    created_at             DateTime           @default(now())
-    updated_at             DateTime           @updatedAt
 }
 
 model SkillType {
@@ -138,7 +126,7 @@ model Trait {
     unit_specializations UnitSpecializationTrait[]
     created_at           DateTime                  @default(now())
     updated_at           DateTime                  @updatedAt
-    FactionTrait         FactionTrait[]
+    RaceTrait            RaceTrait[]
 }
 
 model Item {
@@ -353,10 +341,10 @@ enum ObjectType {
     OTHER
 }
 
-model FactionTrait {
+model RaceTrait {
     id         String   @id @default(cuid())
-    faction    Faction  @relation(fields: [faction_id], references: [id], onDelete: Cascade)
-    faction_id String
+    race       Race     @relation(fields: [race_id], references: [id], onDelete: Cascade)
+    race_id    String
     trait      Trait    @relation(fields: [trait_id], references: [id], onDelete: Cascade)
     trait_id   String
     conditions String?
@@ -435,8 +423,8 @@ model Unit {
     base_agility      Float
     base_hit_chance   Float
     base_evasion      Float
-    faction           Faction            @relation(fields: [faction_id], references: [id], onDelete: Cascade)
-    faction_id        String
+    race              Race               @relation(fields: [race_id], references: [id], onDelete: Cascade)
+    race_id           String
     specialization    UnitSpecialization @relation(fields: [specialization_id], references: [id], onDelete: Cascade)
     specialization_id String
     skill_picks       String?
