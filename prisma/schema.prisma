@@ -355,21 +355,21 @@ model RaceTrait {
 // User Management for NextAuth.js
 // ========================================
 model User {
-    id            String       @id @default(cuid())
-    name          String?      @unique
-    email         String       @unique
+    id            String    @id @default(cuid())
+    name          String?   @unique
+    email         String    @unique
     emailVerified DateTime?
     password      String?
     firstName     String?
     lastName      String?
     image         String?
-    apiKey        String?      @unique
-    createdAt     DateTime     @default(now())
-    updatedAt     DateTime     @updatedAt
+    apiKey        String?   @unique
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
     accounts      Account[]
     sessions      Session[]
     Unit          Unit[]
-    SubFaction    SubFaction[]
+    Faction       Faction[]
 }
 
 model Account {
@@ -436,7 +436,7 @@ model Unit {
     user_id           String
     created_at        DateTime           @default(now())
     updated_at        DateTime           @updatedAt
-    sub_factions      SubFactionMember[]
+    factions          FactionMember[]
 }
 
 model UnitItem {
@@ -450,38 +450,38 @@ model UnitItem {
     updated_at DateTime @updatedAt
 }
 
-model SubFaction {
-    id                  String             @id @default(cuid())
+model Faction {
+    id                  String            @id @default(cuid())
     name                String
-    description         String?            @db.Text
+    description         String?           @db.Text
     holdings            String?
-    user                User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
+    user                User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
     user_id             String
-    members             SubFactionMember[]
+    members             FactionMember[]
     faction_ranks       FactionRank[]
-    factions_relations  FactionRelation[]  @relation("faction")
-    factions_relations2 FactionRelation[]  @relation("faction2")
-    created_at          DateTime           @default(now())
-    updated_at          DateTime           @updatedAt
+    factions_relations  FactionRelation[] @relation("faction")
+    factions_relations2 FactionRelation[] @relation("faction2")
+    created_at          DateTime          @default(now())
+    updated_at          DateTime          @updatedAt
 }
 
 model FactionRank {
-    id           String             @id @default(cuid())
+    id           String          @id @default(cuid())
     name         String
-    description  String?            @db.Text
-    rank         Int                @default(1)
-    faction      SubFaction         @relation(fields: [faction_id], references: [id], onDelete: Cascade)
+    description  String?         @db.Text
+    rank         Int             @default(1)
+    faction      Faction         @relation(fields: [faction_id], references: [id], onDelete: Cascade)
     faction_id   String
-    created_at   DateTime           @default(now())
-    updated_at   DateTime           @updatedAt
-    ranked_units SubFactionMember[]
+    created_at   DateTime        @default(now())
+    updated_at   DateTime        @updatedAt
+    ranked_units FactionMember[]
 }
 
-model SubFactionMember {
+model FactionMember {
     id              String      @id @default(cuid())
     unit            Unit        @relation(fields: [unit_id], references: [id], onDelete: Cascade)
     unit_id         String
-    faction         SubFaction  @relation(fields: [faction_id], references: [id], onDelete: Cascade)
+    faction         Faction     @relation(fields: [faction_id], references: [id], onDelete: Cascade)
     faction_id      String
     faction_rank    FactionRank @relation(fields: [faction_rank_id], references: [id], onDelete: Cascade)
     faction_rank_id String
@@ -498,9 +498,9 @@ enum FactionRelationType {
 
 model FactionRelation {
     id          String              @id @default(cuid())
-    faction     SubFaction          @relation("faction", fields: [faction_id], references: [id], onDelete: Cascade)
+    faction     Faction             @relation("faction", fields: [faction_id], references: [id], onDelete: Cascade)
     faction_id  String
-    faction2    SubFaction          @relation("faction2", fields: [faction2_id], references: [id], onDelete: Cascade)
+    faction2    Faction             @relation("faction2", fields: [faction2_id], references: [id], onDelete: Cascade)
     faction2_id String
     type        FactionRelationType
     created_at  DateTime            @default(now())
