@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from .configurations.dbinit import database
 from .configurations.information import *
 
-from .controllers import raceController, skillTypeController, skillController, traitController, itemController, effectController, unitSpecializationController, unitGenController, unitController, subFactionController, damageCalculationController
+from .controllers import FactionController, raceController, skillTypeController, skillController, traitController, itemController, effectController, unitSpecializationController, unitGenController, unitController, damageCalculationController
 
 def create_server():
     # Create the FastAPI app. Setting server information
@@ -19,7 +19,7 @@ def create_server():
 
     # Import Controllers/Routers
     app.include_router(damageCalculationController.router)
-    app.include_router(subFactionController.router)
+    app.include_router(FactionController.router)
     app.include_router(unitController.router)
     app.include_router(unitGenController.router)
     app.include_router(raceController.router)
