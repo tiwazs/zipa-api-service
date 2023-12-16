@@ -12,21 +12,49 @@ datasource db {
 }
 
 model Race {
-    id          String      @id @default(cuid())
-    name        String
-    description String      @db.Text
-    identity    String?     @db.Text
-    aspects     String?     @db.Text
-    created_at  DateTime    @default(now())
-    updated_at  DateTime    @updatedAt
-    traits      RaceTrait[]
-    Unit        Unit[]
+    id                String        @id @default(cuid())
+    name              String
+    description       String        @db.Text
+    identity          String?       @db.Text
+    aspects           String?       @db.Text
+    created_at        DateTime      @default(now())
+    updated_at        DateTime      @updatedAt
+    traits            RaceTrait[]
+    Unit              Unit[]
+    avaiable_cultures RaceCulture[]
+    avaiable_beliefs  RaceBelief[]
+}
+
+model Culture {
+    id                        String                      @id @default(cuid())
+    name                      String
+    description               String                      @db.Text
+    identity                  String?                     @db.Text
+    aspects                   String?                     @db.Text
+    created_at                DateTime                    @default(now())
+    updated_at                DateTime                    @updatedAt
+    traits                    CultureTrait[]
+    available_races           RaceCulture[]
+    available_specializations CultureUnitSpecialization[]
+}
+
+model Belief {
+    id                        String                     @id @default(cuid())
+    name                      String
+    description               String                     @db.Text
+    identity                  String?                    @db.Text
+    aspects                   String?                    @db.Text
+    created_at                DateTime                   @default(now())
+    updated_at                DateTime                   @updatedAt
+    traits                    BeliefTrait[]
+    available_races           RaceBelief[]
+    available_specializations BeliefUnitSpecialization[]
 }
 
 model UnitSpecialization {
-    id                   String                    @id @default(cuid())
+    id                   String                      @id @default(cuid())
     name                 String
-    description          String                    @db.Text
+    description          String                      @db.Text
     vitality             Float
     strength             Float
     dexterity            Float
@@ -40,15 +68,17 @@ model UnitSpecialization {
     evasion              Float
     hit_rate             Float
     movement             Float
-    weapon_proficiencies String                    @db.Text
+    weapon_proficiencies String                      @db.Text
     tier                 Int
     skills               UnitSpecializationSkill[]
     items                UnitSpecializationItem[]
     traits               UnitSpecializationTrait[]
-    created_at           DateTime                  @default(now())
-    updated_at           DateTime                  @updatedAt
+    created_at           DateTime                    @default(now())
+    updated_at           DateTime                    @updatedAt
     skills_summon        SkillSummon[]
     Unit                 Unit[]
+    available_cultures   CultureUnitSpecialization[]
+    available_beliefs    BeliefUnitSpecialization[]
 }
 
 model SkillType {
@@ -127,6 +157,8 @@ model Trait {
     created_at           DateTime                  @default(now())
     updated_at           DateTime                  @updatedAt
     RaceTrait            RaceTrait[]
+    CultureTrait         CultureTrait[]
+    BeliefTrait          BeliefTrait[]
 }
 
 model Item {
@@ -350,6 +382,68 @@ model RaceTrait {
     conditions String?
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
+}
+
+model CultureTrait {
+    id         String   @id @default(cuid())
+    culture    Culture  @relation(fields: [culture_id], references: [id], onDelete: Cascade)
+    culture_id String
+    trait      Trait    @relation(fields: [trait_id], references: [id], onDelete: Cascade)
+    trait_id   String
+    conditions String?
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+}
+
+model BeliefTrait {
+    id         String   @id @default(cuid())
+    belief     Belief   @relation(fields: [belief_id], references: [id], onDelete: Cascade)
+    belief_id  String
+    trait      Trait    @relation(fields: [trait_id], references: [id], onDelete: Cascade)
+    trait_id   String
+    conditions String?
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+}
+
+model RaceCulture {
+    id         String   @id @default(cuid())
+    race       Race     @relation(fields: [race_id], references: [id], onDelete: Cascade)
+    race_id    String
+    culture    Culture  @relation(fields: [culture_id], references: [id], onDelete: Cascade)
+    culture_id String
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+}
+
+model RaceBelief {
+    id         String   @id @default(cuid())
+    race       Race     @relation(fields: [race_id], references: [id], onDelete: Cascade)
+    race_id    String
+    belief     Belief   @relation(fields: [belief_id], references: [id], onDelete: Cascade)
+    belief_id  String
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+}
+
+model CultureUnitSpecialization {
+    id                     String             @id @default(cuid())
+    unit_specialization    UnitSpecialization @relation(fields: [unit_specialization_id], references: [id], onDelete: Cascade)
+    unit_specialization_id String
+    culture                Culture            @relation(fields: [culture_id], references: [id], onDelete: Cascade)
+    culture_id             String
+    created_at             DateTime           @default(now())
+    updated_at             DateTime           @updatedAt
+}
+
+model BeliefUnitSpecialization {
+    id                     String             @id @default(cuid())
+    unit_specialization    UnitSpecialization @relation(fields: [unit_specialization_id], references: [id], onDelete: Cascade)
+    unit_specialization_id String
+    belief                 Belief             @relation(fields: [belief_id], references: [id], onDelete: Cascade)
+    belief_id              String
+    created_at             DateTime           @default(now())
+    updated_at             DateTime           @updatedAt
 }
 
 // User Management for NextAuth.js
