@@ -9,12 +9,12 @@ msg_not_found = 'Race not found'
 
 @router.get("/")
 async def get_races(request: Request, response: Response,  include_traits: bool = True, include_cultures: bool = False, include_beliefs: bool = False, include_units: bool = False):
-    return await RaceService(request.app.state.db).get_all(include_traits, include_units, include_cultures, include_beliefs)
+    return await RaceService(request.app.state.db).get_all(include_traits, include_cultures, include_beliefs, include_units)
 
 @router.get("/{id}")
 async def get_race_by_id(id: str, request: Request, response: Response,  include_traits: bool = True, include_cultures: bool = False, include_beliefs: bool = False, include_units: bool = False):
     try:
-        race = await RaceService(request.app.state.db).get_by_id(id, include_traits, include_units, include_cultures, include_beliefs)
+        race = await RaceService(request.app.state.db).get_by_id(id, include_traits, include_cultures, include_beliefs, include_units)
         if race is None:
             response.status_code = status.HTTP_204_NO_CONTENT
             return { "error" : msg_not_found }

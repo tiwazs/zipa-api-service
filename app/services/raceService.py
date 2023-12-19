@@ -4,6 +4,8 @@ from prisma import Prisma
 from .fileService import FileService
 from .raceUnitService import RaceUnitService
 from .raceTraitService import RaceTraitService
+from .raceCultureService import RaceCultureService
+from .raceBeliefService import RaceBeliefService
 from ..models.raceDTO import RaceDTO, RaceUpdateDTO, RaceCreateDTO
 from typing import List
 
@@ -12,6 +14,8 @@ class RaceService:
         self.database = database
         self.race_unit_service = RaceUnitService(database)
         self.race_trait_service = RaceTraitService(database)
+        self.race_culture_service = RaceCultureService(database)
+        self.race_belief_service = RaceBeliefService(database)
         self.file_service = FileService()
 
     async def get_all(self, include_traits: bool,  include_cultures: bool,  include_beliefs: bool, include_units: bool) -> List[RaceDTO]:
@@ -22,12 +26,12 @@ class RaceService:
                         "trait": include_traits
                     }
                 },
-                "cultures": False if not include_cultures else {
+                "avaiable_cultures": False if not include_cultures else {
                     "include": {
                         "culture": include_cultures
                     }
                 },
-                "beliefs": False if not include_beliefs else {
+                "avaiable_beliefs": False if not include_beliefs else {
                     "include": {
                         "belief": include_beliefs
                     }
@@ -44,12 +48,12 @@ class RaceService:
                         "trait": include_traits
                     }
                 },
-                "cultures": False if not include_cultures else {
+                "avaiable_cultures": False if not include_cultures else {
                     "include": {
                         "culture": include_cultures
                     }
                 },
-                "beliefs": False if not include_beliefs else {
+                "avaiable_beliefs": False if not include_beliefs else {
                     "include": {
                         "belief": include_beliefs
                     }
@@ -149,7 +153,7 @@ class RaceService:
         return await self.database.race.find_unique(
             where={"id": id},
             include={
-                "cultures": {
+                "avaiable_cultures": {
                     "include": {
                         "culture": True
                     }
@@ -163,7 +167,7 @@ class RaceService:
         return await self.database.race.find_unique(
             where={"id": id},
             include={
-                "cultures": {
+                "avaiable_cultures": {
                     "include": {
                         "culture": True
                     }
@@ -177,7 +181,7 @@ class RaceService:
         return await self.database.race.find_unique(
             where={"id": id},
             include={
-                "beliefs": {
+                "avaiable_beliefs": {
                     "include": {
                         "belief": True
                     }
@@ -191,7 +195,7 @@ class RaceService:
         return await self.database.race.find_unique(
             where={"id": id},
             include={
-                "beliefs": {
+                "avaiable_beliefs": {
                     "include": {
                         "belief": True
                     }
