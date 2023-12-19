@@ -8,13 +8,13 @@ router = APIRouter(prefix="/races", tags=["Races"])
 msg_not_found = 'Race not found'
 
 @router.get("/")
-async def get_races(request: Request, response: Response,  include_traits: bool = True, include_units: bool = False):
-    return await RaceService(request.app.state.db).get_all(include_traits, include_units)
+async def get_races(request: Request, response: Response,  include_traits: bool = True, include_cultures: bool = False, include_beliefs: bool = False, include_units: bool = False):
+    return await RaceService(request.app.state.db).get_all(include_traits, include_units, include_cultures, include_beliefs)
 
 @router.get("/{id}")
-async def get_race_by_id(id: str, request: Request, response: Response,  include_traits: bool = True, include_units: bool = False):
+async def get_race_by_id(id: str, request: Request, response: Response,  include_traits: bool = True, include_cultures: bool = False, include_beliefs: bool = False, include_units: bool = False):
     try:
-        race = await RaceService(request.app.state.db).get_by_id(id, include_traits, include_units)
+        race = await RaceService(request.app.state.db).get_by_id(id, include_traits, include_units, include_cultures, include_beliefs)
         if race is None:
             response.status_code = status.HTTP_204_NO_CONTENT
             return { "error" : msg_not_found }
@@ -71,6 +71,58 @@ async def remove_trait_from_race(id: str, trait_id: str, request: Request, respo
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"error": str(e)}
 
+@router.put("/add_culture/{id}")
+async def add_culture_to_race(id: str, culture_id: str, request: Request, response: Response):
+    try:
+        race = await RaceService(request.app.state.db).add_culture(id, culture_id)
+        if race is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return race
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
+@router.put("/remove_culture/{id}")
+async def remove_culture_from_race(id: str, culture_id: str, request: Request, response: Response):
+    try:
+        race = await RaceService(request.app.state.db).remove_culture(id, culture_id)
+        if race is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return race
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
+@router.put("/add_belief/{id}")
+async def add_belief_to_race(id: str, trait_id: str, request: Request, response: Response):
+    try:
+        race = await RaceService(request.app.state.db).add_belief(id, trait_id)
+        if race is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return race
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
+@router.put("/remove_belief/{id}")
+async def remove_belief_from_race(id: str, belief_id: str, request: Request, response: Response):
+    try:
+        race = await RaceService(request.app.state.db).remove_belief(id, belief_id)
+        if race is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return race
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+    
 '''
 @router.put("/add_unit/{id}")
 async def add_unit_to_race(id: str, unit_id: str, request: Request, response: Response):
