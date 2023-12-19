@@ -2,10 +2,10 @@ from fastapi import UploadFile
 from prisma import Prisma
 
 from .fileService import FileService
-from .FactionMemberService import FactionMemberService
-from .FactionRankService import FactionRankService
-from .FactionRelationService import FactionRelationService
-from ..models.FactionDTO import FactionDTO, FactionRankCreateDTO, FactionUpdateDTO, FactionCreateDTO, FactionMemberDTO
+from .factionMemberService import FactionMemberService
+from .factionRankService import FactionRankService
+from .factionRelationService import FactionRelationService
+from ..models.factionDTO import FactionDTO, FactionRankCreateDTO, FactionUpdateDTO, FactionCreateDTO, FactionMemberDTO
 from typing import List
 
 class FactionService:

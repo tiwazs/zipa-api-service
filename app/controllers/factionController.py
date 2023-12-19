@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Response, status, File, UploadFile
 
-from ..models.FactionDTO import FactionCreateDTO, FactionMemberDTO, FactionRankCreateDTO, FactionRelationDTO, FactionUpdateDTO
-from ..services.FactionService import FactionService
+from ..models.factionDTO import FactionCreateDTO, FactionMemberDTO, FactionRankCreateDTO, FactionRelationDTO, FactionUpdateDTO
+from ..services.factionService import FactionService
 
 router = APIRouter(prefix="/factions", tags=["Factions"])
 

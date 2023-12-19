@@ -1,4 +1,4 @@
-from ..models.FactionDTO import FactionRelationDTO
+from ..models.factionDTO import FactionRelationDTO
 from typing import List
 
 class FactionRelationService:

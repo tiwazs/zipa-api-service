@@ -2,7 +2,7 @@ from typing import List
 from fastapi import UploadFile
 
 from .fileService import FileService
-from ..models.FactionDTO import FactionRankDTO, FactionRankUpdateDTO, FactionRankCreateDTO
+from ..models.factionDTO import FactionRankDTO, FactionRankUpdateDTO, FactionRankCreateDTO
 
 class FactionRankService:
     def __init__(self, database):
