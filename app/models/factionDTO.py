@@ -28,6 +28,9 @@ class FactionBaseDTO(BaseModel):
     name: str
     description: Optional[str] = None
     holdings: Optional[str] = None
+    race_id: str
+    culture_id: str
+    belief_id: str
 
 class FactionCreateDTO(FactionBaseDTO):
     user_id: str
@@ -36,6 +39,9 @@ class FactionUpdateDTO(FactionBaseDTO):
     name: Optional[str]
     description: Optional[str] = None
     holdings: Optional[str] = None
+    race_id: Optional[str] = None
+    culture_id: Optional[str] = None
+    belief_id: Optional[str] = None
 
 class FactionDTO(FactionBaseDTO):
     id: str

@@ -94,7 +94,7 @@ class FactionService:
             data=faction.dict() 
         )
         
-        return await self.get_by_id(faction.id, True, True)
+        return await self.get_by_id(faction.id, True, True, True, True)
 
     async def update(self, id: str, faction: FactionUpdateDTO) -> FactionDTO:
         faction_dict = faction.dict()
@@ -117,64 +117,64 @@ class FactionService:
         )
     
     async def add_rank(self, rank: FactionRankCreateDTO) -> FactionDTO:
-        faction = await self.get_by_id(rank.faction_id, True, True)
+        faction = await self.get_by_id(rank.faction_id, True, True, True, True)
         if(not faction): return None
 
         # Assign Ranks
         await self.faction_rank_service.create(rank)
 
-        return await self.get_by_id(faction.id, True, True)
+        return await self.get_by_id(faction.id, True, True, True, True)
     
     async def delete_rank(self, id, rank_id: str) -> FactionDTO:
-        faction = await self.get_by_id(id, True, True)
+        faction = await self.get_by_id(id, True, True, True, True)
         if(not faction): return None
 
         # Remove Ranks
         await self.faction_rank_service.delete(rank_id)
 
-        return await self.get_by_id(faction.id, True, True)
+        return await self.get_by_id(faction.id, True, True, True, True)
     
     async def add_unit(self, member: FactionMemberDTO) -> FactionDTO:
-        faction = await self.get_by_id(member.faction_id, True, True)
+        faction = await self.get_by_id(member.faction_id, True, True, True, True)
         if(not faction): return None
 
         # Assign units
         await self.faction_unit_service.create(member)
 
-        return await self.get_by_id(faction.id, True, True)
+        return await self.get_by_id(faction.id, True, True, True, True)
     
     async def remove_unit(self, id: str, unit_id: str) -> FactionDTO:
-        faction = await self.get_by_id(id, True, True)
+        faction = await self.get_by_id(id, True, True, True, True)
         if(not faction): return None
 
         # Remove units
         await self.faction_unit_service.delete_by_ids(faction.id, unit_id)
 
-        return await self.get_by_id(faction.id, True, True)
+        return await self.get_by_id(faction.id, True, True, True, True)
 
     async def add_relation(self, relation: FactionRankCreateDTO) -> FactionDTO:
-        faction = await self.get_by_id(relation.faction_id, True, True)
+        faction = await self.get_by_id(relation.faction_id, True, True, True, True)
         if(not faction): return None
 
-        faction2 = await self.get_by_id(relation.faction2_id, True, True)
+        faction2 = await self.get_by_id(relation.faction2_id, True, True, True, True)
         if(not faction2): return None
 
         # Assign Relations
         await self.faction_relation_service.create(relation)
 
-        return await self.get_by_id(faction.id, True, True)
+        return await self.get_by_id(faction.id, True, True, True, True)
     
     async def delete_relation(self, faction_id, faction2_id: str) -> FactionDTO:
-        faction = await self.get_by_id(id, True, True)
+        faction = await self.get_by_id(id, True, True, True, True)
         if(not faction): return None
 
-        faction2 = await self.get_by_id(id, True, True)
+        faction2 = await self.get_by_id(id, True, True, True, True)
         if(not faction2): return None
 
         # Remove Relations
         await self.faction_relation_service.delete_by_ids(faction_id, faction2_id)
 
-        return await self.get_by_id(faction.id, True, True)
+        return await self.get_by_id(faction.id, True, True, True, True)
 
     async def delete(self, id: str) -> FactionDTO:
         return await self.database.faction.delete(

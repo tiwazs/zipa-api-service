@@ -23,6 +23,7 @@ model Race {
     Unit              Unit[]
     avaiable_cultures RaceCulture[]
     avaiable_beliefs  RaceBelief[]
+    Faction           Faction[]
 }
 
 model Culture {
@@ -36,6 +37,7 @@ model Culture {
     traits                    CultureTrait[]
     available_races           RaceCulture[]
     available_specializations CultureUnitSpecialization[]
+    Faction                   Faction[]
 }
 
 model Belief {
@@ -49,6 +51,7 @@ model Belief {
     traits                    BeliefTrait[]
     available_races           RaceBelief[]
     available_specializations BeliefUnitSpecialization[]
+    Faction                   Faction[]
 }
 
 model UnitSpecialization {
@@ -551,6 +554,12 @@ model Faction {
     holdings            String?
     user                User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
     user_id             String
+    race                Race              @relation(fields: [race_id], references: [id], onDelete: Cascade)
+    race_id             String
+    culture             Culture           @relation(fields: [culture_id], references: [id], onDelete: Cascade)
+    culture_id          String
+    belief              Belief            @relation(fields: [belief_id], references: [id], onDelete: Cascade)
+    belief_id           String
     members             FactionMember[]
     faction_ranks       FactionRank[]
     factions_relations  FactionRelation[] @relation("faction")
