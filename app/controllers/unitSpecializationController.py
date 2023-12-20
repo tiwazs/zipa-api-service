@@ -24,6 +24,32 @@ async def get_units_by_faction_id(id: str, request: Request, response: Response,
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"error": str(e)}
 
+@router.get("/culture/{id}")
+async def get_units_by_culture_id(id: str, request: Request, response: Response, include_traits: bool = True, include_skills: bool = True, include_items: bool = True):
+    try:
+        units = await UnitSpecializationService(request.app.state.db).get_by_culture_id(id, include_items, include_skills, include_traits)
+        if units is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return units
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
+@router.get("/belief/{id}")
+async def get_units_by_belief_id(id: str, request: Request, response: Response, include_traits: bool = True, include_skills: bool = True, include_items: bool = True):
+    try:
+        units = await UnitSpecializationService(request.app.state.db).get_by_belief_id(id, include_items, include_skills, include_traits)
+        if units is None:
+            response.status_code = status.HTTP_204_NO_CONTENT
+            return { "error" : msg_not_found }
+        
+        return units
+    except Exception as e:
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"error": str(e)}
+
 @router.get("/{id}")
 async def get_unit_by_id(id: str, request: Request, response: Response, include_traits: bool = True, include_skills: bool = True, include_items: bool = True):
     try:

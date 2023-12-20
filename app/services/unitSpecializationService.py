@@ -86,6 +86,62 @@ class UnitSpecializationService:
                 }
             }
         )
+
+    async def get_by_culture_id(self, id: str, include_traits, include_skills, include_items) -> List[UnitSpecializationDTO]:
+        return await self.database.unitspecialization.find_many( 
+            include={
+                "traits": False if not include_traits else {
+                    "include": {
+                        "trait": include_traits
+                    }
+                },
+                "skills": False if not include_skills else {
+                    "include": {
+                        "skill": include_skills
+                    }
+                },
+                "items": False if not include_items else {
+                    "include": {
+                        "item": include_items
+                    }
+                }
+            },
+            where={
+                "available_cultures": {
+                    "some": {
+                        "culture_id": id
+                    }
+                }
+            }
+        )
+    
+    async def get_by_belief_id(self, id: str, include_traits, include_skills, include_items) -> List[UnitSpecializationDTO]:
+        return await self.database.unitspecialization.find_many( 
+            include={
+                "traits": False if not include_traits else {
+                    "include": {
+                        "trait": include_traits
+                    }
+                },
+                "skills": False if not include_skills else {
+                    "include": {
+                        "skill": include_skills
+                    }
+                },
+                "items": False if not include_items else {
+                    "include": {
+                        "item": include_items
+                    }
+                }
+            },
+            where={
+                "available_beliefs": {
+                    "some": {
+                        "belief_id": id
+                    }
+                }
+            }
+        )
     
     async def create(self, unitspecialization: UnitSpecializationCreateDTO) -> UnitSpecializationDTO:
         # Get UnitSpecialization Trait ids
