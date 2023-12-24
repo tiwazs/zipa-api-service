@@ -14,7 +14,7 @@ class UnitService:
         self.unit_item_service = UnitItemService(database)
         self.file_service = FileService()
     
-    async def get_all(self, include_items, include_faction, include_specialization) -> List[UnitDTO]:
+    async def get_all(self, include_items, include_race, include_specialization) -> List[UnitDTO]:
         return await self.database.unit.find_many(
             include={
                 "items": False if not include_items else {
@@ -30,7 +30,7 @@ class UnitService:
                         }
                     }
                 },
-                "faction": False if not include_faction else {
+                "race": False if not include_race else {
                     "include": {
                         "traits": {
                             "include": {
@@ -69,7 +69,7 @@ class UnitService:
             }
         )
 
-    async def get_all_by_user(self, user_id, include_items, include_faction, include_specialization) -> List[UnitDTO]:
+    async def get_all_by_user(self, user_id, include_items, include_race, include_specialization) -> List[UnitDTO]:
         return await self.database.unit.find_many(
             where={
                 "user_id": user_id
@@ -96,7 +96,7 @@ class UnitService:
                         }
                     }
                 },
-                "faction": False if not include_faction else {
+                "race": False if not include_race else {
                     "include": {
                         "traits": {
                             "include": {
@@ -151,7 +151,7 @@ class UnitService:
             }
         )
 
-    async def get_by_id(self, id: str, include_items, include_faction, include_specialization) -> UnitDTO:
+    async def get_by_id(self, id: str, include_items, include_race, include_specialization) -> UnitDTO:
         return await self.database.unit.find_unique( 
             where={"id": id},
             include={
@@ -168,7 +168,7 @@ class UnitService:
                         }
                     }
                 },
-                "faction": False if not include_faction else {
+                "race": False if not include_race else {
                     "include": {
                         "traits": {
                             "include": {
@@ -207,22 +207,22 @@ class UnitService:
             }
         )
 
-    async def get_all_extended(self, include_items, include_faction, include_specialization) -> List[UnitDTO]:
-        users = await self.get_all(include_items, include_faction, include_specialization)
+    async def get_all_extended(self, include_items, include_race, include_specialization) -> List[UnitDTO]:
+        users = await self.get_all(include_items, include_race, include_specialization)
 
         return [self.extend_unit(unit) for unit in users]
     
-    async def get_all_extended_by_user(self, user_id, include_items, include_faction, include_specialization) -> List[UnitDTO]:
-        users = await self.get_all_by_user(user_id, include_items, include_faction, include_specialization)
+    async def get_all_extended_by_user(self, user_id, include_items, include_race, include_specialization) -> List[UnitDTO]:
+        users = await self.get_all_by_user(user_id, include_items, include_race, include_specialization)
 
         return [self.extend_unit(unit) for unit in users]
     
-    async def get_extended_by_id(self, id: str, include_items, include_faction, include_specialization) -> UnitDTO:
-        unit = await self.get_by_id(id, include_items, include_faction, include_specialization)
+    async def get_extended_by_id(self, id: str, include_items, include_race, include_specialization) -> UnitDTO:
+        unit = await self.get_by_id(id, include_items, include_race, include_specialization)
 
         return self.extend_unit(unit)
 
-    async def get_by_faction_id(self, id: str, include_items) -> List[UnitDTO]:
+    async def get_by_race_id(self, id: str, include_items) -> List[UnitDTO]:
         return await self.database.unit.find_many( 
             include={
                 "items": False if not include_items else {
@@ -232,9 +232,9 @@ class UnitService:
                 }
             },
             where={
-                "factions": {
+                "races": {
                     "some": {
-                        "faction_id": id
+                        "race_id": id
                     }
                 }
             }
@@ -607,23 +607,23 @@ class UnitService:
         weight = functools.reduce(lambda acc, item: item.item.weight*item.quantity + acc, unit.items, 0)
 
         # From traits
-        vitality += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.vitality, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
-        #strength += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.strength, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
-        #dexterity += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.dexterity, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
-        #mind += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.mind, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
-        #faith += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.faith, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
-        essence += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.essence, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
-        agility += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.agility, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
-        hit_chance += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.hit_chance, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
-        evasion += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.evasion, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
-        physical_damage += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.physical_damage, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
-        magical_damage += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.magical_damage, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
-        armor += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.armor, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
-        magic_armor += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.magic_armor, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
-        armor_piercing += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.armor_piercing, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
-        spell_piercing += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.spell_piercing, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+        vitality += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.vitality, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
+        #strength += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.strength, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
+        #dexterity += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.dexterity, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
+        #mind += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.mind, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
+        #faith += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.faith, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
+        essence += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.essence, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
+        agility += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.agility, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
+        hit_chance += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.hit_chance, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
+        evasion += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.evasion, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
+        physical_damage += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.physical_damage, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
+        magical_damage += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.magical_damage, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
+        armor += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.armor, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
+        magic_armor += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.magic_armor, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
+        armor_piercing += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.armor_piercing, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
+        spell_piercing += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.spell_piercing, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
 
-        shield += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.shield, acc), trait.trait.effects, 0) + acc, unit.faction.traits, 0);
+        shield += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.shield, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
 
         weight_penalty = self.weight_penalty(strength, weight, 1.1)
 

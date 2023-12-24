@@ -38,6 +38,7 @@ model Culture {
     available_races           RaceCulture[]
     available_specializations CultureUnitSpecialization[]
     Faction                   Faction[]
+    Unit                      Unit[]
 }
 
 model Belief {
@@ -52,6 +53,7 @@ model Belief {
     available_races           RaceBelief[]
     available_specializations BeliefUnitSpecialization[]
     Faction                   Faction[]
+    Unit                      Unit[]
 }
 
 model UnitSpecialization {
@@ -522,6 +524,10 @@ model Unit {
     base_evasion      Float
     race              Race               @relation(fields: [race_id], references: [id], onDelete: Cascade)
     race_id           String
+    culture           Culture            @relation(fields: [culture_id], references: [id], onDelete: Cascade)
+    culture_id        String
+    Belief            Belief             @relation(fields: [belief_id], references: [id], onDelete: Cascade)
+    belief_id         String
     specialization    UnitSpecialization @relation(fields: [specialization_id], references: [id], onDelete: Cascade)
     specialization_id String
     skill_picks       String?

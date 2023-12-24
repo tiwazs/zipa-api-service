@@ -3,3 +3,4 @@ uvicorn
 prisma
 python-dotenv
 python-multipart==0.0.5
+matplotlib

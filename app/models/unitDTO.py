@@ -17,7 +17,9 @@ class UnitBaseDTO(BaseModel):
     base_evasion: float
     ascended: Optional[bool] = False
     ascended_params: Optional[str]
-    faction_id: str
+    race_id: str
+    culture_id: str
+    belief_id: str
     specialization_id: str
     skill_picks: Optional[str] = None
     rank: Optional[int] = None
@@ -46,7 +48,9 @@ class UnitUpdateDTO(UnitBaseDTO):
     base_evasion: Optional[float]
     ascended: Optional[bool]
     ascended_params: Optional[str]
-    faction_id: Optional[str]
+    race_id: Optional[str]
+    culture_id: Optional[str]
+    belief_id: Optional[str]
     specialization_id: Optional[str]
     skill_picks: Optional[str] = None
     rank: Optional[int] = None
