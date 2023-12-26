@@ -72,6 +72,7 @@ model UnitSpecialization {
     hit_chance           Float
     evasion              Float
     hit_rate             Float
+    load_capacity           Float             @default(0)
     movement             Float
     weapon_proficiencies String                      @db.Text
     tier                 Int

@@ -379,15 +379,15 @@ class UnitService:
 
         return result
 
-    def weight_penalty(self, strength: float, weight: float, strength_rate: float):
-        strength_modified = strength * strength_rate
-        if(weight < strength_modified/4):
+    def weight_penalty(self, load_capacity: float, weight: float, strength_rate: float):
+        load_capacity_modified = load_capacity * strength_rate
+        if(weight < load_capacity_modified/4):
             return 0
-        elif(weight < strength_modified/2):
+        elif(weight < load_capacity_modified/2):
             return 1
-        elif(weight < 3*strength_modified/4):
+        elif(weight < 3*load_capacity_modified/4):
             return 2
-        elif(weight < strength_modified):
+        elif(weight < load_capacity_modified):
             return 3
         else:
             return 4
@@ -559,6 +559,7 @@ class UnitService:
         evasion = self.value_multiplier( unit.base_evasion, unit.specialization.evasion, 5 );
 
         hit_rate = unit.specialization.hit_rate
+        load_capacity = unit.specialization.load_capacity
         movement = unit.specialization.movement
 
         # Apply Ascention bonus
@@ -576,14 +577,14 @@ class UnitService:
             evasion = self.apply_ascension(evasion, unit.specialization.tier) + ascension_parameters['evasion']
 
         # Main stats Bonuses
-        vitality += faith;
-        essence += mind;
-        hit_chance += dexterity/2;
-        evasion += dexterity/2;
+        vitality += 0.6*faith + 0.5*strength;
+        essence += 1*mind + 0.6*faith;
+        hit_chance += 0.5*dexterity;
+        evasion += 0.5*dexterity;
 
         # Damage
-        physical_damage = strength + dexterity;
-        magical_damage = mind + faith;
+        physical_damage = strength + 1.2*dexterity;
+        magical_damage = 1.2*mind + faith;
 
         # From items
         vitality += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.vitality, acc), unit.items, 0)
@@ -625,7 +626,8 @@ class UnitService:
 
         shield += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.shield, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
 
-        weight_penalty = self.weight_penalty(strength, weight, 1.1)
+        load_capacity = load_capacity + (0.25* strength)
+        weight_penalty = self.weight_penalty(load_capacity, weight, 1)
 
         # Apply weight penalty
         evasion = self.apply_weight_penalty(weight_penalty, evasion, 'evasion')
@@ -671,6 +673,7 @@ class UnitService:
         unit_extended["shield"] = shield
         unit_extended["physical_damage"] = physical_damage
         unit_extended["magical_damage"] = magical_damage
+        unit_extended["load_capacity"] = load_capacity
         unit_extended["weight"] = weight
         unit_extended["weight_penalty"] = weight_penalty
 

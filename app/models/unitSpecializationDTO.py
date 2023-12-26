@@ -16,6 +16,7 @@ class UnitSpecializationBaseDTO(BaseModel):
     hit_chance: float
     evasion: float
     hit_rate: float
+    load_capacity: float
     movement: float
     weapon_proficiencies: str
     tier: int
