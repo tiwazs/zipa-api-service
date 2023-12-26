@@ -16,7 +16,7 @@ class UnitBaseDTO(BaseModel):
     base_hit_chance: float
     base_evasion: float
     ascended: Optional[bool] = False
-    ascended_params: Optional[str]
+    ascended_params: Optional[str] = None
     race_id: str
     culture_id: str
     belief_id: str
