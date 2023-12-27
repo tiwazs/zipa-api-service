@@ -45,6 +45,7 @@ class UnitSpecializationUpdateDTO(UnitSpecializationBaseDTO):
     hit_chance: Optional[float] = None
     evasion: Optional[float] = None
     hit_rate: Optional[float] = None
+    load_capacity: Optional[float] = None
     movement: Optional[float] = None
     weapon_proficiencies: Optional[str] = None
     tier: Optional[int] = None
