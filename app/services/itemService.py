@@ -6,17 +6,24 @@ from ..services.fileService import FileService
 from ..models.itemDTO import ItemDTO, ItemUpdateDTO, ItemCreateDTO
 from ..models.itemSkillDTO import ItemSkillCreateDTO
 from ..services.itemSkillService import ItemSkillService
+from ..services.itemTraitService import ItemTraitService
 from typing import List
 
 class ItemService:
     def __init__(self, database):
         self.database = database
         self.item_skill_service = ItemSkillService(database)
+        self.item_trait_service = ItemTraitService(database)
         self.file_service = FileService()
 
-    async def get_all(self, include_skills: bool) -> List[ItemDTO]:
+    async def get_all(self, include_skills: bool, include_traits: bool) -> List[ItemDTO]:
         return await self.database.item.find_many(
             include={
+                "traits": False if not include_traits else {
+                    "include": {
+                        "trait": include_traits
+                    }
+                },
                 "skills": False if not include_skills else {
                     "include": {
                         "skill": include_skills
@@ -25,10 +32,15 @@ class ItemService:
             }
         )
 
-    async def get_by_id(self, id: str, include_skills: bool) -> ItemDTO:
+    async def get_by_id(self, id: str, include_skills: bool, include_traits: bool) -> ItemDTO:
         return await self.database.item.find_unique( 
             where={"id": id},
             include={
+                "traits": False if not include_traits else {
+                    "include": {
+                        "trait": include_traits
+                    }
+                },
                 "skills": False if not include_skills else {
                     "include": {
                         "skill": include_skills
@@ -132,7 +144,34 @@ class ItemService:
             }
         )
         return item
-        
+
+    async def add_trait(self, id: str, trait_id: str) -> ItemDTO:
+        await self.item_trait_service.create({"item_id":id, "trait_id":trait_id})
+
+        return await self.database.item.find_unique(
+            where={"id": id},
+            include={
+                "traits": {
+                    "include": {
+                        "trait": True
+                    }
+                }
+            }
+        )
+
+    async def remove_trait(self, id: str, trait_id: str) -> ItemDTO:
+        await self.item_trait_service.delete_by_ids(id, trait_id)
+
+        return await self.database.item.find_unique(
+            where={"id": id},
+            include={
+                "traits": {
+                    "include": {
+                        "trait": True
+                    }
+                }
+            }
+        )
 
     async def delete(self, id: str) -> ItemDTO:
         return await self.database.item.delete(
