@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request, Response, status, File, UploadFile
 
-from ..models.unitDTO import UnitCreateDTO, UnitItemCreateDTO, UnitUpdateDTO
+from ..models.unitDTO import UnitCreateDTO, UnitItemCreateDTO, UnitItemUpdateDTO, UnitUpdateDTO
 from ..services.unitService import UnitService
 
 router = APIRouter(prefix="/units", tags=["Units"])
@@ -73,7 +73,7 @@ async def update_unit(id: str, unit: UnitUpdateDTO, request: Request, response: 
 @router.put("/add_item/{id}")
 async def add_item_to_unit(id: str, unit_item: UnitItemCreateDTO, request: Request, response: Response):
     try:
-        unit = await UnitService(request.app.state.db).add_item(id, unit_item.item_id, unit_item.quantity)
+        unit = await UnitService(request.app.state.db).add_item(id, unit_item.item_id, unit_item.quantity, unit_item.equipped)
         if unit is None:
             response.status_code = status.HTTP_204_NO_CONTENT
             return { "error" : msg_not_found }
@@ -97,9 +97,9 @@ async def remove_item_from_unit(id: str, item_id: str, request: Request, respons
         return {"error": str(e)}
 
 @router.put("/update_item/{id}")
-async def update_item_from_unit(id: str, unit_item: UnitItemCreateDTO, request: Request, response: Response):
+async def update_item_from_unit(id: str, item_id: str, unit_item: UnitItemUpdateDTO, request: Request, response: Response):
     try:
-        unit = await UnitService(request.app.state.db).update_item(id, unit_item)
+        unit = await UnitService(request.app.state.db).update_item(id, item_id, unit_item)
         if unit is None:
             response.status_code = status.HTTP_204_NO_CONTENT
             return { "error" : msg_not_found }

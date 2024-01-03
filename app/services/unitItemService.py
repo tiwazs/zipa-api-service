@@ -23,6 +23,12 @@ class UnitItemService:
         if(not unit_item_current): return None
         unit_item_current_dict = unit_item_current.dict()
 
+        # Handling if there is item change
+        if("new_item_id" in unit_item_dict.keys()):
+            #unit_item_current_dict["item_id"] = unit_item_dict["new_item_id"]
+            unit_item_dict["item_id"] = unit_item_dict["new_item_id"]
+            del unit_item_dict["new_item_id"]
+
         # If incomming data is empty, use current data
         for key in unit_item_dict:
             if unit_item_dict[key] is None:

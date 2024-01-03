@@ -563,6 +563,7 @@ model UnitItem {
     item       Item     @relation(fields: [item_id], references: [id], onDelete: Cascade)
     item_id    String
     quantity   Float
+    equipped   Boolean? @default(false)
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 }

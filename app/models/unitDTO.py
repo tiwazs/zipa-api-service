@@ -27,6 +27,12 @@ class UnitBaseDTO(BaseModel):
 class UnitItemCreateDTO(BaseModel):
     item_id: str
     quantity: int
+    equipped: Optional[bool] = False
+
+class UnitItemUpdateDTO(BaseModel):
+    new_item_id: Optional[str] = None
+    quantity: Optional[int] = None
+    equipped: Optional[bool] = None
 
 class UnitCreateDTO(UnitBaseDTO):
     user_id: str

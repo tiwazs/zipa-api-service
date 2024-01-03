@@ -5,7 +5,7 @@ import re
 
 from ..services.fileService import FileService
 from .unitItemService import UnitItemService
-from ..models.unitDTO import UnitDTO, UnitItemCreateDTO, UnitUpdateDTO, UnitCreateDTO
+from ..models.unitDTO import UnitDTO, UnitItemCreateDTO, UnitItemUpdateDTO, UnitUpdateDTO, UnitCreateDTO
 from typing import List
 
 class UnitService:
@@ -289,8 +289,8 @@ class UnitService:
             data=unit_dict 
         )
     
-    async def add_item(self, id: str, item_id: str, quantity: int) -> UnitDTO:
-        await self.unit_item_service.create({"unit_id":id, "item_id":item_id, "quantity":quantity})
+    async def add_item(self, id: str, item_id: str, quantity: int, equipped: bool) -> UnitDTO:
+        await self.unit_item_service.create({"unit_id":id, "item_id":item_id, "quantity":quantity, "equipped":equipped})
 
         return await self.database.unit.find_unique(
             where={"id": id},
@@ -317,8 +317,11 @@ class UnitService:
             }
         )
     
-    async def update_item(self, id: str, unit_item: UnitItemCreateDTO) -> UnitDTO:
-        await self.unit_item_service.update({"unit_id": id, "item_id": unit_item.item_id, "quantity": unit_item.quantity})
+    async def update_item(self, id: str, item_id: str, unit_item: UnitItemUpdateDTO) -> UnitDTO:
+        unit_item_dict = unit_item.dict() if isinstance(unit_item, UnitItemUpdateDTO) else unit_item
+        unit_item_dict["unit_id"] = id
+        unit_item_dict["item_id"] = item_id
+        await self.unit_item_service.update(unit_item_dict)
 
         return await self.database.unit.find_unique(
             where={"id": id},
