@@ -16,8 +16,13 @@ class ItemService:
         self.item_trait_service = ItemTraitService(database)
         self.file_service = FileService()
 
-    async def get_all(self, include_skills: bool, include_traits: bool) -> List[ItemDTO]:
+    async def get_all(self, include_skills: bool, include_traits: bool, by_type: str, by_rarity: str) -> List[ItemDTO]:
+        conditions = {}
+        if by_type: conditions["object_type"] = by_type
+        if by_rarity: conditions["rarity"] = by_rarity
+
         return await self.database.item.find_many(
+            where=conditions,
             include={
                 "traits": False if not include_traits else {
                     "include": {

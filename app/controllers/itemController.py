@@ -11,8 +11,8 @@ router = APIRouter(prefix="/items", tags=["Items"])
 msg_not_found = 'Item not found'
 
 @router.get("/")
-async def get_items(request: Request, response: Response, include_skills: bool = True, include_traits: bool = True):
-    return await ItemService(request.app.state.db).get_all(include_skills, include_traits)
+async def get_items(request: Request, response: Response, include_skills: bool = True, include_traits: bool = True, by_type: str = None, by_rarity: str = None, by_name: str = None, by_description: str = None, by_skill: str = None, by_trait: str = None):
+    return await ItemService(request.app.state.db).get_all(include_skills, include_traits, by_type, by_rarity)
 
 @router.get("/{id}")
 async def get_item_by_id(id: str, request: Request, response: Response, include_skills: bool = True, include_traits: bool = True):

@@ -357,7 +357,7 @@ class UnitService:
         result = ( base_value + offset )*( rate )*( multiplier )
         return result
     
-    def mod_parameter_operation(self, mod_parameter_string: str, parameter: float):
+    def mod_parameter_operation(self, mod_parameter_string: str, parameter: float, equipped = True):
         if mod_parameter_string is None: return 0
         regex = '(?P<sign>[+-])?(?P<value>([\d+.]+|ND|MD|HP))?(?P<porcentage>\s*%)?(?P<max>\s*max)?'
         match = re.search(regex, mod_parameter_string)
@@ -366,6 +366,7 @@ class UnitService:
         value = match['value']
         porcentage = match['porcentage']
 
+        if(not equipped): return parameter
         if(not value): return parameter
 
         result = parameter
@@ -590,23 +591,23 @@ class UnitService:
         magical_damage = 1.2*mind + faith;
 
         # From items
-        vitality += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.vitality, acc), unit.items, 0)
-        #strength += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.strength, acc), unit.items, 0)
-        #dexterity += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.dexterity, acc), unit.items, 0)
-        #mind += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.mind, acc), unit.items, 0)
-        #faith += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.faith, acc), unit.items, 0)
-        essence += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.essence, acc), unit.items, 0)
-        agility += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.agility, acc), unit.items, 0)
-        hit_chance += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.hit_chance, acc), unit.items, 0)
-        evasion += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.evasion, acc), unit.items, 0)
-        physical_damage += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.physical_damage, acc), unit.items, 0)
-        magical_damage += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.magical_damage, acc), unit.items, 0)
-        armor += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.armor, acc), unit.items, 0)
-        magic_armor += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.magic_armor, acc), unit.items, 0)
-        armor_piercing += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.armor_piercing, acc), unit.items, 0)
-        spell_piercing += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.spell_piercing, acc), unit.items, 0)
+        vitality += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.vitality, acc, item.equipped), unit.items, 0)
+        #strength += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.strength, acc, item.equipped), unit.items, 0)
+        #dexterity += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.dexterity, acc, item.equipped), unit.items, 0)
+        #mind += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.mind, acc, item.equipped), unit.items, 0)
+        #faith += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.faith, acc, item.equipped), unit.items, 0)
+        essence += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.essence, acc, item.equipped), unit.items, 0)
+        agility += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.agility, acc, item.equipped), unit.items, 0)
+        hit_chance += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.hit_chance, acc, item.equipped), unit.items, 0)
+        evasion += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.evasion, acc, item.equipped), unit.items, 0)
+        physical_damage += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.physical_damage, acc, item.equipped), unit.items, 0)
+        magical_damage += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.magical_damage, acc, item.equipped), unit.items, 0)
+        armor += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.armor, acc, item.equipped), unit.items, 0)
+        magic_armor += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.magic_armor, acc, item.equipped), unit.items, 0)
+        armor_piercing += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.armor_piercing, acc, item.equipped), unit.items, 0)
+        spell_piercing += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.spell_piercing, acc, item.equipped), unit.items, 0)
 
-        shield += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.shield, acc), unit.items, 0)
+        shield += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.shield, acc, item.equipped), unit.items, 0)
 
         weight = functools.reduce(lambda acc, item: item.item.weight*item.quantity + acc, unit.items, 0)
 
