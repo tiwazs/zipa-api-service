@@ -8,25 +8,25 @@ router = APIRouter(prefix="/units", tags=["Units"])
 msg_not_found = 'Unit not found'
 
 @router.get("/normal")
-async def get_units(request: Request, response: Response, include_items: bool = True, include_race: bool = True, include_specialization: bool = True):
-    return await UnitService(request.app.state.db).get_all(include_items, include_race, include_specialization)
+async def get_units(request: Request, response: Response, include_items: bool = True, include_race: bool = True, include_specialization: bool = True, include_culture: bool = True, include_belief: bool = True):
+    return await UnitService(request.app.state.db).get_all(include_items, include_race, include_specialization, include_culture, include_belief)
 
 @router.get("/extended")
-async def get_units(request: Request, response: Response, include_items: bool = True, include_race: bool = True, include_specialization: bool = True):
-    return await UnitService(request.app.state.db).get_all_extended(include_items, include_race, include_specialization)
+async def get_units(request: Request, response: Response, include_items: bool = True, include_race: bool = True, include_specialization: bool = True, include_culture: bool = True, include_belief: bool = True):
+    return await UnitService(request.app.state.db).get_all_extended(include_items, include_race, include_specialization, include_culture, include_belief)
 
 @router.get("/user/normal/{user_id}")
-async def get_units_by_user(user_id: str, request: Request, response: Response, include_items: bool = True, include_race: bool = True, include_specialization: bool = True):
-    return await UnitService(request.app.state.db).get_all_by_user(user_id, include_items, include_race, include_specialization)
+async def get_units_by_user(user_id: str, request: Request, response: Response, include_items: bool = True, include_race: bool = True, include_specialization: bool = True, include_culture: bool = True, include_belief: bool = True):
+    return await UnitService(request.app.state.db).get_all_by_user(user_id, include_items, include_race, include_specialization, include_culture, include_belief)
 
 @router.get("/user/extended/{user_id}")
-async def get_units_by_user(user_id: str, request: Request, response: Response, include_items: bool = True, include_race: bool = True, include_specialization: bool = True):
-    return await UnitService(request.app.state.db).get_all_extended_by_user(user_id, include_items, include_race, include_specialization)
+async def get_units_by_user(user_id: str, request: Request, response: Response, include_items: bool = True, include_race: bool = True, include_specialization: bool = True, include_culture: bool = True, include_belief: bool = True):
+    return await UnitService(request.app.state.db).get_all_extended_by_user(user_id, include_items, include_race, include_specialization, include_culture, include_belief)
 
 @router.get("/normal/{id}")
-async def get_unit_by_id(id: str, request: Request, response: Response, include_items: bool = True, include_race: bool = True, include_specialization: bool = True):
+async def get_unit_by_id(id: str, request: Request, response: Response, include_items: bool = True, include_race: bool = True, include_specialization: bool = True, include_culture: bool = True, include_belief: bool = True):
     try:
-        unit = await UnitService(request.app.state.db).get_by_id(id, include_items, include_race, include_specialization)
+        unit = await UnitService(request.app.state.db).get_by_id(id, include_items, include_race, include_specialization, include_culture, include_belief)
         if unit is None:
             response.status_code = status.HTTP_204_NO_CONTENT
             return { "error" : msg_not_found }
@@ -37,9 +37,9 @@ async def get_unit_by_id(id: str, request: Request, response: Response, include_
         return {"error": str(e)}
     
 @router.get("/extended/{id}")
-async def get_unit_by_id(id: str, request: Request, response: Response, include_items: bool = True, include_race: bool = True, include_specialization: bool = True):
+async def get_unit_by_id(id: str, request: Request, response: Response, include_items: bool = True, include_race: bool = True, include_specialization: bool = True, include_culture: bool = True, include_belief: bool = True):
     try:
-        unit = await UnitService(request.app.state.db).get_extended_by_id(id, include_items, include_race, include_specialization)
+        unit = await UnitService(request.app.state.db).get_extended_by_id(id, include_items, include_race, include_specialization, include_culture, include_belief)
         if unit is None:
             response.status_code = status.HTTP_204_NO_CONTENT
             return { "error" : msg_not_found }

@@ -14,7 +14,7 @@ class UnitService:
         self.unit_item_service = UnitItemService(database)
         self.file_service = FileService()
     
-    async def get_all(self, include_items, include_race, include_specialization) -> List[UnitDTO]:
+    async def get_all(self, include_items, include_race, include_specialization, include_culture, include_belief) -> List[UnitDTO]:
         return await self.database.unit.find_many(
             include={
                 "items": False if not include_items else {
@@ -24,6 +24,40 @@ class UnitService:
                                 "skills": {
                                     "include":{
                                         "skill":True
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "culture": False if not include_culture else {
+                    "include": {
+                        "traits": {
+                            "include": {
+                                "trait": {
+                                    "include": {
+                                        "effects": {
+                                            "include": {
+                                                "effect": True
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "Belief": False if not include_belief else {
+                    "include": {
+                        "traits": {
+                            "include": {
+                                "trait": {
+                                    "include": {
+                                        "effects": {
+                                            "include": {
+                                                "effect": True
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -69,7 +103,7 @@ class UnitService:
             }
         )
 
-    async def get_all_by_user(self, user_id, include_items, include_race, include_specialization) -> List[UnitDTO]:
+    async def get_all_by_user(self, user_id, include_items, include_race, include_specialization, include_culture, include_belief) -> List[UnitDTO]:
         return await self.database.unit.find_many(
             where={
                 "user_id": user_id
@@ -88,6 +122,40 @@ class UnitService:
                                                         "effect": True
                                                     }
                                                 }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "culture": False if not include_culture else {
+                    "include": {
+                        "traits": {
+                            "include": {
+                                "trait": {
+                                    "include": {
+                                        "effects": {
+                                            "include": {
+                                                "effect": True
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "Belief": False if not include_belief else {
+                    "include": {
+                        "traits": {
+                            "include": {
+                                "trait": {
+                                    "include": {
+                                        "effects": {
+                                            "include": {
+                                                "effect": True
                                             }
                                         }
                                     }
@@ -151,7 +219,7 @@ class UnitService:
             }
         )
 
-    async def get_by_id(self, id: str, include_items, include_race, include_specialization) -> UnitDTO:
+    async def get_by_id(self, id: str, include_items, include_race, include_specialization, include_culture, include_belief) -> UnitDTO:
         return await self.database.unit.find_unique( 
             where={"id": id},
             include={
@@ -162,6 +230,40 @@ class UnitService:
                                 "skills": {
                                     "include":{
                                         "skill":True
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "culture": False if not include_culture else {
+                    "include": {
+                        "traits": {
+                            "include": {
+                                "trait": {
+                                    "include": {
+                                        "effects": {
+                                            "include": {
+                                                "effect": True
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "Belief": False if not include_belief else {
+                    "include": {
+                        "traits": {
+                            "include": {
+                                "trait": {
+                                    "include": {
+                                        "effects": {
+                                            "include": {
+                                                "effect": True
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -207,18 +309,18 @@ class UnitService:
             }
         )
 
-    async def get_all_extended(self, include_items, include_race, include_specialization) -> List[UnitDTO]:
-        users = await self.get_all(include_items, include_race, include_specialization)
+    async def get_all_extended(self, include_items, include_race, include_specialization, include_culture, include_belief) -> List[UnitDTO]:
+        users = await self.get_all(include_items, include_race, include_specialization, include_culture, include_belief)
 
         return [self.extend_unit(unit) for unit in users]
     
-    async def get_all_extended_by_user(self, user_id, include_items, include_race, include_specialization) -> List[UnitDTO]:
-        users = await self.get_all_by_user(user_id, include_items, include_race, include_specialization)
+    async def get_all_extended_by_user(self, user_id, include_items, include_race, include_specialization, include_culture, include_belief) -> List[UnitDTO]:
+        users = await self.get_all_by_user(user_id, include_items, include_race, include_specialization, include_culture, include_belief)
 
         return [self.extend_unit(unit) for unit in users]
     
-    async def get_extended_by_id(self, id: str, include_items, include_race, include_specialization) -> UnitDTO:
-        unit = await self.get_by_id(id, include_items, include_race, include_specialization)
+    async def get_extended_by_id(self, id: str, include_items, include_race, include_specialization, include_culture, include_belief) -> UnitDTO:
+        unit = await self.get_by_id(id, include_items, include_race, include_specialization, include_culture, include_belief)
 
         return self.extend_unit(unit)
 
