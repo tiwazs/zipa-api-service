@@ -31,7 +31,7 @@ class UnitItemService:
 
         # If incomming data is empty, use current data
         for key in unit_item_dict:
-            if unit_item_dict[key] is None:
+            if unit_item_dict[key] is None or unit_item_dict[key] == "":
                 unit_item_dict[key] = unit_item_current_dict[key]
         
         return await self.database.unititem.update( 
