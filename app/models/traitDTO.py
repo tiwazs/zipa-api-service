@@ -9,8 +9,8 @@ class TraitCreateDTO(TraitBaseDTO):
     effect_ids: Optional[List[str]] = None
 
 class TraitUpdateDTO(TraitBaseDTO):
-    name: Optional[str]
-    description: Optional[str]
+    name: Optional[str] = None
+    description: Optional[str] = None
 
 class TraitDTO(TraitBaseDTO):
     id: str
