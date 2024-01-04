@@ -25,6 +25,19 @@ class UnitService:
                                     "include":{
                                         "skill":True
                                     }
+                                },
+                                "traits": {
+                                    "include":{
+                                        "trait": {
+                                            "include":{
+                                                "effects": {
+                                                    "include":{
+                                                        "effect": True
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -116,6 +129,19 @@ class UnitService:
                                 "skills": {
                                     "include":{
                                         "skill": {
+                                            "include":{
+                                                "effects": {
+                                                    "include":{
+                                                        "effect": True
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "traits": {
+                                    "include":{
+                                        "trait": {
                                             "include":{
                                                 "effects": {
                                                     "include":{
@@ -230,6 +256,19 @@ class UnitService:
                                 "skills": {
                                     "include":{
                                         "skill":True
+                                    }
+                                },
+                                "traits": {
+                                    "include":{
+                                        "trait": {
+                                            "include":{
+                                                "effects": {
+                                                    "include":{
+                                                        "effect": True
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
