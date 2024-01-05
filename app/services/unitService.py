@@ -722,15 +722,26 @@ class UnitService:
             hit_chance = self.apply_ascension(hit_chance, unit.specialization.tier) + ascension_parameters['hit_chance']
             evasion = self.apply_ascension(evasion, unit.specialization.tier) + ascension_parameters['evasion']
 
+        # From Rank
+        vitality += 0.9*unit.rank;
+        strength += 0.3*unit.rank;
+        dexterity += 0.3*unit.rank;
+        mind += 0.3*unit.rank;
+        faith += 0.3*unit.rank;
+        essence += 0.9*unit.rank;
+        agility += 0.3*unit.rank;
+        hit_chance += 0.3*unit.rank;
+        evasion += 0.3*unit.rank;
+            
         # Main stats Bonuses
         vitality += 0.6*faith + 0.5*strength;
-        essence += 1*mind + 0.6*faith;
+        essence += 1.1*mind + 0.6*faith;
         hit_chance += 0.5*dexterity;
         evasion += 0.5*dexterity;
 
         # Damage
-        physical_damage = strength + 1.2*dexterity;
-        magical_damage = 1.2*mind + faith;
+        physical_damage = strength + 1.3*dexterity;
+        magical_damage = 1.3*mind + 1.1*faith;
 
         # From items
         vitality += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.vitality, acc, item.equipped), unit.items, 0)

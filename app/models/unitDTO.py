@@ -39,25 +39,25 @@ class UnitCreateDTO(UnitBaseDTO):
     items: Optional[List[UnitItemCreateDTO]] = None
 
 class UnitUpdateDTO(UnitBaseDTO):
-    name: Optional[str]
+    name: Optional[str] = None
     title: Optional[str] = None
     prefix_title: Optional[str] = None
-    description: Optional[str]
-    base_vitality: Optional[float]
-    base_strength: Optional[float]
-    base_dexterity: Optional[float]
-    base_mind: Optional[float]
-    base_faith: Optional[float]
-    base_essence: Optional[float]
-    base_agility: Optional[float]
-    base_hit_chance: Optional[float]
-    base_evasion: Optional[float]
-    ascended: Optional[bool]
-    ascended_params: Optional[str]
-    race_id: Optional[str]
-    culture_id: Optional[str]
-    belief_id: Optional[str]
-    specialization_id: Optional[str]
+    description: Optional[str] = None
+    base_vitality: Optional[float] = None
+    base_strength: Optional[float] = None
+    base_dexterity: Optional[float] = None
+    base_mind: Optional[float] = None
+    base_faith: Optional[float] = None
+    base_essence: Optional[float] = None
+    base_agility: Optional[float] = None
+    base_hit_chance: Optional[float] = None
+    base_evasion: Optional[float] = None
+    ascended: Optional[bool] = None
+    ascended_params: Optional[str] = None
+    race_id: Optional[str] = None
+    culture_id: Optional[str] = None
+    belief_id: Optional[str] = None
+    specialization_id: Optional[str] = None
     skill_picks: Optional[str] = None
     rank: Optional[int] = None
 
