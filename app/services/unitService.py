@@ -691,6 +691,7 @@ class UnitService:
         shield = 0
         physical_damage = 0
         magical_damage = 0
+        range = 0
 
         vitality = self.value_multiplier( unit.base_vitality, unit.specialization.vitality, 10 )
         strength = self.value_multiplier( unit.base_strength, unit.specialization.strength, 5 );
@@ -747,29 +748,32 @@ class UnitService:
         magic_armor += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.magic_armor, acc, item.equipped), unit.items, 0)
         armor_piercing += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.armor_piercing, acc, item.equipped), unit.items, 0)
         spell_piercing += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.spell_piercing, acc, item.equipped), unit.items, 0)
-
         shield += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.shield, acc, item.equipped), unit.items, 0)
+        range = functools.reduce(lambda acc, item: int(item.item.range) if item.item.range!='' and int(item.item.range) > 0 and item.equipped and acc == 0 else acc, unit.items, 0)
 
         weight = functools.reduce(lambda acc, item: item.item.weight*item.quantity + acc, unit.items, 0)
 
-        # From traits
-        vitality += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.vitality, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
-        #strength += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.strength, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
-        #dexterity += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.dexterity, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
-        #mind += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.mind, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
-        #faith += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.faith, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
-        essence += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.essence, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
-        agility += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.agility, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
-        hit_chance += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.hit_chance, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
-        evasion += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.evasion, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
-        physical_damage += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.physical_damage, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
-        magical_damage += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.magical_damage, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
-        armor += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.armor, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
-        magic_armor += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.magic_armor, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
-        armor_piercing += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.armor_piercing, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
-        spell_piercing += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.spell_piercing, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
+        # Joining Traits
+        traits = unit.race.traits + unit.culture.traits + unit.Belief.traits
 
-        shield += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.shield, acc), trait.trait.effects, 0) + acc, unit.race.traits, 0);
+        # From traits
+        vitality += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.vitality, acc), trait.trait.effects, 0) + acc, traits, 0);
+        #strength += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.strength, acc), trait.trait.effects, 0) + acc, traits, 0);
+        #dexterity += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.dexterity, acc), trait.trait.effects, 0) + acc, traits, 0);
+        #mind += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.mind, acc), trait.trait.effects, 0) + acc, traits, 0);
+        #faith += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.faith, acc), trait.trait.effects, 0) + acc, traits, 0);
+        essence += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.essence, acc), trait.trait.effects, 0) + acc, traits, 0);
+        agility += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.agility, acc), trait.trait.effects, 0) + acc, traits, 0);
+        hit_chance += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.hit_chance, acc), trait.trait.effects, 0) + acc, traits, 0);
+        evasion += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.evasion, acc), trait.trait.effects, 0) + acc, traits, 0);
+        physical_damage += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.physical_damage, acc), trait.trait.effects, 0) + acc, traits, 0);
+        magical_damage += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.magical_damage, acc), trait.trait.effects, 0) + acc, traits, 0);
+        armor += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.armor, acc), trait.trait.effects, 0) + acc, traits, 0);
+        magic_armor += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.magic_armor, acc), trait.trait.effects, 0) + acc, traits, 0);
+        armor_piercing += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.armor_piercing, acc), trait.trait.effects, 0) + acc, traits, 0);
+        spell_piercing += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.spell_piercing, acc), trait.trait.effects, 0) + acc, traits, 0);
+        shield += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.shield, acc), trait.trait.effects, 0) + acc, traits, 0);
+        range += functools.reduce(lambda acc, trait: functools.reduce(lambda acc, effect: self.mod_parameter_operation(effect.effect.range, acc), trait.trait.effects, 0) + acc, traits, 0);
 
         load_capacity = load_capacity + (0.25* strength)
         weight_penalty = self.weight_penalty(load_capacity, weight, 1)
@@ -818,6 +822,7 @@ class UnitService:
         unit_extended["shield"] = shield
         unit_extended["physical_damage"] = physical_damage
         unit_extended["magical_damage"] = magical_damage
+        unit_extended["range"] = range
         unit_extended["load_capacity"] = load_capacity
         unit_extended["weight"] = weight
         unit_extended["weight_penalty"] = weight_penalty
