@@ -11,12 +11,23 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model RaceGroup {
+    id                String        @id @default(cuid())
+    name              String
+    description       String        @db.Text
+    created_at        DateTime      @default(now())
+    updated_at        DateTime      @updatedAt
+    races             Race[]
+}
+
 model Race {
     id                String        @id @default(cuid())
     name              String
     description       String        @db.Text
     identity          String?       @db.Text
     aspects           String?       @db.Text
+    race_group        RaceGroup?     @relation(fields: [race_group_id], references: [id], onDelete: Cascade)
+    race_group_id     String? 
     created_at        DateTime      @default(now())
     updated_at        DateTime      @updatedAt
     traits            RaceTrait[]

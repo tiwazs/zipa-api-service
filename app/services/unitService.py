@@ -740,8 +740,8 @@ class UnitService:
         evasion += 0.5*dexterity;
 
         # Damage
-        physical_damage = strength + 1.3*dexterity;
-        magical_damage = 1.3*mind + 1.1*faith;
+        physical_damage = 0.9*strength + 1.2*dexterity;
+        magical_damage = 1.2*mind + 1*faith;
 
         # From items
         vitality += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.vitality, acc, item.equipped), unit.items, 0)
