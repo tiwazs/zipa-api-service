@@ -26,12 +26,12 @@ class RaceService:
                         "trait": include_traits
                     }
                 },
-                "avaiable_cultures": False if not include_cultures else {
+                "available_cultures": False if not include_cultures else {
                     "include": {
                         "culture": include_cultures
                     }
                 },
-                "avaiable_beliefs": False if not include_beliefs else {
+                "available_beliefs": False if not include_beliefs else {
                     "include": {
                         "belief": include_beliefs
                     }
@@ -48,12 +48,12 @@ class RaceService:
                         "trait": include_traits
                     }
                 },
-                "avaiable_cultures": False if not include_cultures else {
+                "available_cultures": False if not include_cultures else {
                     "include": {
                         "culture": include_cultures
                     }
                 },
-                "avaiable_beliefs": False if not include_beliefs else {
+                "available_beliefs": False if not include_beliefs else {
                     "include": {
                         "belief": include_beliefs
                     }
@@ -153,7 +153,7 @@ class RaceService:
         return await self.database.race.find_unique(
             where={"id": id},
             include={
-                "avaiable_cultures": {
+                "available_cultures": {
                     "include": {
                         "culture": True
                     }
@@ -167,7 +167,7 @@ class RaceService:
         return await self.database.race.find_unique(
             where={"id": id},
             include={
-                "avaiable_cultures": {
+                "available_cultures": {
                     "include": {
                         "culture": True
                     }
@@ -181,7 +181,7 @@ class RaceService:
         return await self.database.race.find_unique(
             where={"id": id},
             include={
-                "avaiable_beliefs": {
+                "available_beliefs": {
                     "include": {
                         "belief": True
                     }
@@ -195,7 +195,7 @@ class RaceService:
         return await self.database.race.find_unique(
             where={"id": id},
             include={
-                "avaiable_beliefs": {
+                "available_beliefs": {
                     "include": {
                         "belief": True
                     }

@@ -32,8 +32,8 @@ model Race {
     updated_at        DateTime      @updatedAt
     traits            RaceTrait[]
     Unit              Unit[]
-    avaiable_cultures RaceCulture[]
-    avaiable_beliefs  RaceBelief[]
+    available_cultures RaceCulture[]
+    available_beliefs  RaceBelief[]
     Faction           Faction[]
 }
 

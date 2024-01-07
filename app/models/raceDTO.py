@@ -41,6 +41,7 @@ class RaceBeliefDTO(RaceBeliefBaseDTO):
 
 # Race
 class RaceBaseDTO(BaseModel):
+    race_group_id: str
     name: str
     description: str
     identity: Optional[str] = None
@@ -50,6 +51,7 @@ class RaceCreateDTO(RaceBaseDTO):
     unit_specialization_ids: Optional[List[str]] = None
 
 class RaceUpdateDTO(RaceBaseDTO):
+    race_group_id: Optional[str] = None
     name: Optional[str] = None
     description: Optional[str] = None
     identity: Optional[str] = None

@@ -499,7 +499,7 @@ class UnitService:
         return result
     
     def mod_parameter_operation(self, mod_parameter_string: str, parameter: float, equipped = True):
-        if mod_parameter_string is None: return 0
+        if mod_parameter_string is None: return parameter
         regex = '(?P<sign>[+-])?(?P<value>([\d+.]+|ND|MD|HP))?(?P<porcentage>\s*%)?(?P<max>\s*max)?'
         match = re.search(regex, mod_parameter_string)
         sign = match['sign']
@@ -520,8 +520,6 @@ class UnitService:
             result += float(value)
         elif(sign == '-'):
             result -= float(value)
-        
-
         return result
 
     def weight_penalty(self, load_capacity: float, weight: float, strength_rate: float):
