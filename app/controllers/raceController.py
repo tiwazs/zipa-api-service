@@ -98,9 +98,9 @@ async def remove_culture_from_race(id: str, culture_id: str, request: Request, r
         return {"error": str(e)}
 
 @router.put("/add_belief/{id}")
-async def add_belief_to_race(id: str, trait_id: str, request: Request, response: Response):
+async def add_belief_to_race(id: str, belief_id: str, request: Request, response: Response):
     try:
-        race = await RaceService(request.app.state.db).add_belief(id, trait_id)
+        race = await RaceService(request.app.state.db).add_belief(id, belief_id)
         if race is None:
             response.status_code = status.HTTP_204_NO_CONTENT
             return { "error" : msg_not_found }
