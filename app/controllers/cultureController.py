@@ -8,8 +8,8 @@ router = APIRouter(prefix="/cultures", tags=["Cultures"])
 msg_not_found = 'Culture not found'
 
 @router.get("/")
-async def get_cultures(request: Request, response: Response,  include_traits: bool = True, include_units: bool = False):
-    return await CultureService(request.app.state.db).get_all(include_traits, include_units)
+async def get_cultures(request: Request, response: Response, by_race_id: str = None, by_race_group_id: str = None,  include_traits: bool = True, include_units: bool = False):
+    return await CultureService(request.app.state.db).get_all(by_race_id, by_race_group_id, include_traits, include_units)
 
 @router.get("/{id}")
 async def get_culture_by_id(id: str, request: Request, response: Response,  include_traits: bool = True, include_units: bool = False):

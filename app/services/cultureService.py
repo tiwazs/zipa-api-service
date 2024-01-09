@@ -14,8 +14,26 @@ class CultureService:
         self.culture_trait_service = CultureTraitService(database)
         self.file_service = FileService()
 
-    async def get_all(self, include_traits: bool, include_units: bool) -> List[CultureDTO]:
+    async def get_all(self, by_race_id: str, by_race_group_id: str, include_traits: bool, include_units: bool) -> List[CultureDTO]:
+        conditions = {}
+        if by_race_group_id:
+            conditions["available_races"] = { 
+                "some" : {
+                    "race" :  {
+                        "race_group_id": by_race_group_id
+                    }
+                }
+            }
+
+        if by_race_id: 
+            conditions["available_races"] = { 
+                "some" : {
+                    "race_id" :  by_race_id
+                }
+            }
+
         return await self.database.culture.find_many(
+            where=conditions,
             include={
                 "available_specializations": False if not include_units else {
                     "include": {
@@ -26,7 +44,8 @@ class CultureService:
                     "include": {
                         "trait": include_traits
                     }
-                }
+                },
+                "available_races" : True
             }
         )
 

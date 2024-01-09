@@ -8,8 +8,8 @@ router = APIRouter(prefix="/beliefs", tags=["Beliefs"])
 msg_not_found = 'Belief not found'
 
 @router.get("/")
-async def get_beliefs(request: Request, response: Response,  include_traits: bool = True, include_units: bool = False):
-    return await BeliefService(request.app.state.db).get_all(include_traits, include_units)
+async def get_beliefs(request: Request, response: Response, by_race_id: str = None , by_race_group_id: str = None, include_traits: bool = True, include_units: bool = False):
+    return await BeliefService(request.app.state.db).get_all(by_race_id, by_race_group_id, include_traits, include_units)
 
 @router.get("/{id}")
 async def get_belief_by_id(id: str, request: Request, response: Response,  include_traits: bool = True, include_units: bool = False):

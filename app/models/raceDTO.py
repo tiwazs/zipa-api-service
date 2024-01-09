@@ -41,7 +41,7 @@ class RaceBeliefDTO(RaceBeliefBaseDTO):
 
 # Race
 class RaceBaseDTO(BaseModel):
-    race_group_id: str
+    race_group_id: Optional[str] = None
     name: str
     description: str
     identity: Optional[str] = None
