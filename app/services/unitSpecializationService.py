@@ -143,7 +143,7 @@ class UnitSpecializationService:
             }
         )
 
-    async def get_by_group_id(self, culture_id, belief_id, include_traits, include_skills, include_items) -> List[UnitSpecializationDTO]:
+    async def get_by_group_id(self, race_id, culture_id, belief_id, include_traits, include_skills, include_items) -> List[UnitSpecializationDTO]:
         return await self.database.unitspecialization.find_many( 
             include={
                 "traits": False if not include_traits else {
@@ -175,6 +175,32 @@ class UnitSpecializationService:
                         "available_cultures": {
                             "some": {
                                 "culture_id": culture_id
+                            }
+                        }
+                    },
+                                        {
+                        "available_beliefs": {
+                            "some": {
+                                "belief": {
+                                    "available_races": {
+                                        "some": {
+                                            "race_id": race_id
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "available_cultures": {
+                            "some": {
+                                "culture": {
+                                    "available_races": {
+                                        "some": {
+                                            "race_id": race_id
+                                        }
+                                    }
+                                }
                             }
                         }
                     }]
