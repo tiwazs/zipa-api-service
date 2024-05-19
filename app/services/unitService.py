@@ -691,13 +691,13 @@ class UnitService:
         magical_damage = 0
         range = 0
 
-        vitality = self.value_multiplier( unit.base_vitality, unit.specialization.vitality, 10 )
+        vitality = self.value_multiplier( unit.base_vitality, unit.specialization.vitality, 11 )
         strength = self.value_multiplier( unit.base_strength, unit.specialization.strength, 5 );
         dexterity = self.value_multiplier( unit.base_dexterity, unit.specialization.dexterity, 5 );
         mind = self.value_multiplier( unit.base_mind, unit.specialization.mind, 5 );
         faith = self.value_multiplier( unit.base_faith, unit.specialization.faith, 5 );
 
-        essence = self.value_multiplier( unit.base_essence, unit.specialization.essence, 10 );
+        essence = self.value_multiplier( unit.base_essence, unit.specialization.essence, 11 );
         agility = self.value_multiplier( unit.base_agility, unit.specialization.agility, 5 );
         hit_chance = self.value_multiplier( unit.base_hit_chance, unit.specialization.hit_chance, 5 );
         evasion = self.value_multiplier( unit.base_evasion, unit.specialization.evasion, 5 );
@@ -732,14 +732,14 @@ class UnitService:
         evasion += 0.3*unit.rank;
             
         # Main stats Bonuses
-        vitality += 0.6*faith + 0.5*strength;
-        essence += 1.1*mind + 0.6*faith;
+        vitality += 0.8*faith + 0.6*strength;
+        essence += 1.15*mind + 0.6*faith;
         hit_chance += 0.5*dexterity;
         evasion += 0.5*dexterity;
 
         # Damage
         physical_damage = 0.9*strength + 1.2*dexterity;
-        magical_damage = 1.2*mind + 1*faith;
+        magical_damage = 1.25*mind + 1*faith;
 
         # From items
         vitality += functools.reduce(lambda acc, item: self.mod_parameter_operation(item.item.vitality, acc, item.equipped), unit.items, 0)
